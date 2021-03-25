@@ -6,3 +6,5 @@ __pycache__
 *.hi
 *.o
 notes
+plots
+output_data
