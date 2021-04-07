@@ -215,10 +215,11 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
     first = True
     # hidden sector energy scale
     Lambda = np.sqrt(m_a * f_a) # Lambda^2 / f_a = m_a, ignore the prefactor
+
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
         if debug:
-            print("interval:", interval, "initial conditions:", initial_conditions)
+            print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, Lambda))
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
                         args=(Gamma_phi, m_a, sigma_eff, Lambda),
                         t_eval=np.log(np.geomspace(*interval, samples))[:-1] if fixed_samples else None,
@@ -226,6 +227,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
         # collect integration steps
         ys.append(sol.y[:, 1:])
         ts.append(sol.t[1:])
+
         # stop the loop once we are done
         if converge:
             interval = (np.exp(sol.t[-1]), np.exp(sol.t[-1]) + axion_periode * num_osc)
@@ -248,6 +250,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
                     break # stop once convergence criterion is fulfilled
         else:
             break # dont use the convergence loop if converge == False
+
     # final result
     t = np.exp(np.concatenate(ts))
     y = np.hstack(ys)
@@ -283,8 +286,8 @@ def axion_energy_density(theta, theta_dot, m_a, f_a):
     return rho_kin + rho_pot
 
 
-def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau",
-                         samples=500, converge=True, convergence_epsilon=global_epsilon):
+def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False,
+                         samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon):
     Gamma_a = calc_Gamma_a(m_a, f_a)
 
     start = np.log(bg_sol.t[-1])
@@ -299,7 +302,7 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau",
     initial_conditions = (np.log(rho_R_initial), np.log(rho_a_initial), np.log(R_0))
 
     axion_decay_sol = solve_ivp(rhs_axion_decay, interval, initial_conditions,
-                    args=(Gamma_a,), t_eval=np.linspace(*interval, samples), method=solver)
+                    args=(Gamma_a,), t_eval=np.linspace(*interval, samples) if fixed_samples else None, method=solver)
 
     t = np.exp(axion_decay_sol.t)
     rho_R, rho_a, R = np.exp(axion_decay_sol.y)
@@ -316,10 +319,14 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau",
 
 
 # Final $\eta_B$ numerical
-def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, theta0=1.0, do_decay=True):
-    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, theta0=theta0, samples=10, debug=False, fixed_samples=False)
+def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, do_decay=True, bg_kwargs={}, decay_kwargs={}):
+    bg_options = dict(theta0=1.0, debug=False, fixed_samples=False)
+    bg_options.update(bg_kwargs)
+    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_options) # TODO better handeling of the kwargs
     if do_decay:
-        axion_decay_res = simulate_axion_decay(m_a, f_a, bg_res, samples=10)
+        decay_options = dict(samples=100, debug=False, fixed_samples=True)
+        decay_options.update(decay_kwargs)
+        axion_decay_res = simulate_axion_decay(m_a, f_a, bg_res, **decay_kwargs)
         return n_L_to_eta_B_final(axion_decay_res.T[-1], axion_decay_res.n_L[-1])
     else:
         return n_L_to_eta_B_final(bg_res.T[-1], bg_res.n_L[-1])

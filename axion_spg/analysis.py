@@ -161,12 +161,12 @@ def sample_parameter_space(func, f_a, H_inf, min_Gamma_phi=1e6, max_Gamma_phi=1e
 def sample_parameter_space_numerical(f_a, H_inf, **kwargs):
     return sample_parameter_space(compute_B_asymmetry, f_a, H_inf, **kwargs)
 
-def compute_correct_curve(f_a, H_inf, min_val=5e5, **kwargs):
+def compute_correct_curve(f_a, H_inf, min_val=5e5, bg_kwargs={}, decay_kwargs={}, analytic_kwargs={}):
     m_a_bounds = np.log10((min_val, H_inf))
     Gamma_phi_bounds = np.log10((min_val, H_inf))
 
-    analytic_goal_fn = lambda p: np.log10(compute_B_asymmetry_analytic(10**p[0], f_a, 10**p[1], **kwargs)) - np.log10(eta_B_observed)
-    goal_fn = lambda p: np.log10(compute_B_asymmetry(10**p[0], f_a, 10**p[1], H_inf, **kwargs)) - np.log10(eta_B_observed)
+    analytic_goal_fn = lambda p: np.log10(compute_B_asymmetry_analytic(10**p[0], f_a, 10**p[1], **analytic_kwargs)) - np.log10(eta_B_observed)
+    goal_fn = lambda p: np.log10(compute_B_asymmetry(10**p[0], f_a, 10**p[1], H_inf, bg_kwargs=bg_kwargs, decay_kwargs=decay_kwargs)) - np.log10(eta_B_observed)
 
     clueless_guess = (np.mean(m_a_bounds), np.mean(Gamma_phi_bounds))
     analytic = implicit_curve.find_root(analytic_goal_fn, clueless_guess, m_a_bounds, Gamma_phi_bounds)
@@ -178,7 +178,7 @@ def compute_correct_curve(f_a, H_inf, min_val=5e5, **kwargs):
     Gamma_phi_curve = 10**lg_Gamma_phi
     return m_a_curve, Gamma_phi_curve
 
-def find_minimal_m_a_and_Gamma_phi(H_inf_max_dist=10, start_f_a=1e13, f_a_step_factor=5, curve_eps=0.1, debug=True, kwargs={}):
+def find_minimal_m_a_and_Gamma_phi(H_inf_max_dist=10, start_f_a=1e13, f_a_step_factor=5, curve_eps=0.1, debug=True, bg_kwargs={}, decay_kwargs={}):
     # initialize
     current_f_a = start_f_a
     current_min_m_a = np.inf
@@ -191,12 +191,12 @@ def find_minimal_m_a_and_Gamma_phi(H_inf_max_dist=10, start_f_a=1e13, f_a_step_f
 
         # compute curve at new f_a
         H_inf = calc_H_inf_max(current_f_a) / H_inf_max_dist
-        m_a_curve, Gamma_phi_curve = compute_correct_curve(current_f_a, H_inf, **kwargs)
+        m_a_curve, Gamma_phi_curve = compute_correct_curve(current_f_a, H_inf, bg_kwargs=bg_kwargs, decay_kwargs=decay_kwargs)
         min_m_a = np.min(m_a_curve)
         min_Gamma_phi = np.min(Gamma_phi_curve)
 
         # make sure that the minimal m_a, Gamma_phi of the curve are getting smaller
-        assert (min_m_a < current_min_m_a and min_Gamma_phi < current_min_Gamma_phi), f"f_a = {f_a}"
+        assert (min_m_a < current_min_m_a and min_Gamma_phi < current_min_Gamma_phi), f"f_a = {current_f_a}"
 
         # check if the curves stoped getting smaller (relative change)
         delta = (current_min_m_a - min_m_a) / min_m_a
