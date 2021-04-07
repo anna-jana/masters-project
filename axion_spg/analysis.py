@@ -115,10 +115,10 @@ def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_t
     print("final asymmetry:", eta_B[-1])
     return sol
 
-def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, do_plot=True, **kwargs):
-    bg_sol = simulate(m_a, f_a, Gamma_phi, H_inf)
+def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, do_plot=True, decay_kwargs={}, bg_kwargs={}):
+    bg_sol = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_kwargs)
     decay_sol = t, rho_R, rho_a, R, T, n_L = simulate_axion_decay(m_a, f_a, bg_sol, end=np.log(1e20),
-                                                                 **kwargs)
+                                                                 **decay_kwargs)
     eta_B_final_proj = n_L_to_eta_B_final(T, n_L)
     t_axion_decay = 1 / calc_Gamma_a(m_a, f_a)
 
@@ -152,49 +152,60 @@ def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, do_plot=True, **kwargs):
     return bg_sol, decay_sol
 
 def sample_parameter_space(func, f_a, H_inf, min_Gamma_phi=1e6, max_Gamma_phi=1e10, min_m_a=2e5, max_m_a=1e10,
-                         num_m_a_samples=30, num_Gamma_phi_samples=31):
+                         num_m_a_samples=30, num_Gamma_phi_samples=31, kwargs={}):
     Gamma_phi_s = np.geomspace(min_Gamma_phi, max_Gamma_phi, num_Gamma_phi_samples)
     m_a_s = np.geomspace(min_m_a, max_m_a, num_m_a_samples)
-    eta_B_s = np.array([[func(m_a, f_a, Gamma_phi, H_inf) for m_a in m_a_s] for Gamma_phi in tqdm(Gamma_phi_s)])
+    eta_B_s = np.array([[func(m_a, f_a, Gamma_phi, H_inf, **kwargs) for m_a in m_a_s] for Gamma_phi in tqdm(Gamma_phi_s)])
     return m_a_s, Gamma_phi_s, eta_B_s
 
 def sample_parameter_space_numerical(f_a, H_inf, **kwargs):
     return sample_parameter_space(compute_B_asymmetry, f_a, H_inf, **kwargs)
 
-def compute_correct_curve(f_a, H_inf, min_val=5e5):
+def compute_correct_curve(f_a, H_inf, min_val=5e5, **kwargs):
     m_a_bounds = np.log10((min_val, H_inf))
     Gamma_phi_bounds = np.log10((min_val, H_inf))
-    analytic_goal_fn = lambda p: np.log10(compute_B_asymmetry_analytic(10**p[0], f_a, 10**p[1])) - np.log10(eta_B_observed)
-    goal_fn = lambda p: np.log10(compute_B_asymmetry(10**p[0], f_a, 10**p[1], H_inf)) - np.log10(eta_B_observed)
+
+    analytic_goal_fn = lambda p: np.log10(compute_B_asymmetry_analytic(10**p[0], f_a, 10**p[1], **kwargs)) - np.log10(eta_B_observed)
+    goal_fn = lambda p: np.log10(compute_B_asymmetry(10**p[0], f_a, 10**p[1], H_inf, **kwargs)) - np.log10(eta_B_observed)
+
     clueless_guess = (np.mean(m_a_bounds), np.mean(Gamma_phi_bounds))
     analytic = implicit_curve.find_root(analytic_goal_fn, clueless_guess, m_a_bounds, Gamma_phi_bounds)
+
     lg_m_a, lg_Gamma_phi = implicit_curve.find_implicit_curve(goal_fn, m_a_bounds, Gamma_phi_bounds, analytic,
                                                h=0.01, eps=0.01, step_length=0.1)
+
     m_a_curve = 10**lg_m_a
     Gamma_phi_curve = 10**lg_Gamma_phi
     return m_a_curve, Gamma_phi_curve
 
-def find_minimal_m_a(H_inf_max_dist=10, current_f_a=1e13):
+def find_minimal_m_a_and_Gamma_phi(H_inf_max_dist=10, start_f_a=1e13, f_a_step_factor=5, curve_eps=0.1, debug=True, kwargs={}):
+    # initialize
+    current_f_a = start_f_a
     current_min_m_a = np.inf
     current_min_Gamma_phi = np.inf
-    more_curves = []
-    curve_eps = 0.1
     step = 0
+
     while True:
         step += 1
-        print("step:", step)
+        if debug: print("step:", step)
+
+        # compute curve at new f_a
         H_inf = calc_H_inf_max(current_f_a) / H_inf_max_dist
-        m_a_curve, Gamma_phi_curve = compute_correct_curve(current_f_a, H_inf)
+        m_a_curve, Gamma_phi_curve = compute_correct_curve(current_f_a, H_inf, **kwargs)
         min_m_a = np.min(m_a_curve)
-        if min_m_a < current_min_m_a:
-            min_Gamma_phi = np.min(Gamma_phi_curve)
-            assert min_Gamma_phi < current_min_Gamma_phi
-            delta = (current_min_m_a - min_m_a) / min_m_a
+        min_Gamma_phi = np.min(Gamma_phi_curve)
+
+        # make sure that the minimal m_a, Gamma_phi of the curve are getting smaller
+        assert (min_m_a < current_min_m_a and min_Gamma_phi < current_min_Gamma_phi), f"f_a = {f_a}"
+
+        # check if the curves stoped getting smaller (relative change)
+        delta = (current_min_m_a - min_m_a) / min_m_a
+        if debug:
             print("delta:", delta)
-            current_min_m_a = min_m_a
-            current_min_Gamma_phi = min_Gamma_phi
-            if delta <= curve_eps:
-                break
-        current_f_a /= 5
+        if delta <= curve_eps:
+            return current_min_m_a, current_min_Gamma_phi
 
-
+        # update for next iteration
+        current_min_m_a = min_m_a
+        current_min_Gamma_phi = min_Gamma_phi
+        current_f_a /= f_a_step_factor

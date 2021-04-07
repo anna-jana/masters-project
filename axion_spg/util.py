@@ -1,4 +1,5 @@
 import os.path
+import pickle
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 
@@ -30,4 +31,14 @@ def count_oscillations(theta):
 def find_local_maxima(theta):
     return np.where((theta[1:-1] > theta[:-2]) & (theta[1:-1] > theta[2:]))[0]
 
+def save_data(filename, *data):
+    filepath = make_output_data_path(filename)
+    with open(filepath, "wb") as fp:
+        pickle.dump(data, fp)
+
+def load_data(filename):
+    filepath = make_output_data_path(filename)
+    with open(filepath, "rb") as fp:
+        data = pickle.load(fp)
+    return data
 

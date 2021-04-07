@@ -13,7 +13,7 @@ from numba import jit
 M_pl = 2.435e18 # reduced Planck mass [GeV] from wikipedia (https://en.wikipedia.org/wiki/Planck_mass)
 m_pl = 1.220910e19 # Planck mass [GeV] from wikipedia (https://en.wikipedia.org/wiki/Planck_mass)
 g_star = 427/4 # during reheating from paper
-sigma_eff = 1e-31 # [GeV^-2] from paper heavy neutrino exchange
+paper_sigma_eff = 1e-31 # [GeV^-2] from paper heavy neutrino exchange
 N_f = 3 # [1] fermion generations
 # TODO: renormalization group running?
 g_2 = 0.652 # [1] from wikipedia (https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model#Free_parameters)
@@ -77,7 +77,7 @@ def n_L_to_eta_B_final(T, n_L):
     return -eta_L_a_to_eta_B_0(calc_asym_parameter(T, n_L)) # -sign from defintion of (anti)matter
 
 @jit(nopython=True)
-def calc_Gamma_L(T):
+def calc_Gamma_L(T, sigma_eff):
     n_l_eq = 2 / np.pi**2 * T**3
     return 4 * n_l_eq * sigma_eff # is this term only active in a certain range?
 
@@ -94,6 +94,7 @@ def calc_rho_R_analytical(rho_R, t0, t, R_osc, R, rho_phi_0, Gamma_phi):
 def calc_H_inf_max(f_a):
     return 6e11 * (f_a / 1e15) # paper
 
+
 @jit(nopython=True)
 def calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by):
     t_osc = 1/(2*m_a) if Gamma_phi >= m_a else 2/(3*m_a)
@@ -106,6 +107,7 @@ def calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by):
 def calc_start_time(H_inf):
     return 1 / H_inf
 
+
 # Analytical Solution
 def calc_Delta_a(m_a, f_a, Gamma_phi, theta0):
     a0 = theta0 * f_a
@@ -113,7 +115,7 @@ def calc_Delta_a(m_a, f_a, Gamma_phi, theta0):
     Delta_a = max((1, Delta_a_prime))
     return Delta_a
 
-def compute_B_asymmetry_analytic(m_a, f_a, Gamma_phi, theta0=1):
+def compute_B_asymmetry_analytic(m_a, f_a, Gamma_phi, sigma_eff=paper_sigma_eff, theta0=1):
     Delta_phi_prime = (m_a / Gamma_phi)**(5 / 4)
     Delta_phi = max((1, Delta_phi_prime))
     Delta_a = calc_Delta_a(m_a, f_a, Gamma_phi, theta0)
@@ -137,64 +139,88 @@ theta_diff_index = theta_index + 1
 n_L_index = theta_diff_index + 1
 R_osc = 1.0
 
-@jit(nopython=True)
-def rhs(log_t, y, Gamma_phi, m_a):
-    # coordinate transformation
-    t = np.exp(log_t)
-    rho_phi, rho_tot, R = np.exp(y[:theta_index])
-    theta = y[theta_index]
-    d_theta_d_log_t = y[theta_diff_index]
-    theta_dot = d_theta_d_log_t / t
-    rho_R = calc_rho_R(rho_phi, rho_tot)
-    T = calc_temperature(rho_R)
-    n_L = y[n_L_index]
+def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
+    @jit(nopython=True)
+    def rhs(log_t, y, Gamma_phi, m_a, sigma_eff, Lambda):
+        # coordinate transformation
+        t = np.exp(log_t)
+        rho_phi, rho_tot, R = np.exp(y[:theta_index])
+        theta = y[theta_index]
+        d_theta_d_log_t = y[theta_diff_index]
+        theta_dot = d_theta_d_log_t / t
+        rho_R = calc_rho_R(rho_phi, rho_tot)
+        T = calc_temperature(rho_R)
+        n_L = y[n_L_index]
 
-    # Friedmann
-    H = calc_hubble_parameter(rho_tot)
-    d_log_R_d_log_t = t * H
+        # Friedmann
+        H = calc_hubble_parameter(rho_tot)
+        d_log_R_d_log_t = t * H
 
-    # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
-    d_log_rho_phi_d_log_t = - t * (3 * H + Gamma_phi)
-    d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
+        # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
+        d_log_rho_phi_d_log_t = - t * (3 * H + Gamma_phi)
+        d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
 
-    # axion eom (Klein Gordon) in theta and log t
-    theta_dot2         = - 3 * H * theta_dot - m_a**2 * theta
-    d2_theta_d_log_t_2 = d_theta_d_log_t + t**2 * theta_dot2
+        # axion eom (Klein Gordon) in theta and log t
+        if use_cosine_potential:
+            U = np.sin(theta)
+        else:
+            U = theta
+        p = 8
+        if use_temp_dep_axion_mass:
+            M = m_a**2 if T < Lambda else m_a**2 * (T / Lambda)**(-p)
+        else:
+            M = m_a**2
 
-    # Boltzmann eq. for lepton asymmetry
-    mu_eff = theta_dot
-    n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
-    Gamma_L = calc_Gamma_L(T)
-    d_n_L_d_log_t = t * (- 3 * H * n_L - Gamma_L * (n_L - n_L_eq))
+        theta_dot2         = - 3 * H * theta_dot - M * U
+        d2_theta_d_log_t_2 = d_theta_d_log_t + t**2 * theta_dot2
 
-    # final result
-    return (
-        d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t,
-        d_log_R_d_log_t,
-        d_theta_d_log_t, d2_theta_d_log_t_2,
-        d_n_L_d_log_t,
-    )
+        # Boltzmann eq. for lepton asymmetry
+        mu_eff = theta_dot
+        n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
+        Gamma_L = calc_Gamma_L(T, sigma_eff)
+        d_n_L_d_log_t = t * (- 3 * H * n_L - Gamma_L * (n_L - n_L_eq))
 
-def simulate(m_a, f_a, Gamma_phi, H_inf, theta0=1.0,
+        # final result
+        return (
+            d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t,
+            d_log_R_d_log_t,
+            d_theta_d_log_t, d2_theta_d_log_t_2,
+            d_n_L_d_log_t,
+        )
+    return rhs
+
+rhss = {(use_cosine_potential, use_temp_dep_axion_mass) : make_rhs(use_cosine_potential, use_temp_dep_axion_mass)
+        for use_cosine_potential in (True, False) for use_temp_dep_axion_mass in (True, False)}
+
+
+def simulate(m_a, f_a, Gamma_phi, H_inf,
+             theta0=1.0, sigma_eff=paper_sigma_eff, use_cosine_potential=False, use_temp_dep_axion_mass=False,
              start=None, end=None, num_osc=15, larger_than_reheating_by=5, solver="DOP853",
              samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon, debug=False):
     # setup
+    # integration interval
     if start is None: start = calc_start_time(H_inf)
     if end is None: end = calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by)
+    interval = (start, end)
+    # lookup right hand side
+    rhs = rhss[use_cosine_potential, use_temp_dep_axion_mass]
+    # initial condtions
     rho_phi_0 = calc_energy_density_from_hubble(H_inf)
     initial_conditions = np.array([np.log(rho_phi_0), np.log(rho_phi_0), np.log(R_osc), theta0, 0.0, 0.0])
-    interval = (start, end)
+    # step
     axion_periode = 2*np.pi / m_a
     # arrays for integration step collection
     ys = [np.array([initial_conditions]).T] # np.array([initial_conditions]).T
     ts = [np.array([np.log(start)])] ## np.array([start])
     first = True
+    # hidden sector energy scale
+    Lambda = np.sqrt(m_a * f_a) # Lambda^2 / f_a = m_a, ignore the prefactor
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
         if debug:
             print("interval:", interval, "initial conditions:", initial_conditions)
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
-                        args=(Gamma_phi, m_a),
+                        args=(Gamma_phi, m_a, sigma_eff, Lambda),
                         t_eval=np.log(np.geomspace(*interval, samples))[:-1] if fixed_samples else None,
                         method=solver)
         # collect integration steps
@@ -233,6 +259,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, theta0=1.0,
     H = calc_hubble_parameter(rho_tot)
     return SimulationResult(t=t, rho_R=rho_R, rho_phi=rho_phi, rho_tot=rho_tot, H=H, R=R, T=T, theta=theta, theta_dot=theta_dot, n_L=n_L)
 
+
 # ## Axion Decay and Entropy Production
 def rhs_axion_decay(log_t, y, Gamma_a):
     rho_R, rho_a, R = np.exp(y)
@@ -244,6 +271,7 @@ def rhs_axion_decay(log_t, y, Gamma_a):
     d_log_R_d_log_t = t * H
     return d_log_rho_R_d_log_t, d_log_rho_a_d_log_t, d_log_R_d_log_t
 
+
 R_0 = 1.0
 
 AxionDecayResult = namedtuple("AxionDecayResult", ["t", "rho_R", "rho_a", "R", "T", "n_L"])
@@ -253,6 +281,7 @@ def axion_energy_density(theta, theta_dot, m_a, f_a):
     rho_pot = 0.5 * m_a**2 * f_a**2 * theta**2
     rho_kin = 0.5 * f_a**2 * theta_dot**2
     return rho_kin + rho_pot
+
 
 def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau",
                          samples=500, converge=True, convergence_epsilon=global_epsilon):
