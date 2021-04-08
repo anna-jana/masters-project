@@ -17,7 +17,9 @@ paper_sigma_eff = 1e-31 # [GeV^-2] from paper heavy neutrino exchange
 N_f = 3 # [1] fermion generations
 # TODO: renormalization group running?
 g_2 = 0.652 # [1] from wikipedia (https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model#Free_parameters)
+g_1 = 0.357 # [1] also from wikipedia
 alpha = g_2**2 / (4 * np.pi) # eq. from paper
+alpha_1 = g_1**2 / (4*np.pi)
 c_shaleron = 28/79 # from paper
 g_star_0 = 43/11 # from paper
 eta_B_observed = 6e-10 # from paper
@@ -30,10 +32,15 @@ global_epsilon = 1e-3 # global default relative error for convergence check
 def eta_L_a_to_eta_B_0(eta_L_a):
     return L_to_B_final_factor * eta_L_a # formula from paper (*)
 
-def calc_Gamma_a(m_a, f_a):
+def calc_Gamma_a_SU2(m_a, f_a):
     m_a = mp.mpf(m_a)
     f_a = mp.mpf(f_a)
     return float(alpha**2 / (64 * np.pi**3) * m_a**3 / f_a**2) # from paper
+
+def calc_Gamma_a_U1(m_a, f_a):
+    m_a = mp.mpf(m_a)
+    f_a = mp.mpf(f_a)
+    return float(alpha_1**2 / (32 * np.pi**3) * m_a**3 / f_a**2) # from paper
 
 @jit(nopython=True)
 def calc_temperature(rho_R):
@@ -286,9 +293,9 @@ def axion_energy_density(theta, theta_dot, m_a, f_a):
     return rho_kin + rho_pot
 
 
-def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False,
+def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False, calc_Gamma_a_fn=calc_Gamma_a_SU2,
                          samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon):
-    Gamma_a = calc_Gamma_a(m_a, f_a)
+    Gamma_a = calc_Gamma_a_fn(m_a, f_a)
 
     start = np.log(bg_sol.t[-1])
     t_axion_decay = 1 / Gamma_a
