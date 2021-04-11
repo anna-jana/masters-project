@@ -19,6 +19,8 @@ def valid(p, x_bounds, y_bounds, only_upper_bounds=True, **kwargs):
 
 def find_root(f, p, x_bounds, y_bounds, eps=1e-3, max_steps=100, **kwargs):
     for step in range(max_steps):
+        if not valid(p, x_bounds, y_bounds, only_upper_bounds=kwargs["only_upper_bounds"] if "only_upper_bounds" in kwargs else True):
+            raise ValueError("run out of domain")
         grad_f = grad(f, p, **kwargs)
         new_p = p - f(p) / np.dot(grad_f, grad_f) * grad_f
         if np.linalg.norm(p - new_p) < eps:
@@ -47,7 +49,11 @@ def trace_curve(f, p, x_bounds, y_bounds, direction, step_length=1.0, debug=Fals
     return points
 
 def find_implicit_curve(f, x_bounds, y_bounds, p, **kwargs):
-    p = find_root(f, p, x_bounds, y_bounds, **kwargs)
+    try:
+        p = find_root(f, p, x_bounds, y_bounds, **kwargs)
+    except ValueError:
+        print("INFO: falied to find initial point")
+        return np.array([]), np.array([])
     points = list(reversed(trace_curve(f, p, x_bounds, y_bounds, 1, **kwargs)))
     points.append(p)
     points += trace_curve(f, p, x_bounds, y_bounds, -1, **kwargs)

@@ -308,8 +308,9 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
     rho_R_initial = bg_sol.rho_R[-1]
     initial_conditions = (np.log(rho_R_initial), np.log(rho_a_initial), np.log(R_0))
 
+    points = np.linspace(*interval, samples) if fixed_samples else None
     axion_decay_sol = solve_ivp(rhs_axion_decay, interval, initial_conditions,
-                    args=(Gamma_a,), t_eval=np.linspace(*interval, samples) if fixed_samples else None, method=solver)
+                    args=(Gamma_a,), t_eval=points, method=solver)
 
     t = np.exp(axion_decay_sol.t)
     rho_R, rho_a, R = np.exp(axion_decay_sol.y)
@@ -329,12 +330,11 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
 def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, do_decay=True, bg_kwargs={}, decay_kwargs={}):
     bg_options = dict(theta0=1.0, debug=False, fixed_samples=False)
     bg_options.update(bg_kwargs)
-    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_options) # TODO better handeling of the kwargs
+    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_options)
     if do_decay:
-        decay_options = dict(samples=100, debug=False, fixed_samples=True)
+        decay_options = dict(samples=100, debug=False, fixed_samples=False)
         decay_options.update(decay_kwargs)
-        axion_decay_res = simulate_axion_decay(m_a, f_a, bg_res, **decay_kwargs)
+        axion_decay_res = simulate_axion_decay(m_a, f_a, bg_res, **decay_options)
         return n_L_to_eta_B_final(axion_decay_res.T[-1], axion_decay_res.n_L[-1])
     else:
         return n_L_to_eta_B_final(bg_res.T[-1], bg_res.n_L[-1])
-
