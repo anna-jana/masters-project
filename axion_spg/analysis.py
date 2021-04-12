@@ -115,12 +115,12 @@ def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_t
     print("final asymmetry:", eta_B[-1])
     return sol
 
-def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, do_plot=True, decay_kwargs={}, bg_kwargs={}):
+def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, calc_Gamma_a_fn=calc_Gamma_a_SU2, do_plot=True, decay_kwargs={}, bg_kwargs={}):
+    decay_kwargs["calc_Gamma_a_fn"] = calc_Gamma_a_fn
     bg_sol = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_kwargs)
-    decay_sol = t, rho_R, rho_a, R, T, n_L = simulate_axion_decay(m_a, f_a, bg_sol, end=np.log(1e20),
-                                                                 **decay_kwargs)
+    decay_sol = t, rho_R, rho_a, R, T, n_L = simulate_axion_decay(m_a, f_a, bg_sol, **decay_kwargs)
     eta_B_final_proj = n_L_to_eta_B_final(T, n_L)
-    t_axion_decay = 1 / decay_kwargs["calc_Gamma_a_fn"](m_a, f_a)
+    t_axion_decay = 1 / calc_Gamma_a_fn(m_a, f_a)
 
     if do_plot:
         plt.figure()

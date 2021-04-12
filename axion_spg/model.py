@@ -101,7 +101,6 @@ def calc_rho_R_analytical(rho_R, t0, t, R_osc, R, rho_phi_0, Gamma_phi):
 def calc_H_inf_max(f_a):
     return 6e11 * (f_a / 1e15) # paper
 
-
 @jit(nopython=True)
 def calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by):
     t_osc = 1/(2*m_a) if Gamma_phi >= m_a else 2/(3*m_a)
@@ -146,6 +145,16 @@ theta_diff_index = theta_index + 1
 n_L_index = theta_diff_index + 1
 R_osc = 1.0
 
+p = 8
+
+def calc_hidden_sector_scale(m_a, f_a):
+    return np.sqrt(m_a * f_a) # Lambda^2 / f_a = m_a, ignore the prefactor
+
+# returns the axions mass squared"
+@jit(nopython=True)
+def calc_axion_power_law_mass_squared(T, m_a, Lambda, p):
+    return m_a**2 if T < Lambda else m_a**2 * (T / Lambda)**(-p)
+
 def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
     @jit(nopython=True)
     def rhs(log_t, y, Gamma_phi, m_a, sigma_eff, Lambda):
@@ -172,9 +181,8 @@ def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
             U = np.sin(theta)
         else:
             U = theta
-        p = 8
         if use_temp_dep_axion_mass:
-            M = m_a**2 if T < Lambda else m_a**2 * (T / Lambda)**(-p)
+            M = axion_power_law_mass(T, m_a, Lambda, p)
         else:
             M = m_a**2
 
@@ -221,7 +229,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
     ts = [np.array([np.log(start)])] ## np.array([start])
     first = True
     # hidden sector energy scale
-    Lambda = np.sqrt(m_a * f_a) # Lambda^2 / f_a = m_a, ignore the prefactor
+    Lambda = calc_hidden_sector_scale(m_a, f_a)
 
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
@@ -281,58 +289,94 @@ def rhs_axion_decay(log_t, y, Gamma_a):
     d_log_R_d_log_t = t * H
     return d_log_rho_R_d_log_t, d_log_rho_a_d_log_t, d_log_R_d_log_t
 
-
 R_0 = 1.0
 
 AxionDecayResult = namedtuple("AxionDecayResult", ["t", "rho_R", "rho_a", "R", "T", "n_L"])
 
-@jit(nopython=True)
-def axion_energy_density(theta, theta_dot, m_a, f_a):
-    rho_pot = 0.5 * m_a**2 * f_a**2 * theta**2
-    rho_kin = 0.5 * f_a**2 * theta_dot**2
-    return rho_kin + rho_pot
-
-
 def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False, calc_Gamma_a_fn=calc_Gamma_a_SU2,
-                         samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon):
+                         use_cosine_potential=False, use_temp_dep_axion_mass=False, log_time_step=1, initial_end_factor=1e1,
+                         samples=500, fixed_samples=True, converge=False, convergence_epsilon=global_epsilon):
+    # integration range
     Gamma_a = calc_Gamma_a_fn(m_a, f_a)
-
     start = np.log(bg_sol.t[-1])
     t_axion_decay = 1 / Gamma_a
-    end = end if end is not None else np.log(t_axion_decay * 1e3)
+    end = np.log(end) if end is not None else np.log(t_axion_decay * initial_end_factor)
     interval = (start, end)
+    if start >= end:
+        end += 1
 
-    # at the maximum the axion only has potential energy
-    rho_a_initial = axion_energy_density(bg_sol.theta[-1], bg_sol.theta_dot[-1], m_a, f_a)
-
+    # intitial conditions
+    rho_kin = 0.5 * f_a**2 * bg_sol.theta_dot[-1]**2
+    if use_cosine_potential:
+        U = 1 - np.cos(bg_sol.theta[-1])
+    else:
+        U = 0.5 * bg_sol.theta[-1]**2
+    if use_temp_dep_axion_mass:
+        M = calc_axion_power_law_mass_squared(bg_sol.T[-1], m_a, Lambda, p)
+    else:
+        M = m_a**2
+    rho_a_initial = rho_kin + f_a**2 * M * U
     rho_R_initial = bg_sol.rho_R[-1]
     initial_conditions = (np.log(rho_R_initial), np.log(rho_a_initial), np.log(R_0))
 
-    points = np.linspace(*interval, samples) if fixed_samples else None
-    axion_decay_sol = solve_ivp(rhs_axion_decay, interval, initial_conditions,
-                    args=(Gamma_a,), t_eval=points, method=solver)
+    sols = []
 
-    t = np.exp(axion_decay_sol.t)
-    rho_R, rho_a, R = np.exp(axion_decay_sol.y)
-    n_L_start = bg_sol.n_L[-1]
-    n_L = n_L_start * (R_0 / R)**3
+    def calc_n_L_during_decay(R):
+        n_L_start = bg_sol.n_L[-1]
+        n_L = n_L_start * (R_0 / R)**3
+        return n_L
+
+    while True:
+        # solve eq. system
+        if debug:
+            print("integrating:", interval, initial_conditions)
+        points = np.linspace(*interval, samples) if fixed_samples else None
+        axion_decay_sol = solve_ivp(rhs_axion_decay, interval, initial_conditions,
+                        args=(Gamma_a,), t_eval=points, method=solver)
+
+        sols.append(axion_decay_sol)
+
+        # convergence check and final result
+        if converge:
+            t = np.exp(axion_decay_sol.t[-3:])
+            rho_R, rho_a, R = np.exp(axion_decay_sol.y[:, -3:])
+            T = calc_temperature(rho_R)
+            n_L = calc_n_L_during_decay(R)
+            eta_B = n_L_to_eta_B_final(T, n_L)
+            deriv = (eta_B[-1] - eta_B[-2]) / (t[-1] - t[-2])
+            deriv2 = (eta_B[-3] - 2 * eta_B[-2] + eta_B[-1]) / (t[-1] - t[-2])**2
+            delta = np.abs(deriv / eta_B[-1] * t[-1])
+            delta2 = np.abs(deriv2 / eta_B[-1] * t[-1]**2)
+            if debug:
+                print("convergence:", delta, delta2, "has to be <", convergence_epsilon)
+            if delta < convergence_epsilon and delta2 < convergence_epsilon:
+                break
+        else:
+            break
+
+        # compute next integration step interval
+        initial_conditions = axion_decay_sol.y[:, -1]
+        interval = (axion_decay_sol.t[-1], axion_decay_sol.t[-1] + log_time_step)
+
+    t = np.exp(np.concatenate([sol.t for sol in sols]))
+    rho_R = np.exp(np.concatenate([sol.y[0] for sol in sols]))
+    rho_a = np.exp(np.concatenate([sol.y[1] for sol in sols]))
+    R = np.exp(np.concatenate([sol.y[2] for sol in sols]))
     T = calc_temperature(rho_R)
-
-    # convergence check
-    d_n_L_dt = (n_L[-1] - n_L[-2]) / (t[-1] - t[-2])
-    n_L_timescale = np.abs(d_n_L_dt / n_L[-1])
-    # assert n_L_timescale < convergence_epsilon, f"m_a = {m_a}, f_a = {f_a}"
+    n_L = calc_n_L_during_decay(R)
 
     return AxionDecayResult(t=t, rho_R=rho_R, rho_a=rho_a, R=R, T=T, n_L=n_L)
 
 
 # Final $\eta_B$ numerical
 def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, do_decay=True, bg_kwargs={}, decay_kwargs={}):
+    # leptogenesis process
     bg_options = dict(theta0=1.0, debug=False, fixed_samples=False)
     bg_options.update(bg_kwargs)
     bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_options)
+    # decay process of the axion
     if do_decay:
-        decay_options = dict(samples=100, debug=False, fixed_samples=False)
+        decay_options = dict(debug=False, fixed_samples=False, converge=True)
         decay_options.update(decay_kwargs)
         axion_decay_res = simulate_axion_decay(m_a, f_a, bg_res, **decay_options)
         return n_L_to_eta_B_final(axion_decay_res.T[-1], axion_decay_res.n_L[-1])
