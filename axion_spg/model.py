@@ -182,7 +182,7 @@ def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
         else:
             U = theta
         if use_temp_dep_axion_mass:
-            M = axion_power_law_mass(T, m_a, Lambda, p)
+            M = calc_axion_power_law_mass_squared(T, m_a, Lambda, p)
         else:
             M = m_a**2
 
