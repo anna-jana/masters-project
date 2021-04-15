@@ -1,87 +1,27 @@
 # based on arXiv:1412.2043v2
+import sys
 import numpy as np
-from mpmath import mp
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from collections import namedtuple
-from tqdm.notebook import tqdm
-import util
 from numba import jit
+
+sys.path.append("..")
+from common.constants import *
+from common.cosmology import *
+from common import util
+
 # all units should be natural units and in GeV unless otherwise noted
 
-# constants
-M_pl = 2.435e18 # reduced Planck mass [GeV] from wikipedia (https://en.wikipedia.org/wiki/Planck_mass)
-m_pl = 1.220910e19 # Planck mass [GeV] from wikipedia (https://en.wikipedia.org/wiki/Planck_mass)
-g_star = 427/4 # during reheating from paper
 paper_sigma_eff = 1e-31 # [GeV^-2] from paper heavy neutrino exchange
-N_f = 3 # [1] fermion generations
-# TODO: renormalization group running?
-g_2 = 0.652 # [1] from wikipedia (https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model#Free_parameters)
-g_1 = 0.357 # [1] also from wikipedia
-alpha = g_2**2 / (4 * np.pi) # eq. from paper
-alpha_1 = g_1**2 / (4*np.pi)
-c_shaleron = 28/79 # from paper
-g_star_0 = 43/11 # from paper
-eta_B_observed = 6e-10 # from paper
-L_to_B_final_factor = c_shaleron * g_star_0 / g_star # formula from paper (*)
 global_epsilon = 1e-3 # global default relative error for convergence check
 
-
 # helper functions
-@jit(nopython=True)
-def eta_L_a_to_eta_B_0(eta_L_a):
-    return L_to_B_final_factor * eta_L_a # formula from paper (*)
-
 def calc_Gamma_a_SU2(m_a, f_a):
-    m_a = mp.mpf(m_a)
-    f_a = mp.mpf(f_a)
     return float(alpha**2 / (64 * np.pi**3) * m_a**3 / f_a**2) # from paper
 
 def calc_Gamma_a_U1(m_a, f_a):
-    m_a = mp.mpf(m_a)
-    f_a = mp.mpf(f_a)
     return float(alpha_1**2 / (32 * np.pi**3) * m_a**3 / f_a**2) # from paper
-
-@jit(nopython=True)
-def calc_temperature(rho_R):
-    # in the paper its
-    # (np.pi**2 / 3 * g_star * rho_R)**(1/4)
-    return (rho_R / g_star * 30 / np.pi**2)**(1/4)
-
-@jit(nopython=True)
-def calc_radiation_energy_density(T):
-    return np.pi**2 / 30 * g_star * T**4
-
-@jit(nopython=True)
-def calc_hubble_parameter(rho_total):
-    return np.sqrt(rho_total) / (np.sqrt(3) * M_pl) # Friedmann
-
-@jit(nopython=True)
-def calc_rho_R(rho_phi, rho_tot):
-    return rho_tot - rho_phi # neglegt axion
-
-@jit(nopython=True)
-def calc_energy_density_from_hubble(H):
-    return 3 * M_pl**2 * H**2 # Friedmann eq.
-
-@jit(nopython=True)
-def calc_lepton_asym_in_eqi(T, mu_eff):
-    return 4 / np.pi**2 * mu_eff * T**2 # boltzmann thermodynamics
-
-zeta3 = 1.20206
-g_photon = 2
-@jit(nopython=True)
-def calc_photon_number_density(T):
-    return zeta3 / np.pi**2 * g_photon * T**3 # K&T (3.52)
-
-@jit(nopython=True)
-def calc_asym_parameter(T, n_L):
-    n_gamma = calc_photon_number_density(T)
-    return n_L / n_gamma # definition
-
-@jit(nopython=True)
-def n_L_to_eta_B_final(T, n_L):
-    return -eta_L_a_to_eta_B_0(calc_asym_parameter(T, n_L)) # -sign from defintion of (anti)matter
 
 @jit(nopython=True)
 def calc_Gamma_L(T, sigma_eff):

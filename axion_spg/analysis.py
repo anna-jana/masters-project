@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from tqdm.notebook import tqdm
 
 from model import *
-from util import *
-import implicit_curve
+from common import util
+from common import implicit_curve
 
 def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_title=True, **kwargs):
     sol = t, rho_phi, rho_R, rho_tot, T, H, R, theta, theta_dot, n_L = simulate(m_a, f_a, Gamma_phi, H_inf, **kwargs)
@@ -111,7 +111,7 @@ def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_t
         plt.savefig(util.make_plot_path(f"lepto_axion_osc_m_a={m_a:.1e}Gamma_phi={Gamma_phi:.1e}f_a={f_a:.1e}H_inf={H_inf:.1e}_plot.pdf"))
     plt.show()
 
-    print("axion oscillations:", count_oscillations(theta))
+    print("axion oscillations:", util.count_oscillations(theta))
     print("final asymmetry:", eta_B[-1])
     return sol
 
