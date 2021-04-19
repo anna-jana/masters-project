@@ -24,102 +24,65 @@ def calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by):
     t_reheating = 1 / Gamma_phi * larger_than_reheating_by
     return t_axion # max((t_axion, t_reheating))
 
-# Analytical Solution
-def calc_Delta_a(m_a, f_a, Gamma_phi, theta0):
-    a0 = theta0 * f_a
-    Delta_a_prime = 2*np.pi**2 / alpha * f_a * a0**2 / (m_a * M_pl**2) * min((1, (Gamma_phi / m_a)**0.5))
-    Delta_a = max((1, Delta_a_prime))
-    return Delta_a
-
-def compute_B_asymmetry_analytic(m_a, f_a, Gamma_phi, sigma_eff=paper_sigma_eff, theta0=1):
-    Delta_phi_prime = (m_a / Gamma_phi)**(5 / 4)
-    Delta_phi = max((1, Delta_phi_prime))
-    Delta_a = calc_Delta_a(m_a, f_a, Gamma_phi, theta0)
-    a0 = f_a * theta0
-    eta_L_max = sigma_eff * a0 / (g_star**0.5 * f_a) * m_a * M_pl * min((1, (Gamma_phi / m_a)**0.5))
-    T_RH = 2e13*(Gamma_phi / 1e9)**0.5
-    T_L = g_star**0.5 / (np.pi * M_pl * sigma_eff)
-    kappa = np.where(m_a > Gamma_phi, T_RH / T_L, 0)
-    C = np.where(m_a > Gamma_phi, 2.2, 1.5) # factor determined in paper
-    eta_L_a = C * Delta_a**-1 * Delta_phi**-1 * eta_L_max * np.exp(-kappa)
-    return eta_L_a_to_eta_B_0(eta_L_a)
-
-
 # Numerical Simulation
 SimulationResult = namedtuple("SimulationResult",
-    ["t", "rho_phi", "rho_R", "rho_tot", "T", "H", "R", "theta", "theta_dot", "n_L"])
+    ["t", "rho_phi", "rho_R", "rho_tot", "T", "H", "R", "theta", "theta_dot", "n_L", "chi"])
 
 ## numerical implementation of the complete model
-theta_index = 3
-theta_diff_index = theta_index + 1
+log_index = 3
+theta_diff_index = log_index + 1
 n_L_index = theta_diff_index + 1
+
 R_osc = 1.0
 
-p = 8
-
-def calc_hidden_sector_scale(m_a, f_a):
-    return np.sqrt(m_a * f_a) # Lambda^2 / f_a = m_a, ignore the prefactor
-
-# returns the axions mass squared"
 @jit(nopython=True)
-def calc_axion_power_law_mass_squared(T, m_a, Lambda, p):
-    return m_a**2 if T < Lambda else m_a**2 * (T / Lambda)**(-p)
+def scalar_field_eom(field, field_d_log_t, H, m, other, t, coupling_constant):
+    field_dot = field_d_log_t / t
+    field_dot_dot = - 3 * H * field_dot - m**2 * field - coupling_constant * other**2 * field
+    field_d_log_t2 = field_d_log_t + t**2 * field_dot_dot
+    return field_d_log_t2
 
-def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
-    @jit(nopython=True)
-    def rhs(log_t, y, Gamma_phi, m_a, sigma_eff, Lambda):
-        # coordinate transformation
-        t = np.exp(log_t)
-        rho_phi, rho_tot, R = np.exp(y[:theta_index])
-        theta = y[theta_index]
-        d_theta_d_log_t = y[theta_diff_index]
-        theta_dot = d_theta_d_log_t / t
-        rho_R = calc_rho_R(rho_phi, rho_tot)
-        T = calc_temperature(rho_R)
-        n_L = y[n_L_index]
+@jit(nopython=True)
+def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
+    # coordinate transformation
+    t = np.exp(log_t)
+    rho_phi, rho_tot, R = np.exp(y[:log_index])
+    theta, d_theta_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
+    theta_dot = d_theta_d_log_t / t
+    rho_R = calc_rho_R(rho_phi, rho_tot)
+    T = calc_temperature(rho_R)
 
-        # Friedmann
-        H = calc_hubble_parameter(rho_tot)
-        d_log_R_d_log_t = t * H
+    # Friedmann
+    H = calc_hubble_parameter(rho_tot)
+    d_log_R_d_log_t = t * H
 
-        # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
-        d_log_rho_phi_d_log_t = - t * (3 * H + Gamma_phi)
-        d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
+    # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
+    d_log_rho_phi_d_log_t = - t * (3 * H + Gamma_phi)
+    d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
 
-        # axion eom (Klein Gordon) in theta and log t
-        if use_cosine_potential:
-            U = np.sin(theta)
-        else:
-            U = theta
-        if use_temp_dep_axion_mass:
-            M = calc_axion_power_law_mass_squared(T, m_a, Lambda, p)
-        else:
-            M = m_a**2
+    # axion eom (Klein Gordon) in theta and log t
+    d2_theta_d_log_t_2 = scalar_field_eom(theta, d_theta_d_log_t, H, m_a, chi, t, g)
 
-        theta_dot2         = - 3 * H * theta_dot - M * U
-        d2_theta_d_log_t_2 = d_theta_d_log_t + t**2 * theta_dot2
+    # chi field eom
+    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, f_a * theta, t, g)
 
-        # Boltzmann eq. for lepton asymmetry
-        mu_eff = theta_dot
-        n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
-        Gamma_L = calc_Gamma_L(T, sigma_eff)
-        d_n_L_d_log_t = t * (- 3 * H * n_L - Gamma_L * (n_L - n_L_eq))
+    # Boltzmann eq. for lepton asymmetry
+    mu_eff = theta_dot
+    n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
+    Gamma_L = calc_Gamma_L(T, sigma_eff)
+    d_n_L_d_log_t = t * (- 3 * H * n_L - Gamma_L * (n_L - n_L_eq))
 
-        # final result
-        return (
-            d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t,
-            d_log_R_d_log_t,
-            d_theta_d_log_t, d2_theta_d_log_t_2,
-            d_n_L_d_log_t,
-        )
-    return rhs
+    # final result
+    return (
+        d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t,
+        d_log_R_d_log_t,
+        d_theta_d_log_t, d2_theta_d_log_t_2,
+        d_n_L_d_log_t,
+        d_chi_d_log_t, d2_chi_d_log_t_2,
+    )
 
-rhss = {(use_cosine_potential, use_temp_dep_axion_mass) : make_rhs(use_cosine_potential, use_temp_dep_axion_mass)
-        for use_cosine_potential in (True, False) for use_temp_dep_axion_mass in (True, False)}
-
-
-def simulate(m_a, f_a, Gamma_phi, H_inf,
-             theta0=1.0, sigma_eff=paper_sigma_eff, use_cosine_potential=False, use_temp_dep_axion_mass=False,
+def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
+             g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
              start=None, end=None, num_osc=15, larger_than_reheating_by=5, solver="DOP853",
              samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon, debug=False):
     # setup
@@ -127,11 +90,9 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
     if start is None: start = calc_start_time(H_inf)
     if end is None: end = calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by)
     interval = (start, end)
-    # lookup right hand side
-    rhs = rhss[use_cosine_potential, use_temp_dep_axion_mass]
     # initial condtions
     rho_phi_0 = calc_energy_density_from_hubble(H_inf)
-    initial_conditions = np.array([np.log(rho_phi_0), np.log(rho_phi_0), np.log(R_osc), theta0, 0.0, 0.0])
+    initial_conditions = np.array([np.log(rho_phi_0), np.log(rho_phi_0), np.log(R_osc), theta0, 0.0, 0.0, chi0, 0.0])
     # step
     axion_periode = 2*np.pi / m_a
     # arrays for integration step collection
@@ -139,14 +100,13 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
     ts = [np.array([np.log(start)])] ## np.array([start])
     first = True
     # hidden sector energy scale
-    Lambda = calc_hidden_sector_scale(m_a, f_a)
 
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
         if debug:
-            print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, Lambda))
+            print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, chi0))
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
-                        args=(Gamma_phi, m_a, sigma_eff, Lambda),
+                        args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, g),
                         t_eval=np.log(np.geomspace(*interval, samples))[:-1] if fixed_samples else None,
                         method=solver)
         # collect integration steps
@@ -162,7 +122,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
                 first = False
             else:
                 n_L = sol.y[n_L_index]
-                rho_phi, rho_tot = np.exp(sol.y[:theta_index - 1])
+                rho_phi, rho_tot = np.exp(sol.y[:log_index - 1])
                 T = calc_temperature(calc_rho_R(rho_phi, rho_tot))
                 eta_B = n_L_to_eta_B_final(T, n_L)
                 i = np.argmax(eta_B)
@@ -179,13 +139,16 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
     # final result
     t = np.exp(np.concatenate(ts))
     y = np.hstack(ys)
-    rho_phi, rho_tot, R = np.exp(y[:theta_index])
-    theta, n_L = y[theta_index], y[n_L_index]
-    theta_dot = y[theta_diff_index] / t
+
+    rho_phi, rho_tot, R = np.exp(y[:log_index])
+    theta, d_theta_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
+
+    theta_dot = d_theta_d_log_t / t
     rho_R = calc_rho_R(rho_phi, rho_tot)
     T = calc_temperature(rho_R)
     H = calc_hubble_parameter(rho_tot)
-    return SimulationResult(t=t, rho_R=rho_R, rho_phi=rho_phi, rho_tot=rho_tot, H=H, R=R, T=T, theta=theta, theta_dot=theta_dot, n_L=n_L)
+
+    return SimulationResult(t=t, rho_R=rho_R, rho_phi=rho_phi, rho_tot=rho_tot, H=H, R=R, T=T, theta=theta, theta_dot=theta_dot, n_L=n_L, chi=chi)
 
 
 # ## Axion Decay and Entropy Production
@@ -204,7 +167,7 @@ R_0 = 1.0
 AxionDecayResult = namedtuple("AxionDecayResult", ["t", "rho_R", "rho_a", "R", "T", "n_L"])
 
 def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False, calc_Gamma_a_fn=calc_Gamma_a_SU2,
-                         use_cosine_potential=False, use_temp_dep_axion_mass=False, log_time_step=1, initial_end_factor=1e1,
+                         log_time_step=1, initial_end_factor=1e1,
                          samples=500, fixed_samples=True, converge=False, convergence_epsilon=global_epsilon):
     # integration range
     Gamma_a = calc_Gamma_a_fn(m_a, f_a)
@@ -217,15 +180,8 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
 
     # intitial conditions
     rho_kin = 0.5 * f_a**2 * bg_sol.theta_dot[-1]**2
-    if use_cosine_potential:
-        U = 1 - np.cos(bg_sol.theta[-1])
-    else:
-        U = 0.5 * bg_sol.theta[-1]**2
-    if use_temp_dep_axion_mass:
-        M = calc_axion_power_law_mass_squared(bg_sol.T[-1], m_a, Lambda, p)
-    else:
-        M = m_a**2
-    rho_a_initial = rho_kin + f_a**2 * M * U
+    rho_pot = 0.5 * f_a**2 * m_a**2 * bg_sol.theta[-1]**2
+    rho_a_initial = rho_kin + rho_pot
     rho_R_initial = bg_sol.rho_R[-1]
     initial_conditions = (np.log(rho_R_initial), np.log(rho_a_initial), np.log(R_0))
 
@@ -279,11 +235,11 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
 
 
 # Final $\eta_B$ numerical
-def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, do_decay=True, bg_kwargs={}, decay_kwargs={}):
+def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, chi0, do_decay=True, bg_kwargs={}, decay_kwargs={}):
     # leptogenesis process
     bg_options = dict(theta0=1.0, debug=False, fixed_samples=False)
     bg_options.update(bg_kwargs)
-    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_options)
+    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, chi0, **bg_options)
     # decay process of the axion
     if do_decay:
         decay_options = dict(debug=False, fixed_samples=False, converge=True)

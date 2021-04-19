@@ -48,3 +48,17 @@ def calc_asym_parameter(T, n_L):
 def n_L_to_eta_B_final(T, n_L):
     return -eta_L_a_to_eta_B_0(calc_asym_parameter(T, n_L)) # -sign from defintion of (anti)matter
 
+@jit(nopython=True)
+def calc_start_time(H_inf):
+    return 1 / H_inf
+
+# analyical results for reheating
+def calc_rho_phi_analytical(t0, t, R_osc, R, rho_phi_0, Gamma_phi):
+    return rho_phi_0 * (R / R_osc)**-3 * np.exp(- Gamma_phi * (t - t0)) # K&T (8.30)
+
+def calc_rho_R_analytical(rho_R, t0, t, R_osc, R, rho_phi_0, Gamma_phi):
+    start = (6 / np.pi)**0.5 / 10 * m_pl * Gamma_phi * rho_phi_0**0.5 * (R / R_osc)**(-3/2) * (1 - (R / R_osc)**(-5/2)) # K&T (8.32)
+    t_RH = 1 / Gamma_phi
+    rad_dom = rho_R[-1] * (R / R[-1])**(-4)
+    return np.where(t < t_RH, start, rad_dom)
+
