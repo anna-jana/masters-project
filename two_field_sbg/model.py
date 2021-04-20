@@ -16,14 +16,6 @@ from common import util
 
 global_epsilon = 1e-3 # global default relative error for convergence check
 
-@jit(nopython=True)
-def calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by):
-    t_osc = 1/(2*m_a) if Gamma_phi >= m_a else 2/(3*m_a)
-    axion_period = 2*np.pi/m_a
-    t_axion = t_osc + axion_period * num_osc
-    t_reheating = 1 / Gamma_phi * larger_than_reheating_by
-    return t_axion # max((t_axion, t_reheating))
-
 # Numerical Simulation
 SimulationResult = namedtuple("SimulationResult",
     ["t", "rho_phi", "rho_R", "rho_tot", "T", "H", "R", "theta", "theta_dot", "n_L", "chi"])
@@ -83,23 +75,19 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
 
 def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
              g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
-             start=None, end=None, num_osc=15, larger_than_reheating_by=5, solver="DOP853",
-             samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon, debug=False):
-    # setup
+             step_factor=1.5, start=None, end=1e-4,
+             solver="DOP853", samples=500, fixed_samples=True,
+             converge=True, convergence_epsilon=global_epsilon, debug=False):
     # integration interval
     if start is None: start = calc_start_time(H_inf)
-    if end is None: end = calc_end_time(m_a, Gamma_phi, num_osc, larger_than_reheating_by)
     interval = (start, end)
     # initial condtions
     rho_phi_0 = calc_energy_density_from_hubble(H_inf)
     initial_conditions = np.array([np.log(rho_phi_0), np.log(rho_phi_0), np.log(R_osc), theta0, 0.0, 0.0, chi0, 0.0])
-    # step
-    axion_periode = 2*np.pi / m_a
     # arrays for integration step collection
-    ys = [np.array([initial_conditions]).T] # np.array([initial_conditions]).T
-    ts = [np.array([np.log(start)])] ## np.array([start])
+    ys = [np.array([initial_conditions]).T]
+    ts = [np.array([np.log(start)])]
     first = True
-    # hidden sector energy scale
 
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
@@ -115,7 +103,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
 
         # stop the loop once we are done
         if converge:
-            interval = (np.exp(sol.t[-1]), np.exp(sol.t[-1]) + axion_periode * num_osc)
+            interval = (np.exp(sol.t[-1]), 1.5 * np.exp(sol.t[-1]))
             initial_conditions = sol.y[:, -1]
             if first: # reduce number of samples in the integration result once we start to converge
                 samples = max((samples // 10, 10))
