@@ -62,3 +62,19 @@ def calc_rho_R_analytical(rho_R, t0, t, R_osc, R, rho_phi_0, Gamma_phi):
     rad_dom = rho_R[-1] * (R / R[-1])**(-4)
     return np.where(t < t_RH, start, rad_dom)
 
+def calc_reheating_temperature(Gamma_phi, result="paper"):
+    if result == "paper":
+        return 2e13 * np.sqrt(Gamma_phi / 1e9)
+    elif result == "K&T":
+        return 0.55 * g_star**(-1/4) * (m_pl * Gamma_phi)**0.5
+    else:
+        raise ValueError(f"invalid result {result}")
+
+def calc_maximal_temperature(Gamma_phi, H_inf, result="paper"):
+    if result == "paper":
+        return 5e13 * (Gamma_phi / 1e9)**(1/4) * (H_inf / 1e11)**(1/2)
+    elif result == "K&T":
+        rho_phi_0 = calc_energy_density_from_hubble(H_inf)
+        return 0.8 * g_star**(-1/4) * rho_phi_0**(1/8) * (Gamma_phi * m_pl)**(1/4)
+    else:
+        raise ValueError(f"invalid result {result}")

@@ -28,9 +28,9 @@ n_L_index = theta_diff_index + 1
 R_osc = 1.0
 
 @jit(nopython=True)
-def scalar_field_eom(field, field_d_log_t, H, m, other, t, coupling_constant):
+def scalar_field_eom(field, field_d_log_t, H, m, use_cosine, other, t, coupling_constant):
     field_dot = field_d_log_t / t
-    field_dot_dot = - 3 * H * field_dot - m**2 * field - coupling_constant * other**2 * field
+    field_dot_dot = - 3 * H * field_dot - m**2 * (np.sin(field) if use_cosine else field) - coupling_constant * other**2 * field
     field_d_log_t2 = field_d_log_t + t**2 * field_dot_dot
     return field_d_log_t2
 
@@ -53,10 +53,10 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
     d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
 
     # axion eom (Klein Gordon) in theta and log t
-    d2_theta_d_log_t_2 = scalar_field_eom(theta, d_theta_d_log_t, H, m_a, chi, t, g)
+    d2_theta_d_log_t_2 = scalar_field_eom(theta, d_theta_d_log_t, H, m_a, True, chi, t, g)
 
     # chi field eom
-    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, f_a * theta, t, g)
+    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, False, f_a * theta, t, g)
 
     # Boltzmann eq. for lepton asymmetry
     mu_eff = theta_dot
@@ -72,6 +72,7 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
         d_n_L_d_log_t,
         d_chi_d_log_t, d2_chi_d_log_t_2,
     )
+
 
 def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
              g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
@@ -223,11 +224,11 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
 
 
 # Final $\eta_B$ numerical
-def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, chi0, do_decay=True, bg_kwargs={}, decay_kwargs={}):
+def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi, g=1.0, do_decay=True, bg_kwargs={}, decay_kwargs={}):
     # leptogenesis process
     bg_options = dict(theta0=1.0, debug=False, fixed_samples=False)
     bg_options.update(bg_kwargs)
-    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, chi0, **bg_options)
+    bg_res = simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi, g=g, **bg_options)
     # decay process of the axion
     if do_decay:
         decay_options = dict(debug=False, fixed_samples=False, converge=True)

@@ -1,6 +1,8 @@
 from numba import jit
 import numpy as np
 
+from .constants import alpha
+
 paper_sigma_eff = 1e-31 # [GeV^-2] from paper heavy neutrino exchange
 
 def calc_Gamma_a_SU2(m_a, f_a):

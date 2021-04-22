@@ -5,16 +5,17 @@ from tqdm.notebook import tqdm
 from model import *
 from common import util
 from common import implicit_curve
+from common import cosmology
 
 def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_title=True, **kwargs):
     sol = t, rho_phi, rho_R, rho_tot, T, H, R, theta, theta_dot, n_L = simulate(m_a, f_a, Gamma_phi, H_inf, **kwargs)
 
     rho_phi_0 = calc_energy_density_from_hubble(H_inf)
     time_label = r"Time, $t \cdot \mathrm{GeV}$"
-    T_RH = 2e13 * np.sqrt(Gamma_phi / 1e9) # paper
-    T_max = 5e13 * (Gamma_phi / 1e9)**(1/4) * (H_inf / 1e11)**(1/2) # paper
-    T_RH_KT = 0.55 * g_star**(-1/4) * (m_pl * Gamma_phi)**0.5 # K&T
-    T_max_KT = 0.8 * g_star**(-1/4) * rho_phi_0**(1/8) * (Gamma_phi * m_pl)**(1/4) # K&T
+    T_RH = cosmology.calc_reheating_temperature(Gamma_phi, result="paper")
+    T_max = cosmology.calc_maximal_temperature(Gamma_phi, H_inf, result="paper")
+    T_RH_KT = cosmology.calc_reheating_temperature(Gamma_phi, result="K&T")
+    T_max_KT = cosmology.calc_maximal_temperature(Gamma_phi, H_inf, result="K&T")
     t_RH = 1 / Gamma_phi
     rho_R_max_Weinberg = 0.139 * Gamma_phi / H_inf * rho_phi_0
     T_max_Weinberg = calc_temperature(rho_R_max_Weinberg)
