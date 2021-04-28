@@ -28,19 +28,19 @@ n_L_index = theta_diff_index + 1
 R_osc = 1.0
 
 @jit(nopython=True)
-def scalar_field_eom(field, field_d_log_t, H, m, use_cosine, other, t, coupling_constant):
+def scalar_field_eom(field, field_d_log_t, H, m, use_cosine, other, t, coupling_constant, f):
     field_dot = field_d_log_t / t
-    field_dot_dot = - 3 * H * field_dot - m**2 * (np.sin(field) if use_cosine else field) - coupling_constant * other**2 * field
+    field_dot_dot = - 3 * H * field_dot - m**2 * (np.sin(field / f) if use_cosine else field) - coupling_constant * other**2 * field
     field_d_log_t2 = field_d_log_t + t**2 * field_dot_dot
     return field_d_log_t2
 
 @jit(nopython=True)
-def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
+def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
     # coordinate transformation
     t = np.exp(log_t)
     rho_phi, rho_tot, R = np.exp(y[:log_index])
-    theta, d_theta_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
-    theta_dot = d_theta_d_log_t / t
+    a, d_a_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
+    theta_dot = d_a_d_log_t / t / f_a
     rho_R = calc_rho_R(rho_phi, rho_tot)
     T = calc_temperature(rho_R)
 
@@ -52,11 +52,11 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
     d_log_rho_phi_d_log_t = - t * (3 * H + Gamma_phi)
     d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
 
-    # axion eom (Klein Gordon) in theta and log t
-    d2_theta_d_log_t_2 = scalar_field_eom(theta, d_theta_d_log_t, H, m_a, True, chi, t, g)
+    # axion eom (Klein Gordon) in a and log t
+    d2_a_d_log_t_2   = scalar_field_eom(a,   d_a_d_log_t,   H, m_a,   False, chi, t, g, f_a)
 
     # chi field eom
-    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, False, f_a * theta, t, g)
+    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, False, a,   t, g, chi0)
 
     # Boltzmann eq. for lepton asymmetry
     mu_eff = theta_dot
@@ -68,7 +68,7 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, g):
     return (
         d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t,
         d_log_R_d_log_t,
-        d_theta_d_log_t, d2_theta_d_log_t_2,
+        d_a_d_log_t, d2_a_d_log_t_2,
         d_n_L_d_log_t,
         d_chi_d_log_t, d2_chi_d_log_t_2,
     )
@@ -84,7 +84,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
     interval = (start, end)
     # initial condtions
     rho_phi_0 = calc_energy_density_from_hubble(H_inf)
-    initial_conditions = np.array([np.log(rho_phi_0), np.log(rho_phi_0), np.log(R_osc), theta0, 0.0, 0.0, chi0, 0.0])
+    initial_conditions = np.array([np.log(rho_phi_0), np.log(rho_phi_0), np.log(R_osc), f_a * theta0, 0.0, 0.0, chi0, 0.0])
     # arrays for integration step collection
     ys = [np.array([initial_conditions]).T]
     ts = [np.array([np.log(start)])]
@@ -101,7 +101,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
         else:
             steps = None
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
-                        args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, g),
+                        args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g),
                         t_eval=steps,
                         method=solver)
         # collect integration steps
@@ -110,7 +110,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
 
         # stop the loop once we are done
         if converge:
-            interval = (np.exp(sol.t[-1]), 1.5 * np.exp(sol.t[-1]))
+            interval = (np.exp(sol.t[-1]), step_factor * np.exp(sol.t[-1]))
             initial_conditions = sol.y[:, -1]
             if first: # reduce number of samples in the integration result once we start to converge
                 samples = max((samples // 10, 10))
@@ -136,9 +136,11 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
     y = np.hstack(ys)
 
     rho_phi, rho_tot, R = np.exp(y[:log_index])
-    theta, d_theta_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
+    a, d_a_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
 
-    theta_dot = d_theta_d_log_t / t
+    a_dot = d_a_d_log_t / t
+    theta_dot = a_dot / f_a
+    theta = a / f_a
     rho_R = calc_rho_R(rho_phi, rho_tot)
     T = calc_temperature(rho_R)
     H = calc_hubble_parameter(rho_tot)
