@@ -94,9 +94,15 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
     while True:
         if debug:
             print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, chi0))
+        if fixed_samples:
+            steps = np.log(np.geomspace(*interval, samples))
+            steps[0] = np.log(interval[0])
+            steps[-1] = np.log(interval[-1])
+        else:
+            steps = None
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
                         args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, g),
-                        t_eval=np.log(np.geomspace(*interval, samples))[:-1] if fixed_samples else None,
+                        t_eval=steps,
                         method=solver)
         # collect integration steps
         ys.append(sol.y[:, 1:])
