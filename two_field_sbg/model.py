@@ -14,7 +14,8 @@ from common import util
 
 # all units should be natural units and in GeV unless otherwise noted
 
-global_epsilon = 1e-3 # global default relative error for convergence check
+global_epsilon = 1e-2 # global default relative error for convergence check
+# we don't need a high precision since the observed asymmetry is also only given by one decimal place 6e-10
 
 # Numerical Simulation
 SimulationResult = namedtuple("SimulationResult",
@@ -27,15 +28,16 @@ n_L_index = theta_diff_index + 1
 
 R_osc = 1.0
 
+################################# functions for integration in log t #########################################
 @jit(nopython=True)
-def scalar_field_eom(field, field_d_log_t, H, m, use_cosine, other, t, coupling_constant, f):
+def scalar_field_eom_log_t(field, field_d_log_t, H, m, other, t, coupling_constant):
     field_dot = field_d_log_t / t
-    field_dot_dot = - 3 * H * field_dot - m**2 * (np.sin(field / f) if use_cosine else field) - coupling_constant * other**2 * field
+    field_dot_dot = - 3 * H * field_dot - m**2 * field - coupling_constant * other**2 * field
     field_d_log_t2 = field_d_log_t + t**2 * field_dot_dot
     return field_d_log_t2
 
 @jit(nopython=True)
-def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
+def rhs_log_t(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
     # coordinate transformation
     t = np.exp(log_t)
     rho_phi, rho_tot, R = np.exp(y[:log_index])
@@ -53,10 +55,10 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
     d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
 
     # axion eom (Klein Gordon) in a and log t
-    d2_a_d_log_t_2   = scalar_field_eom(a,   d_a_d_log_t,   H, m_a,   False, chi, t, g, f_a)
+    d2_a_d_log_t_2   = scalar_field_eom(a, d_a_d_log_t, H, m_a, chi, t, g)
 
     # chi field eom
-    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, False, a,   t, g, chi0)
+    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, a, t, g)
 
     # Boltzmann eq. for lepton asymmetry
     mu_eff = theta_dot
@@ -73,11 +75,56 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
         d_chi_d_log_t, d2_chi_d_log_t_2,
     )
 
+################################# functions for integration in t #########################################
+@jit(nopython=True)
+def scalar_field_eom_t(field, field_dot, H, m, use_cosine, other, t, coupling_constant, f):
+    return - 3 * H * field_dot - m**2 * (np.sin(field / f) if use_cosine else field) - coupling_constant * other**2 * field
 
+scalar_field_eom = scalar_field_eom_log_t
+
+@jit(nopython=True)
+def rhs_t(t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
+    rho_phi, rho_tot, R, a, a_dot, n_L, chi, chi_dot = y
+
+    # Friedmann
+    rho_R = calc_rho_R(rho_phi, rho_tot)
+    T = calc_temperature(rho_R)
+    H = calc_hubble_parameter(rho_tot)
+    log_R_dot = H
+
+    # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
+    log_rho_phi_dot = - (3 * H + Gamma_phi)
+    log_rho_tot_dot = - H * (4 - rho_phi / rho_tot)
+
+    # axion eom (Klein Gordon) in a and log t
+    a_dotdot   = scalar_field_eom_t(a,   d_a_d_log_t,   H, m_a,   False, chi, t, g, f_a)
+
+    # chi field eom
+    chi_dotdot = scalar_field_eom_t(chi, d_chi_d_log_t, H, m_chi, False, a,   t, g, chi0)
+
+    # Boltzmann eq. for lepton asymmetry
+    mu_eff = theta_dot
+    n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
+    Gamma_L = calc_Gamma_L(T, sigma_eff)
+    n_L_dot = - 3 * H * n_L - Gamma_L * (n_L - n_L_eq)
+
+    # final result
+    return (
+        rho_phi_dot, rho_tot_dot,
+        log_R_dot,
+        a_dot, a_dotdot,
+        n_L_dot,
+        chi_dot, chi_dotdot,
+    )
+
+rhs = rhs_log_t
+
+######################################## main integration routine #############################################
 def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
              g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
-             step_factor=1.5, start=None, end=1e-4,
+             step=0.5, start=None, end=1e-4,
              solver="DOP853", samples=500, fixed_samples=True,
+             transition_to_linear=False,
              converge=True, convergence_epsilon=global_epsilon, debug=False):
     # integration interval
     if start is None: start = calc_start_time(H_inf)
@@ -89,17 +136,20 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
     ys = [np.array([initial_conditions]).T]
     ts = [np.array([np.log(start)])]
     first = True
+    steps_taken = 0
 
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
         if debug:
             print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, chi0))
+        # steps to be computed by the integrator
         if fixed_samples:
             steps = np.log(np.geomspace(*interval, samples))
             steps[0] = np.log(interval[0])
             steps[-1] = np.log(interval[-1])
         else:
             steps = None
+        # integrate the current interval
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
                         args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g),
                         t_eval=steps,
@@ -110,7 +160,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
 
         # stop the loop once we are done
         if converge:
-            interval = (np.exp(sol.t[-1]), step_factor * np.exp(sol.t[-1]))
+            interval = (np.exp(sol.t[-1]), np.exp(sol.t[-1] + step))
             initial_conditions = sol.y[:, -1]
             if first: # reduce number of samples in the integration result once we start to converge
                 samples = max((samples // 10, 10))
@@ -122,14 +172,15 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
                 eta_B = n_L_to_eta_B_final(T, n_L)
                 i = np.argmax(eta_B)
                 j = np.argmin(eta_B)
-                t = np.exp(sol.t)
                 delta = np.abs((eta_B[i] - eta_B[j]) / ((eta_B[i] + eta_B[j]) / 2))
                 if debug:
                     print("convergence:", delta, "vs", convergence_epsilon)
                 if delta < convergence_epsilon:
-                    break # stop once convergence criterion is fulfilled
+                    break # stop once convergence criterion is fullfilled
         else:
             break # dont use the convergence loop if converge == False
+        steps_taken += 1
+
 
     # final result
     t = np.exp(np.concatenate(ts))
