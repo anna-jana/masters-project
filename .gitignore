@@ -11,3 +11,4 @@ output_data
 invisibles-school/
 patras-workshop/
 *.swp
+*.hdf5
