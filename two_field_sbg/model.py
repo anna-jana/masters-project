@@ -1,9 +1,9 @@
 # based on arXiv:1412.2043v2
 import sys
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import solve_ivp
 from collections import namedtuple
+
+import numpy as np
+from scipy.integrate import solve_ivp
 from numba import jit
 
 sys.path.append("..")
@@ -19,7 +19,7 @@ global_epsilon = 1e-2 # global default relative error for convergence check
 
 # Numerical Simulation
 SimulationResult = namedtuple("SimulationResult",
-    ["t", "rho_phi", "rho_R", "rho_tot", "T", "H", "R", "theta", "theta_dot", "n_L", "chi"])
+    ["t", "rho_phi", "rho_R", "rho_tot", "T", "H", "R", "theta", "theta_dot", "n_L", "chi", "chi_dot"])
 
 ## numerical implementation of the complete model
 log_index = 3
@@ -30,14 +30,14 @@ R_osc = 1.0
 
 ################################# functions for integration in log t #########################################
 @jit(nopython=True)
-def scalar_field_eom_log_t(field, field_d_log_t, H, m, other, t, coupling_constant):
+def scalar_field_eom(field, field_d_log_t, H, m, other, t, coupling_constant):
     field_dot = field_d_log_t / t
     field_dot_dot = - 3 * H * field_dot - m**2 * field - coupling_constant * other**2 * field
     field_d_log_t2 = field_d_log_t + t**2 * field_dot_dot
     return field_d_log_t2
 
 @jit(nopython=True)
-def rhs_log_t(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
+def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
     # coordinate transformation
     t = np.exp(log_t)
     rho_phi, rho_tot, R = np.exp(y[:log_index])
@@ -75,55 +75,11 @@ def rhs_log_t(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
         d_chi_d_log_t, d2_chi_d_log_t_2,
     )
 
-################################# functions for integration in t #########################################
-@jit(nopython=True)
-def scalar_field_eom_t(field, field_dot, H, m, use_cosine, other, t, coupling_constant, f):
-    return - 3 * H * field_dot - m**2 * (np.sin(field / f) if use_cosine else field) - coupling_constant * other**2 * field
-
-scalar_field_eom = scalar_field_eom_log_t
-
-@jit(nopython=True)
-def rhs_t(t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
-    rho_phi, rho_tot, R, a, a_dot, n_L, chi, chi_dot = y
-
-    # Friedmann
-    rho_R = calc_rho_R(rho_phi, rho_tot)
-    T = calc_temperature(rho_R)
-    H = calc_hubble_parameter(rho_tot)
-    log_R_dot = H
-
-    # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
-    log_rho_phi_dot = - (3 * H + Gamma_phi)
-    log_rho_tot_dot = - H * (4 - rho_phi / rho_tot)
-
-    # axion eom (Klein Gordon) in a and log t
-    a_dotdot   = scalar_field_eom_t(a,   d_a_d_log_t,   H, m_a,   False, chi, t, g, f_a)
-
-    # chi field eom
-    chi_dotdot = scalar_field_eom_t(chi, d_chi_d_log_t, H, m_chi, False, a,   t, g, chi0)
-
-    # Boltzmann eq. for lepton asymmetry
-    mu_eff = theta_dot
-    n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
-    Gamma_L = calc_Gamma_L(T, sigma_eff)
-    n_L_dot = - 3 * H * n_L - Gamma_L * (n_L - n_L_eq)
-
-    # final result
-    return (
-        rho_phi_dot, rho_tot_dot,
-        log_R_dot,
-        a_dot, a_dotdot,
-        n_L_dot,
-        chi_dot, chi_dotdot,
-    )
-
-rhs = rhs_log_t
-
 ######################################## main integration routine #############################################
 def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
              g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
              step=0.5, start=None, end=1e-4,
-             solver="DOP853", samples=500, fixed_samples=True,
+             solver="DOP853", rtol=1e-5, samples=500, fixed_samples=True,
              transition_to_linear=False,
              converge=True, convergence_epsilon=global_epsilon, debug=False):
     # integration interval
@@ -153,7 +109,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
                         args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g),
                         t_eval=steps,
-                        method=solver)
+                        method=solver, rtol=rtol)
         # collect integration steps
         ys.append(sol.y[:, 1:])
         ts.append(sol.t[1:])
@@ -192,11 +148,13 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
     a_dot = d_a_d_log_t / t
     theta_dot = a_dot / f_a
     theta = a / f_a
+    chi_dot = d_chi_d_log_t / t
     rho_R = calc_rho_R(rho_phi, rho_tot)
     T = calc_temperature(rho_R)
     H = calc_hubble_parameter(rho_tot)
 
-    return SimulationResult(t=t, rho_R=rho_R, rho_phi=rho_phi, rho_tot=rho_tot, H=H, R=R, T=T, theta=theta, theta_dot=theta_dot, n_L=n_L, chi=chi)
+    return SimulationResult(t=t, rho_R=rho_R, rho_phi=rho_phi, rho_tot=rho_tot, H=H, R=R,
+            T=T, theta=theta, theta_dot=theta_dot, n_L=n_L, chi=chi, chi_dot=chi_dot)
 
 
 # ## Axion Decay and Entropy Production
