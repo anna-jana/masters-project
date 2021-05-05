@@ -75,6 +75,53 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
         d_chi_d_log_t, d2_chi_d_log_t_2,
     )
 
+@jit(nopython=True)
+def axion_field_eom(t, H, theta1, d_theta_d_log_t, other_theta, m1, m2, self_coeff1, other_coeff1, self_coeff2, other_coeff2):
+    theta_dot = d_theta_d_log_t / t
+    V_deriv = self_coeff1 * np.sin(self_coeff1 * theta + other_coeff1 * other_theta) + self_coeff2 * np.sin(self_coeff2 * theta + other_coeff2 * other_theta)
+    theta_dot_dot = - 3 * H * theta_dot - V_deriv
+    d_theta_d_log_t2 = d_theta_d_log_t + t**2 * theta_dot_dot
+    return d_theta_d_log_t2
+
+@jit(nopython=True)
+def rhs_cosine(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m1, m2, alpha1, alpha2, beta1, beta2):
+    # coordinate transformation
+    t = np.exp(log_t)
+    rho_phi, rho_tot, R = np.exp(y[:log_index])
+    a, d_a_d_log_t, n_L, chi, d_chi_d_log_t = y[log_index:]
+    theta_dot = d_a_d_log_t / t / f_a
+    rho_R = calc_rho_R(rho_phi, rho_tot)
+    T = calc_temperature(rho_R)
+
+    # Friedmann
+    H = calc_hubble_parameter(rho_tot)
+    d_log_R_d_log_t = t * H
+
+    # reheating energy equations rewritten in rho_phi and roh_tot instead of rho_phi and phi_R and in loglog space
+    d_log_rho_phi_d_log_t = - t * (3 * H + Gamma_phi)
+    d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
+
+    # axion eom (Klein Gordon) in a and log t
+    d2_a_d_log_t_2   = scalar_field_eom(a, d_a_d_log_t, H, m_a, chi, t, g)
+
+    # chi field eom
+    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, a, t, g)
+
+    # Boltzmann eq. for lepton asymmetry
+    mu_eff = theta_dot
+    n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
+    Gamma_L = calc_Gamma_L(T, sigma_eff)
+    d_n_L_d_log_t = t * (- 3 * H * n_L - Gamma_L * (n_L - n_L_eq))
+
+    # final result
+    return (
+        d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t,
+        d_log_R_d_log_t,
+        d_a_d_log_t, d2_a_d_log_t_2,
+        d_n_L_d_log_t,
+        d_chi_d_log_t, d2_chi_d_log_t_2,
+    )
+
 ######################################## main integration routine #############################################
 def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
              g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
@@ -158,13 +205,13 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
 
 
 # ## Axion Decay and Entropy Production
-def rhs_axion_decay(log_t, y, Gamma_a):
+def rhs_axion_decay(log_t, y, Gamma_a, p):
     rho_R, rho_a, R = np.exp(y)
     t = np.exp(log_t)
     H = calc_hubble_parameter(rho_a + rho_R)
     #assert rho_R != 0.0,  f"t = {t}, rho_a = {rho_a}"
     d_log_rho_R_d_log_t = - t * (4 * H - Gamma_a * rho_a / rho_R)
-    d_log_rho_a_d_log_t = - t * (3 * H + Gamma_a)
+    d_log_rho_a_d_log_t = - t * (p * H + Gamma_a)
     d_log_R_d_log_t = t * H
     return d_log_rho_R_d_log_t, d_log_rho_a_d_log_t, d_log_R_d_log_t
 
@@ -172,8 +219,8 @@ R_0 = 1.0
 
 AxionDecayResult = namedtuple("AxionDecayResult", ["t", "rho_R", "rho_a", "R", "T", "n_L"])
 
-def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False, calc_Gamma_a_fn=calc_Gamma_a_SU2,
-                         log_time_step=1, initial_end_factor=1e1,
+def simulate_axion_decay(m_a, f_a, g, bg_sol, end=None, solver="Radau", debug=False, calc_Gamma_a_fn=calc_Gamma_a_SU2,
+                         log_time_step=1, initial_end_factor=1e1, p=3,
                          samples=500, fixed_samples=True, converge=False, convergence_epsilon=global_epsilon):
     # integration range
     Gamma_a = calc_Gamma_a_fn(m_a, f_a)
@@ -186,7 +233,7 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
 
     # intitial conditions
     rho_kin = 0.5 * f_a**2 * bg_sol.theta_dot[-1]**2
-    rho_pot = 0.5 * f_a**2 * m_a**2 * bg_sol.theta[-1]**2
+    rho_pot = 0.5 * f_a**2 * m_a**2 * bg_sol.theta[-1]**2 + g * bg_sol.theta[-1]**2 * f_a**2 * bg_sol.chi[-1]**2
     rho_a_initial = rho_kin + rho_pot
     rho_R_initial = bg_sol.rho_R[-1]
     initial_conditions = (np.log(rho_R_initial), np.log(rho_a_initial), np.log(R_0))
@@ -204,7 +251,7 @@ def simulate_axion_decay(m_a, f_a, bg_sol, end=None, solver="Radau", debug=False
             print("integrating:", interval, initial_conditions)
         points = np.linspace(*interval, samples) if fixed_samples else None
         axion_decay_sol = solve_ivp(rhs_axion_decay, interval, initial_conditions,
-                        args=(Gamma_a,), t_eval=points, method=solver)
+                        args=(Gamma_a, p), t_eval=points, method=solver)
 
         sols.append(axion_decay_sol)
 
