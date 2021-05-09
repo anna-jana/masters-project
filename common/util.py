@@ -1,4 +1,5 @@
 import os.path
+import shutil
 import pickle
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
@@ -8,6 +9,15 @@ base = os.path.join(os.path.dirname(__file__), "..")
 input_data_path = os.path.join(base, "input_data")
 output_data_path = os.path.join(base, "output_data")
 plot_path = os.path.join(base, "plots")
+
+if not os.path.exists(input_data_path):
+    os.mkdir(input_data_path)
+
+if not os.path.exists(output_data_path):
+    os.mkdir(output_data_path)
+
+if not os.path.exists(plot_path):
+    os.mkdir(plot_path)
 
 def make_plot_path(filename):
     return os.path.join(plot_path, filename)

@@ -17,10 +17,10 @@ m_chi = 1e-2
 
 theta_i = 1.0
 f_a_min = constraints.calc_f_a_min(H_inf)
-a0_range = np.geomspace(1e-3, 1e3, 6) * f_a_min
+a0_range = np.geomspace(1e-3, 1e3, 12) * f_a_min
 g_range = np.logspace(-5, -2, 3)
 chi0_range = np.logspace(-4, 1, 10)
-Gamma_phi_range = np.logspace(-5, 0, 3)
+Gamma_phi_range = np.logspace(-5, 0, 6)
 
 inputs = []
 for a0 in a0_range:
@@ -44,6 +44,8 @@ def do_with_timeout(n):
         return ans
     except FunctionTimedOut:
         return np.nan
+
+output_filename = "scan.pkl"
 
 if __name__ == "__main__":
     with ProcessPoolExecutor(max_workers=num_workers) as pool:
