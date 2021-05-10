@@ -41,13 +41,19 @@ def count_oscillations(theta):
 def find_local_maxima(theta):
     return np.where((theta[1:-1] > theta[:-2]) & (theta[1:-1] > theta[2:]))[0]
 
-def save_data(filename, *data):
-    filepath = make_output_data_path(filename)
+def save_data(filename, *data, use_default_path=True):
+    if use_default_path:
+        filepath = make_output_data_path(filename)
+    else:
+        filepath = filename
     with open(filepath, "wb") as fp:
         pickle.dump(data, fp)
 
-def load_data(filename):
-    filepath = make_output_data_path(filename)
+def load_data(filename, use_default_path=True):
+    if use_default_path:
+        filepath = make_output_data_path(filename)
+    else:
+        filepath = filename
     with open(filepath, "rb") as fp:
         data = pickle.load(fp)
     return data
