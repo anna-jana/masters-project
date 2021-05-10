@@ -78,4 +78,4 @@ def do_with_timeout(n):
 
 with ProcessPoolExecutor(max_workers=num_workers) as pool:
     outputs = list(pool.map(do_with_timeout, inputs))
-util.save_data(output_filename, H_inf, inputs, outputs)
+util.save_data(args.output_filename, H_inf, inputs, outputs)
