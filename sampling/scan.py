@@ -1,6 +1,7 @@
 from concurrent.futures import ProcessPoolExecutor
 import sys
 import time
+import argparse
 sys.path.append("..")
 
 import numpy as np
@@ -19,13 +20,37 @@ else:
     H_inf = 1e9
 m_chi = 1e-2
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--H_inf", dest="H_inf", type=float, default=1e9)
+
+parser.add_argument("--min-theta_i", dest="min_theta_i", type=float, default=1e-3)
+parser.add_argument("--max-theta_i", dest="max_theta_i", type=float, default=1)
+parser.add_argument("--num-theta_i", dest="num_theta_i", type=int, default=11)
+
+parser.add_argument("--min-chi0", dest="min_chi0", type=float, default=1e-3)
+parser.add_argument("--max-chi0", dest="max_chi0", type=float, default=1e2)
+parser.add_argument("--num-chi0", dest="num_chi0", type=int, default=11)
+
+parser.add_argument("--min-g", dest="min_g", type=float, default=1e-5)
+parser.add_argument("--max-g", dest="max_g", type=float, default=1e-3)
+parser.add_argument("--num-g", dest="num_g", type=int, default=3)
+
+parser.add_argument("--min-Gamma_phi", dest="min_Gamma_phi", type=float, default=1e-5)
+parser.add_argument("--max-Gamma_phi", dest="max_Gamma_phi", type=float, default=1)
+parser.add_argument("--num-Gamma_phi", dest="num_Gamma_phi", type=int, default=4)
+
+parser.add_argument("--output-filename", dest="output_filename", default="scan.pkl")
+
+args = parser.parse_args()
+
 f_a_min = constraints.calc_f_a_min(H_inf)
 m_a = constraints.minimal_axion_mass_from_decay(f_a_min)
 
-theta_i_range = np.geomspace(1e-3, 1, 11)
-chi0_range = np.logspace(-3, 2, 11) * H_inf
-g_range = np.logspace(-5, -3, 3)
-Gamma_phi_range = np.logspace(-5, 1, 4) * H_inf
+theta_i_range = np.geomspace(args.min_theta_i, args.max_theta_i, args.num_theta_i)
+chi0_range = np.geomspace(args.min_chi0, args.max_chi0, args.num_chi0) * H_inf
+g_range = np.geomspace(args.min_g, args.max_g, args.num_g)
+Gamma_phi_range = np.geomspace(args.min_Gamma_phi, args.max_Gamma_phi, args.num_Gamma_phi) * H_inf
 
 inputs = []
 for theta_i in theta_i_range:
@@ -53,11 +78,6 @@ def do_with_timeout(n):
         return ans, (end - start) / timeout
     except FunctionTimedOut:
         return np.nan, 1.0
-
-if len(sys.argv) > 1:
-    output_filename = sys.argv[1]
-else:
-    output_filename = "scan.pkl"
 
 with ProcessPoolExecutor(max_workers=num_workers) as pool:
     outputs = list(pool.map(do_with_timeout, inputs))

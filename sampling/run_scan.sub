@@ -25,7 +25,7 @@ echo "Begin job on $(date '+%A %B %d %Y %r')"
 start_time=$(date +%s)
 
 cd $PROJ
-${SCR_CONDA_DIR}/bin/python scan.py
+${SCR_CONDA_DIR}/bin/python scan.py $@
 
 end_time=$(date +%s)
 
