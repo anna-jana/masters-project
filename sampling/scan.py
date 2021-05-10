@@ -38,6 +38,7 @@ def do(params):
             H_inf, chi0, m_chi, g=g,
             bg_kwargs=dict(theta0=theta_i),
             do_decay=False)
+    return ans
 
 def do_with_timeout(n):
     try:
