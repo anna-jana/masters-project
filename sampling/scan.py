@@ -14,10 +14,6 @@ runtime = 24 * 60 * 60
 timeout = 2 * 60
 num_workers = 20
 
-if len(sys.argv) > 2:
-    H_inf = float(sys.argv[2])
-else:
-    H_inf = 1e9
 m_chi = 1e-2
 
 parser = argparse.ArgumentParser()
@@ -44,6 +40,7 @@ parser.add_argument("--output-filename", dest="output_filename", default="scan.p
 
 args = parser.parse_args()
 
+H_inf = args.H_inf
 f_a_min = constraints.calc_f_a_min(H_inf)
 m_a = constraints.minimal_axion_mass_from_decay(f_a_min)
 
