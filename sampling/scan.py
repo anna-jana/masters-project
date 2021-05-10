@@ -19,8 +19,8 @@ theta_i = 1.0
 f_a_min = constraints.calc_f_a_min(H_inf)
 a0_range = np.geomspace(1e-3, 1e3, 12) * f_a_min
 g_range = np.logspace(-5, -2, 3)
-chi0_range = np.logspace(-4, 1, 10)
-Gamma_phi_range = np.logspace(-5, 0, 6)
+chi0_range = np.logspace(-4, 1, 10) * H_inf
+Gamma_phi_range = np.logspace(-5, 1, 6) * H_inf
 
 inputs = []
 for a0 in a0_range:
