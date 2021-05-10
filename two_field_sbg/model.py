@@ -249,7 +249,7 @@ def compute_B_asymmetry(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi, g=1.0, do_decay
     if do_decay:
         decay_options = dict(debug=False, fixed_samples=False, converge=True)
         decay_options.update(decay_kwargs)
-        axion_decay_res = simulate_axion_decay(m_a, f_a, bg_res, **decay_options)
+        axion_decay_res = simulate_axion_decay(m_a, f_a, g, bg_res, **decay_options)
         return n_L_to_eta_B_final(axion_decay_res.T[-1], axion_decay_res.n_L[-1])
     else:
         return n_L_to_eta_B_final(bg_res.T[-1], bg_res.n_L[-1])

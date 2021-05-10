@@ -36,7 +36,8 @@ def do(params):
     ans = model.compute_B_asymmetry(
             m_a, a0, Gamma_phi,
             H_inf, chi0, m_chi, g=g,
-            bg_kwargs=dict(theta0=theta_i))
+            bg_kwargs=dict(theta0=theta_i),
+            do_decay=False)
 
 def do_with_timeout(n):
     try:
