@@ -30,14 +30,14 @@ R_osc = 1.0
 
 ################################# functions for integration in log t #########################################
 @jit(nopython=True)
-def scalar_field_eom(field, field_d_log_t, H, m, other, t, coupling_constant):
+def scalar_field_eom(field, field_d_log_t, H, m, other, t, coupling_constant, self_coupling):
     field_dot = field_d_log_t / t
-    field_dot_dot = - 3 * H * field_dot - m**2 * field - coupling_constant * other**2 * field
+    field_dot_dot = - 3 * H * field_dot - m**2 * field - coupling_constant * other**2 * field - self_coupling * field**3
     field_d_log_t2 = field_d_log_t + t**2 * field_dot_dot
     return field_d_log_t2
 
 @jit(nopython=True)
-def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
+def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g, g_a, g_chi):
     # coordinate transformation
     t = np.exp(log_t)
     rho_phi, rho_tot, R = np.exp(y[:log_index])
@@ -55,10 +55,10 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
     d_log_rho_tot_d_log_t = - H * t * (4 - rho_phi / rho_tot)
 
     # axion eom (Klein Gordon) in a and log t
-    d2_a_d_log_t_2   = scalar_field_eom(a, d_a_d_log_t, H, m_a, chi, t, g)
+    d2_a_d_log_t_2   = scalar_field_eom(a, d_a_d_log_t, H, m_a, chi, t, g, g_a)
 
     # chi field eom
-    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, a, t, g)
+    d2_chi_d_log_t_2 = scalar_field_eom(chi, d_chi_d_log_t, H, m_chi, a, t, g, g_chi)
 
     # Boltzmann eq. for lepton asymmetry
     mu_eff = theta_dot
@@ -77,7 +77,7 @@ def rhs(log_t, y, Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g):
 
 ######################################## main integration routine #############################################
 def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
-             g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff,
+             g=1.0, theta0=1.0, sigma_eff=paper_sigma_eff, g_a=0.0, g_chi=0.0,
              step=0.5, start=None, end=1e-4,
              solver="DOP853", rtol=1e-5, samples=500, fixed_samples=True,
              converge=True, convergence_epsilon=global_epsilon, debug=False):
@@ -96,7 +96,8 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
     # integrate until convergence of asymmetry (end of leptogensis)
     while True:
         if debug:
-            print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, chi0))
+            print("interval:", interval, "initial conditions:", initial_conditions, "arguments:",
+                    (Gamma_phi, m_a, sigma_eff, chi0, g, g_a, g_chi))
         # steps to be computed by the integrator
         if fixed_samples:
             steps = np.log(np.geomspace(*interval, samples))
@@ -106,7 +107,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf, chi0, m_chi,
             steps = None
         # integrate the current interval
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
-                        args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g),
+                        args=(Gamma_phi, m_a, f_a, sigma_eff, m_chi, chi0, g, g_a, g_chi),
                         t_eval=steps,
                         method=solver, rtol=rtol)
         # collect integration steps
