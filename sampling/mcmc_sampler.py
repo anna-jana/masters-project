@@ -5,6 +5,7 @@ import numpy as np
 import emcee
 from schwimmbad import MPIPool
 from collections import namedtuple
+from func_timeout import func_timeout, FunctionTimedOut # func-timeout package
 
 sys.path.append("../")
 from two_field_sbg.model import compute_B_asymmetry
@@ -44,21 +45,27 @@ eta_B_err = 1e-10 # TODO: fix
 def gaussian_ln_prop(val, mean, std):
     return - (val - mean)**2 / (2* std**2)
 
+timeout = 60 * 2
+
 def ln_likelihood(parameters):
     p = Parameters(*parameters)
     cp = convert_parameters(p)
-    eta_B_final = compute_B_asymmetry(
-            m_a=cp.m_a, f_a=cp.f_a,
-            Gamma_phi=cp.Gamma_phi, H_inf=cp.H_inf,
-            chi0=cp.chi0,
-            m_chi=m_chi_fixed, # cp.m_chi,
-            g=cp.g,
-            bg_kwargs=dict(theta0=cp.theta0))
+    try:
+        eta_B_final = func_timeout(timeout, compute_B_asymmetry,
+                kwargs=dict(
+                    m_a=cp.m_a, f_a=cp.f_a,
+                    Gamma_phi=cp.Gamma_phi, H_inf=cp.H_inf,
+                    chi0=cp.chi0,
+                    m_chi=m_chi_fixed, # cp.m_chi,
+                    g=cp.g,
+                    bg_kwargs=dict(theta0=cp.theta0)))
+    except FunctionTimedOut:
+        return - np.inf # ignore points, where the code takes more than timeout seconds to run
     return gaussian_ln_prop(eta_B_final, eta_B_obs, eta_B_err)
 
 log10_f_a_max = 16
 log10_Gamma_phi_min = 1
-log10_H_inf_min, log10_H_inf_max = -1, 14
+log10_H_inf_min, log10_H_inf_max = 5, 12
 log10_chi0_min, log10_chi0_max = 8, 12
 # log10_m_chi_min =  # we ignore m_chi for now
 log10_g_min, log10_g_max = -4, -2

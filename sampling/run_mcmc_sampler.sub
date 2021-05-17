@@ -23,7 +23,7 @@ mkdir -p ${DIR}
 start_time=$(date +%s)
 
 cd ${HOME}/master-project/sampling
-mpirun ${SCR_CONDA_DIR}/bin/python run_sampler.py ${DIR}/samples.hdf5
+mpirun ${SCR_CONDA_DIR}/bin/python mcmc_sampler.py ${DIR}/samples.hdf5
 
 end_time=$(date +%s)
 
