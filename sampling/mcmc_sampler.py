@@ -13,13 +13,16 @@ from common import constraints
 
 os.environ["OMP_NUM_THREADS"] = "1"
 
-output_file = sys.argv[1]
 restart = False
 # TODO: tweak
-nwalkers = 100
-nsteps = 1000
+nwalkers = 80
+nsteps = 800
 # ndim = 8 # fix m_chi for now
 ndim = 7
+timeout = 60 * 2
+nprocesses = 100
+runtime = nwalkers * nsteps * timeout / nprocesses / (60*60) # in hours
+
 
 m_chi_fixed = 1e-2
 
@@ -44,8 +47,6 @@ eta_B_err = 1e-10 # TODO: fix
 
 def gaussian_ln_prop(val, mean, std):
     return - (val - mean)**2 / (2* std**2)
-
-timeout = 60 * 2
 
 def ln_likelihood(parameters):
     p = Parameters(*parameters)
@@ -120,24 +121,26 @@ def make_initial():
 def ln_prob(parameters):
     return ln_likelihood(parameters) + ln_prior(parameters)
 
-# create MPI pool to run things on
-with MPIPool() as pool:
-    if not pool.is_master():
-        pool.wait()
-        sys.exit(0)
+if __name__ == "__main__":
+    # create MPI pool to run things on
+    with MPIPool() as pool:
+        if not pool.is_master():
+            pool.wait()
+            sys.exit(0)
 
-    backend = emcee.backends.HDFBackend(output_file)
+        output_file = sys.argv[1]
+        backend = emcee.backends.HDFBackend(output_file)
 
-    if not restart:
-        # create initial configurations for each walker
-        backend.reset(nwalkers, ndim)
-        initial = np.array([make_initial() for i in range(nwalkers)])
+        if not restart:
+            # create initial configurations for each walker
+            backend.reset(nwalkers, ndim)
+            initial = np.array([make_initial() for i in range(nwalkers)])
 
-    # create sampler
-    sampler = emcee.EnsembleSampler(nwalkers, ndim, ln_prob, backend=backend, pool=pool)
+        # create sampler
+        sampler = emcee.EnsembleSampler(nwalkers, ndim, ln_prob, backend=backend, pool=pool)
 
-    # run sampler
-    if restart:
-        sampler.run_mcmc(None, nsteps, progress=False)
-    else:
-        sampler.run_mcmc(initial, nsteps, progress=False)
+        # run sampler
+        if restart:
+            sampler.run_mcmc(None, nsteps, progress=False)
+        else:
+            sampler.run_mcmc(initial, nsteps, progress=False)
