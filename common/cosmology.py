@@ -78,3 +78,7 @@ def calc_maximal_temperature(Gamma_phi, H_inf, result="paper"):
         return 0.8 * g_star**(-1/4) * rho_phi_0**(1/8) * (Gamma_phi * m_pl)**(1/4)
     else:
         raise ValueError(f"invalid result {result}")
+
+def switch_hubble_and_time_rad_dom(x):
+    return 1 / (2*x)
+
