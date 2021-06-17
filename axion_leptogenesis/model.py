@@ -67,7 +67,7 @@ def calc_axion_power_law_mass_squared(T, m_a, Lambda, p):
 
 def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
     @jit(nopython=True)
-    def rhs(log_t, y, Gamma_phi, m_a, sigma_eff, Lambda):
+    def rhs(log_t, y, Gamma_phi, m_a, sigma_eff, Lambda, mu_eff_prefactor):
         # coordinate transformation
         t = np.exp(log_t)
         rho_phi, rho_tot, R = np.exp(y[:theta_index])
@@ -100,7 +100,7 @@ def make_rhs(use_cosine_potential, use_temp_dep_axion_mass):
         d2_theta_d_log_t_2 = d_theta_d_log_t + t**2 * theta_dot2
 
         # Boltzmann eq. for lepton asymmetry
-        mu_eff = theta_dot
+        mu_eff = mu_eff_prefactor * theta_dot
         n_L_eq = calc_lepton_asym_in_eqi(T, mu_eff)
         Gamma_L = calc_Gamma_L(T, sigma_eff)
         d_n_L_d_log_t = t * (- 3 * H * n_L - Gamma_L * (n_L - n_L_eq))
@@ -119,7 +119,7 @@ rhss = {(use_cosine_potential, use_temp_dep_axion_mass) : make_rhs(use_cosine_po
 
 
 def simulate(m_a, f_a, Gamma_phi, H_inf,
-             theta0=1.0, sigma_eff=paper_sigma_eff, use_cosine_potential=False, use_temp_dep_axion_mass=False,
+             theta0=1.0, sigma_eff=paper_sigma_eff, use_cosine_potential=False, use_temp_dep_axion_mass=False, mu_eff_prefactor=1.0,
              start=None, end=None, num_osc=15, larger_than_reheating_by=5, solver="DOP853",
              samples=500, fixed_samples=True, converge=True, convergence_epsilon=global_epsilon, debug=False):
     # setup
@@ -146,7 +146,7 @@ def simulate(m_a, f_a, Gamma_phi, H_inf,
         if debug:
             print("interval:", interval, "initial conditions:", initial_conditions, "arguments:", (Gamma_phi, m_a, sigma_eff, Lambda))
         sol = solve_ivp(rhs, np.log(interval), initial_conditions,
-                        args=(Gamma_phi, m_a, sigma_eff, Lambda),
+                        args=(Gamma_phi, m_a, sigma_eff, Lambda, mu_eff_prefactor),
                         t_eval=np.log(np.geomspace(*interval, samples))[:-1] if fixed_samples else None,
                         method=solver)
         # collect integration steps

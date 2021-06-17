@@ -153,10 +153,13 @@ def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, calc_Gamma_a_fn=calc_Gamma_a_SU
     return bg_sol, decay_sol
 
 def sample_parameter_space(func, f_a, H_inf, min_Gamma_phi=1e6, max_Gamma_phi=1e10, min_m_a=2e5, max_m_a=1e10,
-                         num_m_a_samples=30, num_Gamma_phi_samples=31, kwargs={}):
+                         num_m_a_samples=30, num_Gamma_phi_samples=31, kwargs={}, use_tqdm=False):
     Gamma_phi_s = np.geomspace(min_Gamma_phi, max_Gamma_phi, num_Gamma_phi_samples)
     m_a_s = np.geomspace(min_m_a, max_m_a, num_m_a_samples)
-    eta_B_s = np.array([[func(m_a, f_a, Gamma_phi, H_inf, **kwargs) for m_a in m_a_s] for Gamma_phi in tqdm(Gamma_phi_s)])
+    if use_tqdm:
+        eta_B_s = np.array([[func(m_a, f_a, Gamma_phi, H_inf, **kwargs) for m_a in m_a_s] for Gamma_phi in tqdm(Gamma_phi_s)])
+    else:
+        eta_B_s = np.array([[func(m_a, f_a, Gamma_phi, H_inf, **kwargs) for m_a in m_a_s] for Gamma_phi in Gamma_phi_s])
     return m_a_s, Gamma_phi_s, eta_B_s
 
 def sample_parameter_space_numerical(f_a, H_inf, **kwargs):

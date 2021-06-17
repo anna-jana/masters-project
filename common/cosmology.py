@@ -30,8 +30,9 @@ def calc_energy_density_from_hubble(H):
     return 3 * M_pl**2 * H**2 # Friedmann eq.
 
 @jit(nopython=True)
-def calc_lepton_asym_in_eqi(T, mu_eff):
-    return 4 / np.pi**2 * mu_eff * T**2 # boltzmann thermodynamics
+def calc_lepton_asym_in_eqi(T, mu_eff, prefactor=1, g=4):
+    # return 4 / np.pi**2 * mu_eff * T**2 # boltzmann thermodynamics
+    return g / 6 * prefactor * mu_eff * T**2 # boltzmann thermodynamics
 
 zeta3 = 1.20206
 g_photon = 2
