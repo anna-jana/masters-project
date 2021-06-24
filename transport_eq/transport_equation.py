@@ -1,17 +1,15 @@
 # Based on https://arxiv.org/abs/2006.03148 for B - L (Lepto)genesis
 # Warning: for different epoch change numbers!
 
-from collections import namedtuple
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.interpolate import interp1d
+from numba import jit, njit
 
 if ".." not in sys.path: sys.path.append("..")
 from common import constants, cosmology
-from numba import jit, njit
+import axion_motion
 
 ############# Rates for Different Processes ############
 
@@ -174,57 +172,34 @@ assert len([(process_name, conserved_name)
 ####################################### Transport Equation ###################################
 unit = 1e-9
 
-def transport_eq_rhs(log_T, y, n_S, axion_rhs, calc_d2Vdtheta2, axion_decay_rate, axion_parameter):
-    T = np.exp(log_T)
-    red_chem_pot, axion = y[:N], y[N:]
-    v = axion[1]
-    theta_dot = v
+def transport_eq_rhs(T, red_chem_pot, n_S, theta_dot):
     d_red_chem_pot_d_ln_T = (rate(T) * (charge_vector @ red_chem_pot - n_S * theta_dot / T / unit)) @ charge_vector / dofs
-    d_axion_d_ln_T = axion_rhs(T, axion, axion_decay_rate, axion_parameter)
-    return np.hstack([d_red_chem_pot_d_ln_T, d_axion_d_ln_T])
+    return d_red_chem_pot_d_ln_T
 
-jac_mats = [1 / dofs[:, None] * np.outer(charge_vector[alpha, :], charge_vector[alpha, :]) for alpha in range(N_alpha)]
-
-def transport_eq_jac(log_T, y, n_S, axion_rhs, calc_d2Vdtheta2, axion_decay_rate, axion_parameter):
-    jac = np.zeros((y.size, y.size))
-    T = np.exp(log_T)
-    R = rate(T)
-    H = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T))
-
-    # transport equation jac
-    for alpha in range(N_alpha):
-        jac[:N, :N] += jac_mats[alpha] * R[alpha]
-
-    # axion eq of motion jacobian
-    # jac[N][N] = 0
-    theta = y[N]
-    jac[N + 1][N] = - 1 / H
-    jac[N][N + 1] = calc_d2Vdtheta2(T, theta, *axion_parameter) / H
-    jac[N + 1][N + 1] = axion_decay_rate / H + 3
-
-    # source in the transport eq.
-    for alpha in range(N_alpha):
-        jac[:N, N + 1] += (R[alpha] * n_S[alpha]) * charge_vector[alpha]
-    jac[:N, N + 1] /= dofs
-    jac[:N, N + 1] /= -T
-
-    return jac
-
-TransportEqResult = namedtuple("TransportEqResult", ["T", "red_chem_pots", "red_chem_B_minus_L", "axion"])
-
-def solve_transport_eq(T_RH, source_vector, axion_rhs, calc_d2Vdtheta2, axion_decay_rate, axion_parameter, axion_initial,
-        solver="Radau", rtol=1e-8, atol=1e-6, T_end=1e10, num_steps=100):
-    red_chem_pot_initial = np.zeros(charge_vector.shape[1])
-    initial = np.hstack([red_chem_pot_initial, axion_initial])
-    start, end = np.log(T_RH), np.log(T_end)
-    if num_steps is not None:
-        steps = np.linspace(start, end, num_steps); steps[0] = start; steps[-1] = end
-    sol = solve_ivp(transport_eq_rhs, (start, end), initial,
-             args=(source_vector, axion_rhs, calc_d2Vdtheta2, axion_decay_rate, axion_parameter),
-             method=solver, rtol=rtol, atol=atol, t_eval=None if num_steps is None else steps, # jac=transport_eq_jac,
-             )
-    red_chem_pots = sol.y[:N] * unit
-    axion = sol.y[N:]
-    return TransportEqResult(T=np.exp(sol.t), red_chem_pots=red_chem_pots,
-            red_chem_B_minus_L=calc_B_minus_L(red_chem_pots), axion=axion)
-
+#jac_mats = [1 / dofs[:, None] * np.outer(charge_vector[alpha, :], charge_vector[alpha, :]) for alpha in range(N_alpha)]
+#
+#def transport_eq_jac(log_T, y, n_S, axion_rhs, calc_d2Vdtheta2, axion_decay_rate, axion_parameter):
+#    jac = np.zeros((y.size, y.size))
+#    T = np.exp(log_T)
+#    R = rate(T)
+#    H = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T))
+#
+#    # transport equation jac
+#    for alpha in range(N_alpha):
+#        jac[:N, :N] += jac_mats[alpha] * R[alpha]
+#
+#    # axion eq of motion jacobian
+#    # jac[N][N] = 0
+#    theta = y[N]
+#    jac[N + 1][N] = - 1 / H
+#    jac[N][N + 1] = calc_d2Vdtheta2(T, theta, *axion_parameter) / H
+#    jac[N + 1][N + 1] = axion_decay_rate / H + 3
+#
+#    # source in the transport eq.
+#    for alpha in range(N_alpha):
+#        jac[:N, N + 1] += (R[alpha] * n_S[alpha]) * charge_vector[alpha]
+#    jac[:N, N + 1] /= dofs
+#    jac[:N, N + 1] /= -T
+#
+#    return jac
+#
