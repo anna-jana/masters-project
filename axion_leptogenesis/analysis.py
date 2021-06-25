@@ -6,6 +6,7 @@ from model import *
 from common import util
 from common import implicit_curve
 from common import cosmology
+from common import rh_neutrino
 
 def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_title=True, **kwargs):
     sol = t, rho_phi, rho_R, rho_tot, T, H, R, theta, theta_dot, n_L = simulate(m_a, f_a, Gamma_phi, H_inf, **kwargs)
@@ -116,7 +117,7 @@ def make_time_plots(m_a, f_a, Gamma_phi, H_inf, show_all=True, save=False, add_t
     print("final asymmetry:", eta_B[-1])
     return sol
 
-def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, calc_Gamma_a_fn=calc_Gamma_a_SU2, do_plot=True, decay_kwargs={}, bg_kwargs={}):
+def make_decay_plots(m_a, f_a, Gamma_phi, H_inf, calc_Gamma_a_fn=rh_neutrino.calc_Gamma_a_SU2, do_plot=True, decay_kwargs={}, bg_kwargs={}):
     decay_kwargs["calc_Gamma_a_fn"] = calc_Gamma_a_fn
     bg_sol = simulate(m_a, f_a, Gamma_phi, H_inf, **bg_kwargs)
     decay_sol = t, rho_R, rho_a, R, T, n_L = simulate_axion_decay(m_a, f_a, bg_sol, **decay_kwargs)

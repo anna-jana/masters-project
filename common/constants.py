@@ -23,3 +23,9 @@ m_tau = 1.77686
 m_top = 172.76
 m_bottom = 4.18
 higgs_vev = 246
+
+# from the genric couplings paper
+C_sph = 8 / 23
+
+convergence_epsilon = 1e-2
+
