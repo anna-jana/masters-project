@@ -10,9 +10,9 @@ input_data_path = os.path.join(base, "input_data")
 output_data_path = os.path.join(base, "output_data")
 plot_path = os.path.join(base, "plots")
 
-if not os.path.exists(input_data_path):
-    os.mkdir(input_data_path)
-
+#if not os.path.exists(input_data_path):
+#    os.mkdir(input_data_path)
+#
 if not os.path.exists(output_data_path):
     os.mkdir(output_data_path)
 

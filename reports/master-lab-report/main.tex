@@ -1,0 +1,644 @@
+\documentclass[13pt,a4paper,twoside,titlepage]{article}
+\usepackage[ngerman, english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym,amssymb,amsmath,amstext}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[backend=bibtex, sorting=none]{biblatex}
+\usepackage{amsmath}
+\usepackage{ dsfont }
+\usepackage{csquotes}
+\usepackage{slashed}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{subfigure}
+\usepackage{verbatim}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{feynmf}
+\usepackage{abstract}
+\usepackage{bbold}
+\usepackage[a4paper, left=2cm, right=2cm, top=2cm, bottom=3cm, bindingoffset=10mm]{geometry}
+\usepackage[compat=1.1.0]{tikz-feynman}
+%\usepackage[onehalfspacing]{setspace}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\lstset{
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\note}[1]{{\color{red}[\textbf{#1}]}}
+\newcommand{\diff}{\ensuremath{\mathrm{d}}}
+
+\bibliography{refs}
+
+\begin{document}
+%\pagenumbering{gobble}
+\begin{titlepage}
+
+\vspace*{3cm}
+
+\centering
+\textsc{\Large Masters Project - Lab Report}
+% \textsc{\Large \bfseriedvanced Masters Project - Lab Report}
+\\
+\vspace*{1cm}
+%\rule{\textwidth}{1pt}\\[0.1cm]
+{\Large \bfseries
+Spontaneous Baryogenesis using Axions
+\\[0.1cm]}
+%\rule{\textwidth}{1pt}
+\vspace*{1cm}
+{
+\centering\Large
+prepared by\\[0.2cm]
+{\bfseries Jana Riess}\\[0.2cm]
+}
+
+\vspace*{2cm}
+
+\begin{Large}
+\begin{tabular}{ll}
+%\bfseries Date of Submission: &21.01.2020\\
+\end{tabular}
+\end{Large}
+
+\vspace*{1.5cm}
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\newcommand{\jana}[1]{{\color{magenta}{#1}}}t
+
+
+\section{Introduction}
+\label{sec:introduction}
+
+\noindent
+\jana{Überarbeiten!!!!!}
+In ????? Paul Dirac came up with an interpretation of negative energy states in his Dirac equations as anti-particles.
+These anti-particles are a fundamental feature in theories of fundamental interactions and it was long believed that
+nature is symmetric under the exchange of a particle with its anti-particle.
+At high temperatures in the early universe particles and anti-particles have been present both in high number densities due to rapid pair-production and annihilations into two photons. After the universe was been cooled down below the freeze-out temperature of these processes, all annihilations into photons happend and only the asymmetry between particles and anti-particles remained. If
+there were a symmetry between particles and anti-particles then only photons should remain.
+But the universe we observe is made out of matter. Objects like galaxies made out of anti-matter have not been observed, hence some kind of speration between matter and anti-matter within our universe seems unlikely. ???????
+Therefore some process has to have happend that created an asymmetry between particles and anti-particles. This process
+is known as \emph{baryogenesis}.
+
+\noindent
+In this lab report we will discuss the issue of baryogenesis and one possible solution in detail, \emph{spontaneous baryogenesis} using \emph{axions}. Furthermore we show one example of how one can implement spontaneous baryogenesis during reheating using axions coupling via an SU(2) anomaly and lepton-number violating interactions from an effective Weinberg operator arising from a type-I see-saw mechanism.
+
+\noindent
+This report is organised as follows:
+In section \ref{sec:baryogenesis} the general issue of baryogenesis is discussed and the most well known theories are presented briefly.
+Then the lesser known approach of spontaneous baryogenesis is presented in section \ref{sec:spontaneour_bayrogenesis}.
+For a concrete implementation of this idea, we cover the fundamentals of two prerequisites, namely lepton-number violation from the type-I see-saw mechanism i.e. right handed Majorana neutrinos in section \ref{sec:lapton_number_violations} and axions and their couplings as well as their cosmological dynamics in section \ref{sec:axions}. Then we will discuss the actual model in section \ref{sec:spont_bg_lepto_with_axions}.
+Finally we will discuss potential extensions of this model in section \ref{sec:multi_fields} and conclude in section \ref{sec:conclusion_and_outlook} including an outlook on other possible models for baryogenesis using axions.
+
+\section{Basics of Baryogenesis}
+\label{sec:baryogenesis}
+
+\jana{
+\begin{itemize}
+    \item Quantify the baryogenesis puzzle
+    \item sharakov conditions
+    \item proof them
+    \item interpretation
+    \item conditions in the standard model
+    \item B, L anomaly
+\end{itemize}
+}
+
+Let us first quantify the puzzle of bayrogenesis. Because of the process of annihilation of
+bayron, anti-baryon pairs into photons, it is convenient to express the asymmetry as
+the ratio between the difference between the number densities of baryons $n_b$ and anti-baryons $n_{\hat{b}}$
+\begin{align}
+    n_B = n_b - n_{\hat{b}}
+\end{align}
+over the number densitie of photons  ??????
+\begin{align}
+    n_\gamma = ???????
+\end{align}
+i.e. the asymmetry parameter ?????
+\begin{align}
+    \eta_B = \frac{n_B}{n_\gamma}.
+\end{align}
+
+Today there are no anti-bayrons present and the baryon and photon number-densiteis can be
+measured from the cosmic-microwave-background (CMB).
+This gives the observed asymmetry ????????
+\begin{align}
+    \eta^\mathrm{obs}_B = (6 \pm 0.3) \times 10^{-10}.
+\end{align}
+The puzzle of baryogenesis is not only to generate an asymmetry at all but also to be able to produce the observed asymmetry $\eta^\mathrm{obs}_B$.
+
+\subsection{Sakharov Conditions}
+The \emph{Sakharov Condtions} are a set of three nessisary but not sufficient condtions for baryogenesis to happen in the universe. ?????? These are:
+\begin{itemize}
+    \item Baryon Number has to violated.
+    \item C and CP symmetries have to be broken.
+    \item The universe has to be out of equilibrium.
+\end{itemize}
+Lets proof and discuss them in order.
+First, to generate an asymmetry here need to be processes which produce more baryons than anti-baryons i.e. that violate $B$ symmetry.
+
+Second lets consider C and CP violation. They are needed to distiglish between particles and anti-particles. Otherwise here might be processes that produce an asymmetry in the
+particle vs anti-particle number but both the process producing more particles and the (conjugated) one that produces more anti-particles happen at the same rate.
+Then on average the total number of particles is zero again.
+This condition can be formally shown by considering the density matrix $\rho$ of the universe in the Heisenberg picture \footnote{That is the density matrix $\rho$ and all states are time-independent while all observables are time-dependent.}. Its time evolution is coverened by the Heisenberg equation
+\begin{align}
+    i \frac{\mathrm{d} \rho}{\mathrm{d} t} = [H, \rho],
+\end{align}
+where $H$ is the Hamiltonain of the system.
+In order to generate an asymmetry i.e.
+\begin{align}
+    \langle B \rangle = \sum_n  \langle n | B \rho | n \rangle = \Tr [ B \rho ] \neq 0
+\end{align}
+the total time derivative has to vanish.
+We use that the baryon number operator commutes with C and CP transformations
+\begin{align}
+    C B C^\dagger &= B \\
+    (C P) B (C P)^\dagger &= B
+\end{align}
+as the baryon number and the charge number both flip sign under charge conjugation.
+If we assume that C or CP is conserved i.e. that
+\begin{align}
+[H, C/CP] = 0,
+\end{align}
+then
+\begin{align}
+    \frac{\mathrm{d}}{\mathrm{d} t} \Tr [ B \rho ] &= \Tr [ B \dot{\rho} ] = \Tr [ B [H, \rho] ] \\
+    &= \Tr [ (C/CP)^\dagger B (C/CP) [H, \rho] ] = \Tr [ \rho (C/CP)^\dagger B [C/CP, H] ] = 0.
+\end{align}
+Therefore C and CP violation is required for bayrogenesis.
+
+Finally departure from thermal equilibrium is required. This is because in thermal equilibrium the number densities are purely set by the
+masses of the particles or anti-particles. If the theory is CPT symmetric, as very QFT with a Lorentz invariant groundstate (vacuum), then the
+masses of particles and their anti-particles are the same ??????? \jana{felix an ref fragen}.
+Formally lets consider the density matrix in thermal equilibrium
+\begin{align}
+    \rho = \frac{e^{- \beta H}}{Z},
+\end{align}
+where $\beta$ is the inverse temperature and $Z$ the partition function.
+Then one finds that
+\begin{align}
+    \Tr [ B \rho ] &=  \Tr [ (CPT) (CPT)^\dagger B \rho ] = \Tr [ (CPT)^\dagger B \rho (CPT) ]  \\
+                   &= - \Tr [ B (CPT)^\dagger \rho (CPT) ] = - \Tr [ B \rho ],
+\end{align}
+since $CPT$ communtes with the hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium.
+
+\subsection{Baryogenesis and the Standard Model}
+In this section we discuss the violation of baryon and lepton number in the standard model. This issue is releated to vacuum stucture of the theory of electro-weak interactions as a
+non-albelian gauge theory.
+We will consider a general non-albelian gauge theory with a gauge group $\mathcal{G}$ as this discssion will also play a role in theory of axion discussed in section ???????.  \footnote{
+The lagraigian is
+\begin{align}
+    \mathcal{L} = \psi_i \left( i D_\mu \gamma^\mu - \mathcal{M} \right) \bar{\psi}_i - \frac{1}{4} G^{a \, \mu \nu} G^a_{\mu \nu}
+\end{align}
+with the covariant derivative
+\begin{align}
+    D_\mu = \partial_\mu - i g T^a A^a_\mu
+\end{align}
+where $T^a$ are the generators of the Lie algebra of the gauge group of the theory with structure constants
+\begin{align}
+    [T^a, T^b] = f^{abc} T^c
+\end{align}
+the field strength tensor
+\begin{align}
+    G^a_{\mu \nu} = \partial_\mu A^a_\nu - \partial_\nu A^a_\mu + g f^{abc} A^b_\mu A^c_\nu
+\end{align}
+and its dual
+\begin{align}
+    \tilde{G}_{\mu \nu}^a = \frac{1}{2} \epsilon_{\mu \nu \rho \sigma} G^{\rho \sigma}
+\end{align}
+where we use the convention
+\begin{align}
+    \epsilon^{0123} = -1
+\end{align}
+}
+In this theory we consider the expression
+\begin{align}
+    G^{\mu \nu}_a \tilde{G}^a_{\mu \nu}
+\end{align}
+that can be writte as a total derivative
+\begin{align}
+    G^{\mu \nu}_a \tilde{G}^a_{\mu \nu} = \partial_\mu K^\mu
+\end{align}
+of
+\begin{align}
+    K_\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha G^a_{\beta \gamma} - \frac{g}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right)
+\end{align}
+In euclidian space-time:
+\begin{align}
+    \label{eq:eucleadian_integral}
+    \int \mathrm{d}^4 x \, G^a_{\mu \nu} \tilde{G}^a_{\mu \nu} = \int \mathrm{d}^4 x \, \partial_\mu K_\mu = \int_{S^3 @ |x| \to \infty} \mathrm{d}^3 S_\mu K_\mu
+\end{align}
+This shows that including such a term in the lagragian has no effect in pertubation theory since perturbativly the gauge configurations vanish at infinity.
+On the other hand the path integral runs over classical field configurations, where this term does not vanish.
+In order for the eucleadian action to be finite (otherwise the weight in the path integral would be vanishing and those configuration would not contribute) the field strength tensor $G^a_{\mu \nu}$ haa to vanish.
+This does not require the potetial $A^a_\mu$ to vanish since one can obtain configurations by gauge transofrmation of the form
+\begin{align}
+    A_\mu = U^{-1} A_\mu U + \frac{i}{g} U^{-1} \partial_\mu U
+\end{align}
+where $U$ is some local gauge transformations i.e. $U(x) \in \mathcal{G}$.
+These gauge configrations are called \empth{pure gauges}.
+As
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Field Configuration};
+        \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south] {Field Energy};
+        \draw[scale=1, domain=-4.5:4.5, smooth, variable=\x, blue] plot ({\x}, {1.8*(1 - cos(2 * \x r))});
+        \foreach \x in {0,3.14,-3.14}
+             \filldraw[color=red] (\x, 0) circle (0.1);
+        \foreach \x in {3.14/2, -3.14/2}
+             \filldraw[color=green] (\x, 1.8*2) circle (0.1);
+        \draw[thick,->] (0.0, -0.5) -- (3.14, -0.5);
+        \draw[->] (3.3 / 2 + 0.5, 1.8*2 + 0.5 + 0.1) node[anchor=south]  {Sphaleron} -- (3.4 / 2, 1.8*2 + 0.1) ;
+        \draw[->] (-2.7, -0.7) node[anchor=north]  {Vacuum Configuration} -- (-3, -0.2) ;
+        \node at (1.5, -0.7) {Instanton};
+        \draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
+    \end{tikzpicture}
+    \caption{Cartoon of the vacuum structure of an non-albelian gauge theory.}
+    \label{fig:vacuum_cartoon}
+\end{figure}
+
+
+
+
+\jana{
+\begin{itemize}
+    \item satisfies the conditions
+    \item B and L anaomalies
+    \item Vacuum structure of non-albelian gauge theories
+    \item instantons
+    \item sphalerons
+    \item C and CP violation
+    \item does not work
+
+\end{itemize}
+}
+
+\subsection{Baryogenesis Models}
+The two most popular models for baryogensis are electro-weak baryogensis (EW-BG) and baryogensis via leptogenesis (leptogenesis).
+Electroweak BG ????? is implemented at the elektro-weak phasetransition. It is based on the formation of nuleation bubbles which contain parts of space where the EW symmetry is broken while the outside is jet unbroken. The baryogenesis process happens in this case via the transition rates of leptons passing trough (durch) the domain wall being different from the rates for anti-leptons. Inside the wall the sphaleron rate are highly suppressed (see eq. ??????) ant the asymmetry is frozen (can not be balanced by the sphalerons).
+The formation of theses nucleation-bubbles requires the EQ-PT to be first order. This is not the case in the SM and requires at modification of the effective Higgs potetials. ??????
+
+\noindent
+Leptogenesis on the other hand is a natural consequence of the introduction of neutrino masses via the see-saw mechanism.
+\jana{Describe the see-saw mechanism briefly}
+
+In the usual implementation of leptogenesis heavy
+
+
+In this model, a lepton-asymmetry is created through the \emph{dimension-five Weinberg operator}
+\begin{align}
+    \mathcal{L} \ni (H l H l) ???????.
+\end{align}
+This not renormalizable operator appreas in the effective theory from so called \emph{see-saw mechanisms}
+
+\jana{
+\begin{itemize}
+    \item very brief
+    \item thermal leptogenesis
+    \item electroweak baryogenesis
+    \item afleck dime baryogenesis
+\end{itemize}
+}
+
+Finally another theory of baryogensis is Afflec-Dime BG. In this mechanism a scalar field carring lepton number decays into leptons and therefore creates an asymmetry ?????:
+
+\subsection{Spontaneous Baryogenesis}
+\label{sec:spontaneour_bayrogenesis}
+
+All the mechanism above mentioned fullfill the Sakharov conditions.
+
+In ???? ???? and ???? pointed out that there is a loop hole in the Sakharov conditions
+and that is that they assume the theory to be invariant under CPT.
+In general any QFT with a Lorentz invariant groundstate is CPT symmetric but in the early universe the ground state of the theory not Lorentz invariant due to being at finite temperature and more importantly \footnote{Some thing about curved backgrounds???????}
+due to the expanding background. In particular the expectation value of a scalar field and its time derivtive will not vanish in general. A coupling to such a field such as ???????
+\begin{align}
+    \mathcal{L} \ni - \frac{1}{f} \phi \partial_\mu J^\mu_B
+\end{align}
+violates CPT. Here $\phi$ is the scalar field, $f$ some energy scale of this new physics and $J_B$ the Baryon current.
+By partial integration and by assuming that the field $\phi$ is homogenious one finds
+\begin{align}
+    \frac{1}{f} J_B^\mu \partial_\mu \phi = \frac{1}{f} J_B^0 \dot{\phi}
+    %= \frac{1}{f} (n_b - n_{\bar{b}}) \dot{\phi}
+    = \frac{1}{f} n_B \dot{\phi},
+\end{align}
+where $n_b$ is the number density of the baryons and $n_{\bar{b}}$ of the anti-baryons respectively.
+If one then compares this term with the density matrix of the grand-canoncal ensemble
+\begin{align}
+    \mathcal{Z} = e^{-\beta H + \beta \mu N}
+\end{align}
+one finds that the chemical potential $\mu$ is modified by this
+interaction as
+\begin{align}
+    \mu \to \mu_\mathrm{eff} = \mu + \frac{\phi}{f}
+\end{align}
+If the baryon asymmetry is not protected i.e. there exist B-violating processes in the thermal plasma, the baryon asymmetry is then given in equilibrium as ?????
+\begin{align}
+    n_B^\mathrm{eq} = \mu_\mathrm{eff} \frac{T^2}{6}
+\end{align}
+In this case the final baryon asymmetry is given by the value of $n^\mathrm{eq}_B$ at the freeze-out of the baryon number violating interaction.
+This mechanism indeed does not require C and CP violation because the baies of the interacion towards baryons comes from the chemical potetials and not from the cross-sections of the interactions.
+Note that still C and CP violation are allowed to occur.
+Furhtermore this mechanism also works in equilibrium.
+But in later cases we need to study the case where the interaction is only close to equilibrium.
+
+\noindent
+What kind of field could $\phi$ be?
+
+\jana{
+\begin{itemize}
+    \item original idea
+    \item violation of CPT, why okay?
+\end{itemize}
+}
+
+\subsection{Lepton-Number Violations and the Weinberg Operator}
+In the standard model not only $B - L$ is conserved but also neutrinos are mass-less.
+A model to include, the via neutrino oscillations observed, neutrino masses is the see-saw mechanism.
+One assumes that neutrinos are Majorana fermions i.e. that they are their own anti-particles.
+????????????????
+
+\label{sec:lapton_number_violations}
+
+
+\jana{
+\begin{itemize}
+    \item Majorana mass term for neutrinos
+    \item interaction term i.e. see saw mechanism type I
+    \item effective weinberg operator
+    \item resulting effective crosssection
+\end{itemize}
+}
+
+
+\begin{align}
+    \mathcal{L} \ni ?????
+\end{align}
+
+
+
+
+
+
+\section{Axions}
+\label{sec:axions}
+
+One potentially cosmologically relevant type of scalar fields are axion-like fields.
+Axions were first introduced as a solution to the strong CP problem.
+In QCD the operator
+\begin{align}
+    \mathrm{Tr} G_{\mu \nu} \tilde{G}^{\mu \nu},
+\end{align}
+where $G = ?????$ is the gluon field strength tensor,
+has similar properties as the equivanlent term for the $SU(2)$ field appearing
+in ???????. But there it is not connected to a symmetry and therefore can't
+be removed from the lagagian ????? TODO: make sure that I understand this correctly
+Therefore a new term has to appear in the lagragian
+\begin{align}
+    \mathcal{L}
+\end{align}
+In princple the parameter $\theta$ can take values betwenn 0 and $2\pi$ but measurements of the electric dipol moment of the neutron constrain $\theta$ to
+be $\theta < ????$ ?????.
+This fine tuning problem is the strong CP problem.
+The axion solution to this problem is to introduce a new pseudo-scalar field
+$\theta$, the axion field that couples as ????
+\begin{align}
+    ???????
+\end{align}
+and therefore corrects the theta parameter. The ?????? theorem ensurs that
+the mimium of this potetial is at the CP conserving minimum.
+This coupling comes from the field rotation from a couping to fermions which in turn comes from
+the coupling of the UV completion of the axion theory.
+The axion is a pseudo-Nambu-Goldstone boson. Its dynamics are derived from
+Gnerically we call all pseudo scalar bosons that couple to gauge fields via anaomaly term as in eq. ????.
+axion-like particles (APLs).
+The effective potetial for the axion field is given by the dependence of QCD vacuum energy
+on the theta parameter $\theta$ and is given (in the one-instanton gas approximation) as ??????
+\begin{align}
+    V(\theta; T) &= m_a^2(T) (1 - \cos(\theta)) \\
+    m_a &= m_a(T = 0) \cdot \min\left(1, \left( T / \Lambda \right)^p \right)
+\end{align}
+Cosmologically an axion field is in a coherent state that can be described by classical field equations.
+The effective axion action is given by
+\begin{align}
+    1 = 1
+\end{align}
+Varying the action yields the equations of motion
+\begin{align}
+    \ddot{a} + 3 H \dot{a} + \frac{\partial V(a; T)}{\partial a} = 0
+\end{align}
+The most well known application of axions is that they could be the dark matter since
+the coherent oscillations of the axion field have the equation of state of matter.
+Typically one assumes the realignment mechanism, where the initial kinetic energy is not large enough to overcome the potential barrier of the axion potential. In this case the initial motion of the axion is damped and the field is frozen in (is approximately constant in time). Then only the initial value of the field is relevant.
+When the Hubble friction no longer dominates the axion mass i.e.
+\begin{align}
+    3H(T_\mathrm{osc}) = m_a(T_\mathrm{osc}),
+\end{align}
+the field starts to oscillate.
+Then the co-moving number density is conserved and the final dark matter abundance is given by
+\begin{align}
+    \Omega_a h^2 = ???????
+\end{align}
+This means at very high masses the relic abundance is too low to be a relevant dark matter component.
+
+In quantum chromodynamics (QCD) the vacuum structure is non trivial.
+????
+In general axion like particles (APLs) are pseudo scalar bosons that couple
+to gauge field via an anomaly term.
+Axions are pseudo scalar bosons
+
+\subsection{The Strong CP Problem and QCD Axions}
+In quantum chromodynamics (QCD) the operator
+
+
+
+\subsection{General Axion Models}
+
+\subsection{Realignment}
+
+\jana{
+\begin{itemize}
+    \item strong cp problem
+    \item axion solution
+    \item axion like particles
+    \item efftive couplings to gauge bosons and ferminons
+    \item decay rate into gauge bosons (like pion)
+    \item cosmological axion field
+
+\end{itemize}
+}
+
+\section{Spontaneous Leptogenesis with Axions}
+\label{sec:spont_bg_lepto_with_axions}
+
+In this section we will implement a concrete model for leptogenesis using axions.
+
+\subsection{Setup of the Mechanism}
+The violation of lepton number comes from the Weinberg operator (discussed in section ????).
+The temperature scale for our model is routhly given by the equilibration temperature of the Weinberg operator i.e.
+\begin{align}
+    \Gamma_W(T_\mathrm{eq}) = H(T_\mathrm{eq}) \Rightarrow T \approx 10^{13} \, \mathrm{GeV}
+\end{align}
+This means this process has to happen during/directly after reheating. The reheating process is described by the energy rate equations and the Friedmann equation ????????
+\begin{align}
+    \dot{\rho_\phi} + 3 H \rho_\phi &= - \Gamma_\phi \rho_\phi \\
+    \dot{\rho_R} + 4 H \rho_R &= + \Gamma_\phi \rho_\phi \\
+    3 H^2 M_\mathrm{pl}^2 &= \rho_\mathrm{tot} \approx \rho_\phi + \rho_R,
+\end{align}
+where $\rho_\phi$ is the energy density of the inflaton field, $\rho_R$ the radiation energy density and $\Gamma_\phi$ the decay rate of the inflaton to SM particles.
+During this epoch we describe the motion of the axion field using eq. ?????????? with given the Hubble parameter.
+For simplicity we assume that the axion has a constant fixed mass, that we treed as an open parameter. We assume the standard relaighment scenario. Since the oscillation has to start at very high values of the Hubble parameter, the mass of the axion has to be high as well (see eq. ???).
+This means that this axion can't be the QCD axion. Its mass is assumed to come from some hidden sector.
+We then assume that the axion directly couples to the lepton current like in eq. ?????. Then effective chemical potential is given by $\mu_\mathrm{eff} = \dot{a}/f_a$ according to eq. ????.
+The process of creating the asymmetry is described by the Boltzmann equation ??????
+\begin{align}
+    \dot{n_L} + 3 H n_L = - \Gamma_L(T) (n_L - n_L^\mathrm{eq}(\mu_\mathrm{eff}, T))
+\end{align}
+with
+\begin{align}
+    \rho_R = \frac{\pi^2}{30} g_{*}(T) T^4
+\end{align}
+\begin{align}
+    n_L^\mathrm{eq} =
+\end{align}
+\begin{align}
+    \Gamma_L =
+\end{align}
+We assume that there is no initial adunance of letpon asymmetry i.e. $n_L = 0$ at the end of inflation.
+The
+This set of differential equations can then be solved numerically. The evolution of projected final baryon asymmetry (from eq. ?????) is shown in figure ????? for two different values of the inflaton decay rate $\Gamma_\phi$ and the axion mass $m_a$.
+
+Furthermore one has to take the decay of the axion into account.
+Since it couples the lepton current, it also couples to the
+
+\subsection{Discssion of the Mechanism and Analytical Approximation}
+Let us now discuss the mechanism and limit on the parameters in particular.
+The parameter of this model are $(\theta_i, m_a, f_a, H_\mathrm{inf}, \Gamma_\phi)$.
+For simplicity we assume
+
+\subsection{Origin of the Coupling to the Lepton Current and the Problem of Field Basis}
+The model we discussed so far is based on ref. ??????.
+There the authors argumeted that the coupling originates from a field redefinition
+\begin{align}
+    ???????
+\end{align}
+of the anaomaly coupling of the axion to the SU(2) gauge field (as in eq. ??????).
+As pointed out in ref. ???? and ref. ???????, this simultaneously induces an energy shift
+?????????????????????????????????????ß
+?????????????????????????????????
+Therefore
+
+\jana{
+\begin{itemize}
+    \item coupling of axion derivative to lepton current -> effective chemical potential
+    \item $\Delta L = 2$ processes and the efftive crossection
+    \item Boltzmann equation of the asymmetry
+    \item required temperature
+    \item reheating (energy + Friedmann eq.)
+    \item decay of axions via the anomaly
+    \item present solution
+    \item decay of inflaton injects entropy $\rightarrow$ dilution
+    \item decay of axion injects entropy $\rightarrow$ dilution
+    \item washout from oscillations
+    \item analytical solution
+    \item a-priori constrains
+    \item dilution frmo axion ineffctive at low $f_a$
+    \item apriori constrains lead to minimal $m_a, \Gamma_\phi$
+\end{itemize}
+}
+
+\section{Outlook}
+\label{sec:outlook}
+
+Starting from the foundation established above, we can processed in several directions.
+In this section we briefly discuss each. The goal of this project is to explore
+different models that can successfully implement baryogenesis, while avoiding cosmological and
+experimental constrains.
+In particular we are interested in models that also implement a viable dark matter candidate
+and/or are in regions of the parameter that, while not excluded right now, allow for realistic future experimental searches.
+
+\subsection{Multi-Field Extensions}
+\label{sec:multi_fields}
+
+\jana{
+\begin{itemize}
+    \item Problem: How do we get Axion SBG to work at lower axion masses?
+    \item Problem: Can we include some kind of production mechanism for dark matter?
+    \item Idea: Introduce a second scalar field beside the axion
+    \item This other field will induce an effective mass in the axion via a quatic coupling
+    \item more complicated parameter space
+    \item bare masses relevant
+    \item sometimes chaotic behaviour
+    \item different energy scaling
+    \item TODO: decay?????
+    \item present preliminary constrains on parameters
+\end{itemize}
+}
+
+
+\subsection{Kinetic Realignment}
+In ????? an alternative to the conventual misalignment mechanism was proposed.
+In contrast to the standard mechanism, one doesn't assume the initial velocity of the axion field to be vanishing.
+This can't happend in the standard senario of the breaking of the PQ symmetry.
+Instead the the axion field obtains a non-vanishing velocity from coupling to higher
+dimensional operators at some higher energy scale.
+In this scenario the axion can overcome the barrier from its potetial (eq. ?????),
+potetially multiple times.
+This happens until the energy density has redshifted enougha such that it can no longer
+overcome the potential. Then the axion beginnns to oscillate into its minimum.
+It was shown that in this case the relic aboundance is given by
+\begin{align}
+    Y = ????
+\end{align}
+This mechanism allows for the opportunity to have the nessisary velocity at high temperature for sucessfl baryogenssis with the mechanism described above while also
+generating a high
+
+\subsection{Transport Equation}
+
+\subsection{Clockwork Model and Deformed Potentials}
+
+\subsection{Spacial Dependence}
+
+\jana{
+I could work on:
+\begin{itemize}
+    \item play more with the two field model
+    \item cosine potential i.e. two axions
+    \begin{itemize}
+        \item what about decay?
+        \item constrains?
+    \end{itemize}
+    \item Afleck-Dime BG with axions
+    \item linear response formalism
+    \begin{itemize}
+        \item how does it work in detail?
+        \item comparison with Boltzmann
+        \item scenarios in the paper
+    \end{itemize}
+\end{itemize}
+}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\jana{TODO!!!!!}
+
+
+\appendix
+
+\section{Numerics}
+
+
+\newpage
+\printbibliography
+\end{document}
+

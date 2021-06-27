@@ -12,3 +12,9 @@ invisibles-school/
 patras-workshop/
 *.swp
 *.hdf5
+*.aux
+*-blx.bib
+*.log
+*.pdf
+*.xml
+*.toc
