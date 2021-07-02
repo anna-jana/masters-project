@@ -102,42 +102,74 @@ Finally we will discuss potential extensions of this model in section \ref{sec:m
 \section{Basics of Baryogenesis}
 \label{sec:baryogenesis}
 
-\jana{
-\begin{itemize}
-    \item Quantify the baryogenesis puzzle
-    \item sharakov conditions
-    \item proof them
-    \item interpretation
-    \item conditions in the standard model
-    \item B, L anomaly
-\end{itemize}
-}
+First let us review the evolution of the baryon density. We know from collider experiments that at energies below $\sim 1 \, \mathrm{TeV}$ the baryon and lepton numbers are conserved.
+Therefore the process of baryogenesis had to happen at higher energies.
+At these energies the baryons/lepton and photons are in chemical equilibrium.
+This means that from thermodynamics
+\begin{align}
+\label{eq:baryon_equilibrium}
+n_b + n_{\bar{b}} \approx n_\gamma
+\end{align}
+At lower energies the baryons annihilate into photons. That is all except the baryon excess $n_B$. Now the baryon asymmetry $n_B$ is maximal. Those remaining baryons make up the baryon density today.
 
-Let us first quantify the puzzle of bayrogenesis. Because of the process of annihilation of
-bayron, anti-baryon pairs into photons, it is convenient to express the asymmetry as
+We want to quantify the amount of asymmetry between baryons and anti-baryons.
+Today the asymmetry is maximal but
+above temperatures of $\sim 1 \, \mathrm{GeV}$ baryons and anti-baryons are in chemical equilibrium.
+Because of eq. \eqref{eq:baryon_equilibrium} it is convenient to express the asymmetry as
 the ratio between the difference between the number densities of baryons $n_b$ and anti-baryons $n_{\hat{b}}$
+over the number densities of photons \cite[eq. 3.52]{the_early_universe_kolb_and_turner}
 \begin{align}
-    n_B = n_b - n_{\hat{b}}
+    n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3
 \end{align}
-over the number densitie of photons  ??????
-\begin{align}
-    n_\gamma = ???????
-\end{align}
-i.e. the asymmetry parameter ?????
+i.e. as the asymmetry parameter ?????
 \begin{align}
     \eta_B = \frac{n_B}{n_\gamma}.
 \end{align}
+This quantity is conserved as the universe expands because both the baryon number density
+and the photon density scale as $\sim 1/R^3 \sim T^3$.
 
-Today there are no anti-bayrons present and the baryon and photon number-densiteis can be
-measured from the cosmic-microwave-background (CMB).
-This gives the observed asymmetry ????????
+However this is not conserved quantity if the co-moving number of photons changes due to annihilation
+of particles e.g. baryons or leptons into photons.
+Since the total co-moving entropy is conserved (the entropy of the annihilating particles is converted into the photons), the baryon abundance
 \begin{align}
-    \eta^\mathrm{obs}_B = (6 \pm 0.3) \times 10^{-10}.
+    \label{eq:baryon_abundance}
+    Y_B := \frac{n_B}{s},
 \end{align}
-The puzzle of baryogenesis is not only to generate an asymmetry at all but also to be able to produce the observed asymmetry $\eta^\mathrm{obs}_B$.
+where
+\begin{align}
+    s = \frac{2 \pi^2}{45} g_{*, s}(T) T^3
+\end{align}
+with the effective relativistic degrees of freedom for the entropy density $g_{*, s}(T)$
+is the entropy density
+is conserved since both scale as $\sim T^3$.
+Alternatively one can compute the present day baryon asymmetry $\eta_B^0$ from eq. \eqref{eq:baryon_abundance} by considering the ratio
+\begin{align}
+    \frac{\eta_B}{Y_B} = \frac{\pi^4}{45 \zeta(3)} g_{*, s}(T)
+\end{align}
+leading to
+\begin{align}
+    \eta_B^0 = \frac{g_{*,s}^0}{g_{*, s}^{\gg 1 \, \mathrm{Gev}}} \eta_B^{\gg 1 \, \mathrm{Gev}}.
+\end{align}
+where in the standard model one has $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mathrm{Gev}} = 427/4$ \cite[sec. 3.4]{the_early_universe_kolb_and_turner}.
+
+The present value of the baryon asymmetry $\eta_B^0$ can be determined from separate measurements
+of the baryon number density $n_B$ and the photon number density $n_\gamma$.
+Historically these numbers were determined from nucleosynthesis ?????? but modern measurement are based on observations of the cosmic microwave background (CMB) ??????.
+A resent analysis ????? finds a value of
+\begin{align}
+    \eta_B^0 = ?????.
+\end{align}
+
+
+
+
+
+
+
+
 
 \subsection{Sakharov Conditions}
-The \emph{Sakharov Condtions} are a set of three nessisary but not sufficient condtions for baryogenesis to happen in the universe. ?????? These are:
+The \emph{Sakharov Condtions} are a set of three nessisary but not sufficient condtions for baryogenesis to happen in the universe \cite{Sakharov_1991}. These are:
 \begin{itemize}
     \item Baryon Number has to violated.
     \item C and CP symmetries have to be broken.
@@ -146,7 +178,7 @@ The \emph{Sakharov Condtions} are a set of three nessisary but not sufficient co
 Lets proof and discuss them in order.
 First, to generate an asymmetry here need to be processes which produce more baryons than anti-baryons i.e. that violate $B$ symmetry.
 
-Second lets consider C and CP violation. They are needed to distiglish between particles and anti-particles. Otherwise here might be processes that produce an asymmetry in the
+Second lets consider C and CP violation. They are needed to distinguish between particles and anti-particles. Otherwise here might be processes that produce an asymmetry in the
 particle vs anti-particle number but both the process producing more particles and the (conjugated) one that produces more anti-particles happen at the same rate.
 Then on average the total number of particles is zero again.
 This condition can be formally shown by considering the density matrix $\rho$ of the universe in the Heisenberg picture \footnote{That is the density matrix $\rho$ and all states are time-independent while all observables are time-dependent.}. Its time evolution is coverened by the Heisenberg equation
@@ -174,7 +206,7 @@ then
     \frac{\mathrm{d}}{\mathrm{d} t} \Tr [ B \rho ] &= \Tr [ B \dot{\rho} ] = \Tr [ B [H, \rho] ] \\
     &= \Tr [ (C/CP)^\dagger B (C/CP) [H, \rho] ] = \Tr [ \rho (C/CP)^\dagger B [C/CP, H] ] = 0.
 \end{align}
-Therefore C and CP violation is required for bayrogenesis.
+Therefore C and CP violation is required for bayrogenesis. The violation of C and CP symmetry can also be discussed more on the level of the B violating processes. A detailed discussion can be found in \cite[sec 2.3]{Cline:2006ts_Baryogenesis} as well as %\cite[sec. 6.3]{the_early_universe_kolb_and_turner}.
 
 Finally departure from thermal equilibrium is required. This is because in thermal equilibrium the number densities are purely set by the
 masses of the particles or anti-particles. If the theory is CPT symmetric, as very QFT with a Lorentz invariant groundstate (vacuum), then the
@@ -189,7 +221,15 @@ Then one finds that
     \Tr [ B \rho ] &=  \Tr [ (CPT) (CPT)^\dagger B \rho ] = \Tr [ (CPT)^\dagger B \rho (CPT) ]  \\
                    &= - \Tr [ B (CPT)^\dagger \rho (CPT) ] = - \Tr [ B \rho ],
 \end{align}
-since $CPT$ communtes with the hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium.
+since $CPT$ communtes with the hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium. This derivation and discussion can also be found in \cite[sec. II]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
+
+
+
+
+
+
+
+
 
 \subsection{Baryogenesis and the Standard Model}
 In this section we discuss the violation of baryon and lepton number in the standard model. This issue is releated to vacuum stucture of the theory of electro-weak interactions as a
@@ -220,6 +260,7 @@ where we use the convention
     \epsilon^{0123} = -1
 \end{align}
 }
+\jana{TODO: find a better start!!!}
 In this theory we consider the expression
 \begin{align}
     G^{\mu \nu}_a \tilde{G}^a_{\mu \nu}
@@ -228,25 +269,111 @@ that can be writte as a total derivative
 \begin{align}
     G^{\mu \nu}_a \tilde{G}^a_{\mu \nu} = \partial_\mu K^\mu
 \end{align}
-of
+of \jana{
+this is the Cern-Simons current
+describe
+}
 \begin{align}
     K_\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha G^a_{\beta \gamma} - \frac{g}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right)
 \end{align}
 In euclidian space-time:
 \begin{align}
     \label{eq:eucleadian_integral}
-    \int \mathrm{d}^4 x \, G^a_{\mu \nu} \tilde{G}^a_{\mu \nu} = \int \mathrm{d}^4 x \, \partial_\mu K_\mu = \int_{S^3 @ |x| \to \infty} \mathrm{d}^3 S_\mu K_\mu
+    \int \mathrm{d}^4 x \, G^a_{\mu \nu} \tilde{G}^a_{\mu \nu} = \int \mathrm{d}^4 x \, \partial_\mu K_\mu = \int_{S^3 @ |x| \to \infty} \mathrm{d}^3 \sigma_\mu K_\mu
 \end{align}
-This shows that including such a term in the lagragian has no effect in pertubation theory since perturbativly the gauge configurations vanish at infinity.
+This shows that including such a term in the lagragian has no effect in perturbation theory since perturbativly the gauge configurations vanish at infinity.
 On the other hand the path integral runs over classical field configurations, where this term does not vanish.
-In order for the eucleadian action to be finite (otherwise the weight in the path integral would be vanishing and those configuration would not contribute) the field strength tensor $G^a_{\mu \nu}$ haa to vanish.
-This does not require the potetial $A^a_\mu$ to vanish since one can obtain configurations by gauge transofrmation of the form
+In order for the euclidean action to be finite (otherwise the weight in the path integral would be vanishing and those configuration would not contribute) the field strength tensor $G^a_{\mu \nu}$ haa to vanish.
+This does not require the potential $A^a_\mu$ to vanish since one can obtain configurations by gauge transformation of the form
 \begin{align}
     A_\mu = U^{-1} A_\mu U + \frac{i}{g} U^{-1} \partial_\mu U
 \end{align}
 where $U$ is some local gauge transformations i.e. $U(x) \in \mathcal{G}$.
-These gauge configrations are called \empth{pure gauges}.
-As
+These gauge configrations are called \emph{pure gauges}.
+If we restrict the map $U$ to the surface at infinity, as in the surface integral in eq. \eqref{eq:eucleadian_integral} and we only consider a $\mathrm{SU}(2)$ subgroup of $\mathcal{G}$,
+then $U$ is a map of $S^3 \to S^3$.
+These kinds of maps form the third homotopy group of $S^3$ and it has been shown that the winding number
+\begin{align}
+    \label{eq:winding_number}
+    \frac{g^3}{32 \pi^2} \int \mathrm{d}^3 \sigma_\mu K_\mu
+    = \nu,
+\end{align}
+is an integer i.e. a topological property.
+This means that one can not continuously deform the gauge configuration to the trivial one. In fact we have different vacuum configurations for each $\nu$.
+Because these field configurations are of finite action they have to be localized in space-time.
+It was also shown that they are minima of the action ????, implying that they are solutions of the classical equations of motion.
+
+Now we want to look at this property in Minkowski space-time.
+For this we use the temporal gauge where $A_a^0 = 0$. One finds that $K^i = 0$ in this gauge.
+Using this we can write
+\begin{align}
+    \int \mathrm{d} t \, \partial_0 K^0 = N_{\mathrm{CS}}(t = \infty) - N_{\mathrm{CS}}(t = -\infty) = \Delta N_{\mathrm{CS}}
+\end{align}
+
+
+\jana{
+\begin{enumerate}
+    \item Instantons
+    \begin{itemize}
+        \item In eucleadian space-time
+        \item finite action
+        \item $\Rightarrow$ localized in all four dimensions
+        \item integer Cherm-Simons number (check this again!!!!)
+        \item does $A_\mu(x) \to \frac{i}{g} U^{-1}(x) \partial_\mu U(x)$ as $x \to \infty$ or $A_\mu \to 0$???
+    \end{itemize}
+    \item Vacuum configuration:
+    \begin{itemize}
+        \item lowest energy state.
+        \item solution to classical eq. of motion
+        \item time independent
+    \end{itemize}
+    \item Sphaleron:
+    \begin{itemize}
+        \item solution to classical eq. of motion
+        \item stationary action but maximal (saddel point)
+        \item time independent
+        \item unstable (slippery hence the name in greek)
+    \end{itemize}
+    \item Sphalron Process:
+    \begin{itemize}
+        \item physical process
+        \item thermal fluctuation over the potetial barrier
+        \item rate for this procees given by hthrougheight of the barrier i.e. the energy of the sphaleron
+        \item low rate at low temperatures
+        \item high rate at hgher temperatures
+        \item dependence on higgs phase?
+    \end{itemize}
+    \item Instanton Process:
+    \begin{itemize}
+        \item physical process
+        \item quantum tunnneling through the potential barrier
+        \item rate given by instanton solution
+        \item in euledian space-time the equation of motion has the negative potential.
+        Compared to a 1D QM examples. A particle (the field) can now move from one potetial minimum (in minkowski, vacuum) (in eucledian a maximum) to the next by being displaced infintacinmal, rolling down and going up again and finally reaching the next eucledian maximum, minkwski vacuum. This process descibes tunneling in Minkowski spacetime (WOW!!!)
+    \end{itemize}
+\end{enumerate}
+}
+
+\jana{TODO: describe as text all the things in the enumeration above, find good references:
+\begin{itemize}
+    \item original paper by 't hooft
+    \item aspects of symmetry (get is from the library?)
+    \item this really good masters thesis
+    \item the de luzio paper
+\end{itemize}
+}
+
+\jana{TODO:
+    \begin{itemize}
+        \item what is the rate for spharelrons then?
+        \item what is the energy for sphalerons?
+        \item what is the rate for quantum tunneling?
+        \item what does this have to do with B and L symmetries
+        \item where does the anomaly come from?
+        \item connnection to axions??? maybe????
+    \end{itemize}
+}
+
 
 \begin{figure}[H]
     \centering
@@ -264,7 +391,11 @@ As
         \node at (1.5, -0.7) {Instanton};
         \draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
     \end{tikzpicture}
-    \caption{Cartoon of the vacuum structure of an non-albelian gauge theory.}
+    \caption{Cartoon of the vacuum structure of an non-albelian gauge theory.
+\jana{TODO: the x axis is N\_CS, change the arrow of the instanton to a curly and
+add quantum tunneling as an arrow??}
+\jana{TOOD: reference in text}
+}
     \label{fig:vacuum_cartoon}
 \end{figure}
 
@@ -280,7 +411,6 @@ As
     \item sphalerons
     \item C and CP violation
     \item does not work
-
 \end{itemize}
 }
 
