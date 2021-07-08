@@ -80,6 +80,9 @@ def calc_reheating_temperature(Gamma_phi, result="paper"):
     else:
         raise ValueError(f"invalid result {result}")
 
+def calc_inflaton_decay_rate_from_reheating_temperature(T_RH):
+    return (T_RH / 2e13)**2 * 1e9 # inverted result from paper
+
 def calc_maximal_temperature(Gamma_phi, H_inf, result="paper"):
     if result == "paper":
         return 5e13 * (Gamma_phi / 1e9)**(1/4) * (H_inf / 1e11)**(1/2)
