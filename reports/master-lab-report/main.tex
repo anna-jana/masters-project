@@ -102,6 +102,9 @@ Finally we will discuss potential extensions of this model in section \ref{sec:m
 \section{Basics of Baryogenesis}
 \label{sec:baryogenesis}
 
+This section reviews the fundamentals of baryogenesis.
+
+\subsection{Evolution of the Baryon Asymmetry}
 First let us review the evolution of the baryon density. We know from collider experiments that at energies below $\sim 1 \, \mathrm{TeV}$ the baryon and lepton numbers are conserved.
 Therefore the process of baryogenesis had to happen at higher energies.
 At these energies the baryons/lepton and photons are in chemical equilibrium.
@@ -269,10 +272,7 @@ that can be writte as a total derivative
 \begin{align}
     G^{\mu \nu}_a \tilde{G}^a_{\mu \nu} = \partial_\mu K^\mu
 \end{align}
-of \jana{
-this is the Cern-Simons current
-describe
-}
+of the Cern-Simons current
 \begin{align}
     K_\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha G^a_{\beta \gamma} - \frac{g}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right)
 \end{align}
@@ -378,7 +378,7 @@ Using this we can write
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-        \draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Field Configuration};
+        \draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Chern-Simons Number};
         \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south] {Field Energy};
         \draw[scale=1, domain=-4.5:4.5, smooth, variable=\x, blue] plot ({\x}, {1.8*(1 - cos(2 * \x r))});
         \foreach \x in {0,3.14,-3.14}
@@ -426,22 +426,14 @@ Leptogenesis on the other hand is a natural consequence of the introduction of n
 In the usual implementation of leptogenesis heavy
 
 
-In this model, a lepton-asymmetry is created through the \emph{dimension-five Weinberg operator}
-\begin{align}
-    \mathcal{L} \ni (H l H l) ???????.
-\end{align}
-This not renormalizable operator appreas in the effective theory from so called \emph{see-saw mechanisms}
-
-\jana{
 \begin{itemize}
-    \item very brief
-    \item thermal leptogenesis
-    \item electroweak baryogenesis
-    \item afleck dime baryogenesis
+    \item GUT-baryogenesis
+    \item Electro-Weak Baryogenesis
+    \item Leptogenesis
+    \item Afleck-Dime baryogenesis
 \end{itemize}
-}
 
-Finally another theory of baryogensis is Afflec-Dime BG. In this mechanism a scalar field carring lepton number decays into leptons and therefore creates an asymmetry ?????:
+ and therefore creates an asymmetry ?????:
 
 \subsection{Spontaneous Baryogenesis}
 \label{sec:spontaneour_bayrogenesis}
@@ -493,27 +485,52 @@ What kind of field could $\phi$ be?
 }
 
 \subsection{Lepton-Number Violations and the Weinberg Operator}
-In the standard model not only $B - L$ is conserved but also neutrinos are mass-less.
-A model to include, the via neutrino oscillations observed, neutrino masses is the see-saw mechanism.
-One assumes that neutrinos are Majorana fermions i.e. that they are their own anti-particles.
-????????????????
+
 
 \label{sec:lapton_number_violations}
 
 
-\jana{
-\begin{itemize}
-    \item Majorana mass term for neutrinos
-    \item interaction term i.e. see saw mechanism type I
-    \item effective weinberg operator
-    \item resulting effective crosssection
-\end{itemize}
-}
-
-
+If neutrinons are Dirac fermions then their masses can be generated, as for the charged leptons, via a Yukawa coupling.
+One the other hand if neutrinos are Majorana particles i.e. they are their own anti-particles, their masses can be generted from a Weinberg coupling ???????.
+This coupling is given as
 \begin{align}
-    \mathcal{L} \ni ?????
+    \mathcal{L} \ni
 \end{align}
+This operator does not conserve lepton number but changes it by $\Delta L = 2$.
+As a dimension five operator it is non-renormalizable and has to be understood as
+an effective low-energy description.
+Because its dimension five it involves an energy-scale $\Lambda$ at which new physics emerges.
+
+The type I see-saw mechanism gives a natural value for this scale $\Lambda$.
+This mechanism explains why the masses of the standard model neutrinos are so low compared to other standard model particles.
+One considers the Lagrangian ???????
+\begin{align}
+    \mathcal{L} \ni
+\end{align}
+If one diagonalizes the mass matrix, one finds that ?????
+\begin{align}
+    m = ????.
+\end{align}
+If we consder the Feynman diagrams in fig. ??????? at low energies i.e. the center of mass energy $s$ is small compared to the mass of the right handed neutrinos, we can neglect the momentum in the propagator.
+Then the mass sets the scale of coupling together with the vacuum expectation value of the Higgs and we
+find that the effective coupling is given by the Weinberg operator with ???
+\begin{align}
+    \Lambda =
+\end{align}
+For the sum of neutrino masses, we assume that it is of order the difference of the masses of atmospheric neutrinos ??????
+\begin{align}
+    \Delta m_\mathrm{at} = ?????
+\end{align}
+From this one finds the effective (thermally averaged) cross-section for the lepton number changing processes as
+\begin{align}
+    \langle sigma v \rangle = ?????
+\end{align}
+
+
+
+
+
+
 
 
 
@@ -587,14 +604,6 @@ In general axion like particles (APLs) are pseudo scalar bosons that couple
 to gauge field via an anomaly term.
 Axions are pseudo scalar bosons
 
-\subsection{The Strong CP Problem and QCD Axions}
-In quantum chromodynamics (QCD) the operator
-
-
-
-\subsection{General Axion Models}
-
-\subsection{Realignment}
 
 \jana{
 \begin{itemize}
@@ -610,6 +619,9 @@ In quantum chromodynamics (QCD) the operator
 
 \section{Spontaneous Leptogenesis with Axions}
 \label{sec:spont_bg_lepto_with_axions}
+
+
+\jana{WARNING: this is old!!!!}
 
 In this section we will implement a concrete model for leptogenesis using axions.
 
@@ -667,6 +679,10 @@ As pointed out in ref. ???? and ref. ???????, this simultaneously induces an ene
 ?????????????????????????????????????ß
 ?????????????????????????????????
 Therefore
+
+
+\subsection{Transport Equation}
+
 
 \jana{
 \begin{itemize}
@@ -732,8 +748,6 @@ It was shown that in this case the relic aboundance is given by
 \end{align}
 This mechanism allows for the opportunity to have the nessisary velocity at high temperature for sucessfl baryogenssis with the mechanism described above while also
 generating a high
-
-\subsection{Transport Equation}
 
 \subsection{Clockwork Model and Deformed Potentials}
 
