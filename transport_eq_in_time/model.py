@@ -125,7 +125,6 @@ def solve_to_end(model, axion_initial, options=default_solver_options, calc_axio
         result = evolve(model, state, options)
     if collect:
         steps.append(result)
-    if collect:
         return steps
     else:
         eta_B = final_result(result)

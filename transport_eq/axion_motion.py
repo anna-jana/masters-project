@@ -1,11 +1,15 @@
 import sys
 if ".." not in sys.path: sys.path.append("..")
+from collections import namedtuple
 
 import numpy as np
-from numba import jit, njit
+from numba import njit
 from scipy.optimize import root
 
 from common import cosmology
+
+AxionMotionModel = namedtuple("AxionMotionModel",
+        ["axion_rhs", "calc_axion_mass", "calc_d2Vdtheta2"])
 
 def make_single_axion_rhs(calc_dVdtheta_over_f_a_squared):
     calc_dVdtheta_over_f_a_squared = njit(calc_dVdtheta_over_f_a_squared)
@@ -22,7 +26,7 @@ def make_single_axion_rhs(calc_dVdtheta_over_f_a_squared):
 axion_rhs_simple = make_single_axion_rhs(lambda T, theta, m_a: m_a**2 * theta)
 
 @njit
-def calc_axion_mass(T, m_a, Lambda, p):
+def calc_one_instanton_axion_mass(T, m_a, Lambda, p):
     return m_a * np.min((Lambda / T)**p, 1.0)
 
 @njit
@@ -50,3 +54,5 @@ def calc_T_osc(calc_axion_mass, axion_parameter, N=2):
         return np.nan
     return res.x[0]
 
+axion_model_one_simple = AxionMotionModel(axion_rhs=axion_rhs_simple, calc_axion_mass=calc_const_axion_mass, calc_d2Vdtheta2=calc_d2Vdtheta2_simple)
+axion_model_one_one_instanton = AxionMotionModel(axion_rhs=axion_rhs_one_instanton, calc_axion_mass=calc_one_instanton_axion_mass, calc_d2Vdtheta2=calc_d2Vdtheta2_one_instanton)

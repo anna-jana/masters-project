@@ -4,9 +4,9 @@ import time
 import numpy as np
 from scipy.integrate import solve_ivp
 
-import axion_motion
-import transport_equation
-import axion_decay
+from . import axion_motion
+from . import transport_equation
+from . import axion_decay
 
 from common import cosmology, constants
 
@@ -104,15 +104,19 @@ def done(res, debug):
 def final_result(res):
     return cosmology.calc_eta_B_final(res.red_chem_B_minus_L[-1], res.T[-1])
 
-def solve_to_end(model, T_RH, axion_initial, options=default_solver_options, calc_axion_mass=None, T_end=None, debug=False):
+def solve_to_end(model, T_RH, axion_initial, options=default_solver_options, calc_axion_mass=None, T_end=None, debug=False, collect=False):
     if debug:
         start_time = time.time()
     result = start(model, T_RH, axion_initial, options, calc_axion_mass, T_end)
     if debug:
         end_time = time.time()
         print("frist step time:", end_time - start_time)
+    if collect:
+        steps = []
     step = 0
     while not done(result, debug):
+        if collect:
+            steps.append(result)
         #print("step:", step)
         if debug:
             print("step:", step, "T:", f"{result.T[-1]:e}")
@@ -123,6 +127,9 @@ def solve_to_end(model, T_RH, axion_initial, options=default_solver_options, cal
             end_time = time.time()
             print("step time:", end_time - start_time)
         step += 1
+    if collect:
+        steps.append(result)
+        return steps
     eta_B = final_result(result)
     return eta_B, result.red_chem_B_minus_L[-1], result.T[-1], result.axion.T[-1]
 

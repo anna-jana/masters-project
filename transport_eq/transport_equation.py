@@ -9,7 +9,7 @@ from numba import jit, njit
 
 if ".." not in sys.path: sys.path.append("..")
 from common import constants, cosmology
-import axion_motion
+from . import axion_motion
 
 ############# Rates for Different Processes ############
 
