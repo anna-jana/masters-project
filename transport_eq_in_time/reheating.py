@@ -2,7 +2,7 @@ import sys
 sys.path.append("..")
 import numpy as np
 from scipy.integrate import solve_ivp
-from common import cosmology
+from common import cosmology, constants
 
 def calc_temperature(y):
     rho_phi, rho_tot = np.exp(y)
@@ -26,9 +26,21 @@ def solve_reheating_eq(t_start, t_end, initial, Gamma_phi):
         y = sol.sol(np.log(t))
         return calc_temperature(y)
 
+    def H_fn(t):
+        _, rho_tot = np.exp(sol.sol(np.log(t)))
+        return cosmology.calc_hubble_parameter(rho_tot)
+
+    def T_dot_over_T_fn(t):
+        rho_phi, rho_tot = np.exp(sol.sol(np.log(t)))
+        rho_rad = rho_tot - rho_phi
+        return (
+            (Gamma_phi * rho_phi - 4 * H_fn(t) * rho_rad) /
+            (np.pi**2 / 30 * constants.g_star * 4 * T_fn(t)**4)
+        )
+
     final = sol.sol(interval[-1])
 
-    return T_fn, final
+    return T_fn, H_fn, T_dot_over_T_fn, final
 
 def calc_initial_reheating(H_inf):
     rho_phi_inf = cosmology.calc_energy_density_from_hubble(H_inf)

@@ -86,7 +86,8 @@ def eqi_temp(alpha, low=1e10, high=1e16):
     def ratio(T):
         gamma = calc_rate_vector(T)[alpha] / (T**3 / 6)
         expr = np.sum(charge_vector[alpha, :]**2 / dofs * gamma)
-        H = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T))
+        H = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T)) # NOTE: this is not right (we are not always in rad dom but
+        # we ignore this at this point
         return expr / H
 
     try:
@@ -168,9 +169,12 @@ assert len([(process_name, conserved_name)
 ####################################### Transport Equation ###################################
 unit = 1e-9
 
-def transport_eq_rhs(t, T, red_chem_pot, n_S, theta_dot):
+def transport_eq_rhs(t, T, H, T_dot_over_T, red_chem_pot, n_S, theta_dot):
     if T <= 0.0:
         return np.zeros(N)
-    d_red_chem_pot_d_t = - (rate(T) * (charge_vector @ red_chem_pot - n_S * theta_dot / T / unit)) @ charge_vector / dofs
+    d_red_chem_pot_d_t = (
+            - (rate(T) * (charge_vector @ red_chem_pot - n_S * theta_dot / T / unit)) @ charge_vector / dofs
+            - red_chem_pot * 3 * (T_dot_over_T + H)
+    )
     d_red_chem_pot_d_ln_t = d_red_chem_pot_d_t * t
     return d_red_chem_pot_d_ln_t

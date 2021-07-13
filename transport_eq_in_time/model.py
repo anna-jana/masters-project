@@ -28,27 +28,32 @@ SimulationState = namedtuple("SimulationState",
 default_solver_options = SolverOptions()
 
 # TODO: clean up the options passed to the rhs function, we could also just pass the AxionBaryogenesisModel object itself
-def rhs(log_t, y, n_S, axion_rhs, axion_decay_rate, axion_parameter, T_fn):
+def rhs(log_t, y, n_S, axion_rhs, axion_decay_rate, axion_parameter, T_fn, H_fn, T_dot_over_T_fn):
     red_chem_pot, axion = y[:transport_equation.N], y[transport_equation.N:]
     t = np.exp(log_t)
     T = T_fn(t)
+    T_dot_over_T = T_dot_over_T_fn(t)
+    H = H_fn(t)
     theta_dot = axion[1]
-    d_red_chem_pot_d_ln_t = transport_equation.transport_eq_rhs(t, T, red_chem_pot, n_S, theta_dot)
-    d_axion_d_ln_t = axion_rhs(t, T, axion, axion_decay_rate, axion_parameter)
+    d_red_chem_pot_d_ln_t = transport_equation.transport_eq_rhs(t, T, H, T_dot_over_T, red_chem_pot, n_S, theta_dot)
+    d_axion_d_ln_t = axion_rhs(t, T, H, axion, axion_decay_rate, axion_parameter)
     return np.hstack([d_red_chem_pot_d_ln_t, d_axion_d_ln_t])
 
 def evolve(model, state, options):
     start, end = np.log(state.t_start), np.log(state.t_end)
-    T_fn, rh_final = reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
+    T_fn, H_fn, T_dot_over_T_fn, rh_final = \
+            reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
     if options.num_steps is not None:
         steps = np.linspace(start, end, options.num_steps); steps[0] = start; steps[-1] = end
     sol = solve_ivp(rhs, (start, end), state.initial,
-             args=(model.source_vector, model.axion_rhs, model.axion_decay_rate, model.axion_parameter, T_fn),
+             args=(model.source_vector, model.axion_rhs, model.axion_decay_rate, model.axion_parameter,
+                 T_fn, H_fn, T_dot_over_T_fn),
              method=options.solver, rtol=options.rtol, atol=options.atol,
              t_eval=None if options.num_steps is None else steps,
              )
     red_chem_pots = sol.y[:transport_equation.N] * transport_equation.unit
     axion = sol.y[transport_equation.N:]
+    print("done:", state)
     return Result(t=np.exp(sol.t), red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
             red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion=axion)
 
@@ -121,6 +126,7 @@ def solve_to_end(model, axion_initial, options=default_solver_options, calc_axio
     while not done(result, debug):
         if collect:
             steps.append(result)
+        break
         state = restart(result, calc_axion_mass, model.axion_parameter, options)
         result = evolve(model, state, options)
     if collect:
