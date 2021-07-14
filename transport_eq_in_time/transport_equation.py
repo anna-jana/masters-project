@@ -169,12 +169,12 @@ assert len([(process_name, conserved_name)
 ####################################### Transport Equation ###################################
 unit = 1e-9
 
-def transport_eq_rhs(t, T, H, T_dot_over_T, red_chem_pot, n_S, theta_dot):
+def transport_eq_rhs(t, T, H, T_dot, red_chem_pot, n_S, theta_dot):
     if T <= 0.0:
         return np.zeros(N)
     d_red_chem_pot_d_t = (
             - (rate(T) * (charge_vector @ red_chem_pot - n_S * theta_dot / T / unit)) @ charge_vector / dofs
-            - red_chem_pot * 3 * (T_dot_over_T + H)
+            - red_chem_pot * 3 * (T_dot / T + H)
     )
     d_red_chem_pot_d_ln_t = d_red_chem_pot_d_t * t
     return d_red_chem_pot_d_ln_t
