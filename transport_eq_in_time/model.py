@@ -18,12 +18,12 @@ AxionBaryogenesisModel = namedtuple("AxionBaryogenesisModel",
             "Gamma_phi", "H_inf"])
 
 SolverOptions = namedtuple("SolverOptions",
-        ["solver", "rtol", "atol", "num_steps", "num_osc", "num_osc_step"],
-        defaults=["Radau", 1e-4, 1e-6, None, 50, 20],
+        ["solver", "rtol", "atol", "num_osc", "num_osc_step"],
+        defaults=["Radau", 1e-4, 1e-6, 50, 20],
         )
 
 SimulationState = namedtuple("SimulationState",
-        ["initial", "initial_reheating", "t_start", "t_end"])
+        ["initial_reheating", "initial_axion", "initial_transport_eq", "t_start", "t_end"])
 
 default_solver_options = SolverOptions()
 
@@ -41,21 +41,17 @@ def rhs(log_t, y, n_S, axion_rhs, axion_decay_rate, axion_parameter, T_fn, H_fn,
 
 def evolve(model, state, options):
     start, end = np.log(state.t_start), np.log(state.t_end)
+    # solve reheating
     T_fn, H_fn, T_dot_fn, rh_final = \
             reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
-    if options.num_steps is not None:
-        steps = np.linspace(start, end, options.num_steps); steps[0] = start; steps[-1] = end
-    sol = solve_ivp(rhs, (start, end), state.initial,
-             args=(model.source_vector, model.axion_rhs, model.axion_decay_rate, model.axion_parameter,
-                 T_fn, H_fn, T_dot_fn),
-             method=options.solver, rtol=options.rtol, atol=options.atol,
-             t_eval=None if options.num_steps is None else steps,
-             )
-    red_chem_pots = sol.y[:transport_equation.N] * transport_equation.unit
-    axion = sol.y[transport_equation.N:]
-    #print("done:", state)
-    return Result(t=np.exp(sol.t), red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
-            red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion=axion)
+    # solve axion
+    axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end, T_fn, H_fn, model.axion_parameter)
+    # solve transport equation
+    ts, red_chem_pots = transport_equation.solve_transport_eq(state.t_start, state.t_end, state.initial_transport_eq,
+            options.rtol, T_fn, H_fn, T_dot_fn, axion_fn, model.source_vector)
+    # create result
+    return Result(t=ts, red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
+            red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion=axion_fn)
 
 T_eqs = [transport_equation.eqi_temp(alpha) for alpha in range(transport_equation.N_alpha)]
 

@@ -14,8 +14,12 @@ AxionMotionModel = namedtuple("AxionMotionModel",
 
 def make_single_axion_rhs(calc_dVdtheta_over_f_a_squared):
     calc_dVdtheta_over_f_a_squared = njit(calc_dVdtheta_over_f_a_squared)
-    def axion_rhs_standard(t, T, H, axion, axion_decay_rate, axion_parameter):
-        theta, v = axion
+    @njit
+    def axion_rhs_standard(log_t, y, T_fn, H_fn, axion_parameter):
+        theta, v = y
+        t = np.exp(log_t)
+        T = T_fn(t)
+        H = H_fn(t)
         d_theta_d_ln_t = v * t
         d_v_d_t = - 3 * H * v - calc_dVdtheta_over_f_a_squared(T, theta, *axion_parameter)
         d_v_d_ln_t = d_v_d_t * t
@@ -60,9 +64,9 @@ def calc_T_osc(calc_axion_mass, axion_parameter, N=2):
 axion_model_one_simple = AxionMotionModel(axion_rhs=axion_rhs_simple, calc_axion_mass=calc_const_axion_mass, calc_d2Vdtheta2=calc_d2Vdtheta2_simple)
 axion_model_one_one_instanton = AxionMotionModel(axion_rhs=axion_rhs_one_instanton, calc_axion_mass=calc_one_instanton_axion_mass, calc_d2Vdtheta2=calc_d2Vdtheta2_one_instanton)
 
-
-def solve_axion_motion(axion_rhs, axion_initial, t_start, t_end, calc_axion_mass, axion_parameter):
-    sol = solve_ivp(axion_rhs, (t_start, t_end), axion_initial, dense_output=True, args=(axion_parameter,))
+def solve_axion_motion(axion_rhs, axion_initial, t_start, t_end, T_fn, H_fn, axion_parameter, rtol):
+    sol = solve_ivp(axion_rhs, (np.log(t_start), np.log(t_end)), axion_initial, dense_output=True,
+            args=(T_fn, H_fn, axion_parameter,), method="RK45", rtol=1e-4)
     assert sol.success
     return sol.sol
 

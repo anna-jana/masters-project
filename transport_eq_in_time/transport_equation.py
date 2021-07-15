@@ -169,12 +169,22 @@ assert len([(process_name, conserved_name)
 ####################################### Transport Equation ###################################
 unit = 1e-9
 
-def transport_eq_rhs(t, T, H, T_dot, red_chem_pot, n_S, theta_dot):
+def transport_eq_rhs(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
+    t = np.exp(log_t)
+    T = T_fn(t)
     if T <= 0.0:
         return np.zeros(N)
+    H = H_fn(t)
+    _, theta_dot = axion_fn(log_t)
     d_red_chem_pot_d_t = (
-            - (rate(T) * (charge_vector @ red_chem_pot - n_S * theta_dot / T / unit)) @ charge_vector / dofs
-            - red_chem_pot * 3 * (T_dot / T + H)
+            - (rate(T) * (charge_vector @ red_chem_pots - n_S * theta_dot / T / unit)) @ charge_vector / dofs
+            - red_chem_pots * 3 * (T_dot / T + H)
     )
     d_red_chem_pot_d_ln_t = d_red_chem_pot_d_t * t
     return d_red_chem_pot_d_ln_t
+
+def solve_transport_eq(t_start, t_end, initial_red_chem_pots, rtol, T_fn, H_fn, T_dot_fn, axion_fn, source_vector):
+    sol = solve_ivp(transport_eq_rhs, (np.log(t_start), np.log(t_end)), initial_red_chem_pots / unit,
+            method="Radau", rtol=rtol,
+            args=(T_fn, H_fn, T_dot_fn, axion_fn, source_vector)
+    return np.exp(sol.t), sol.y * unit
