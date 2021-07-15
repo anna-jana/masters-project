@@ -485,47 +485,44 @@ What kind of field could $\phi$ be?
 }
 
 \subsection{Lepton-Number Violations and the Weinberg Operator}
-
-
 \label{sec:lapton_number_violations}
 
-
-If neutrinons are Dirac fermions then their masses can be generated, as for the charged leptons, via a Yukawa coupling.
-One the other hand if neutrinos are Majorana particles i.e. they are their own anti-particles, their masses can be generted from a Weinberg coupling ???????.
-This coupling is given as
+In effective field theory one can generate lepton violations at dimension five only from the
+Weinberg operator \cite{Weinberg_operator_original_PhysRevLett.43.1566}. It is given by \cite[eq. 2]{Weinberg_at_colliders_Fuks_2021}
 \begin{align}
-    \mathcal{L} \ni
+    \mathcal{L}_5 = \frac{C_{l l'}}{\Lambda} [H \cdot \bar{L}^c_l] [L_{l'} \cdot H] + h.c.
 \end{align}
-This operator does not conserve lepton number but changes it by $\Delta L = 2$.
-As a dimension five operator it is non-renormalizable and has to be understood as
-an effective low-energy description.
-Because its dimension five it involves an energy-scale $\Lambda$ at which new physics emerges.
-
-The type I see-saw mechanism gives a natural value for this scale $\Lambda$.
-This mechanism explains why the masses of the standard model neutrinos are so low compared to other standard model particles.
-One considers the Lagrangian ???????
+where $L = (\nu_l,\, l)^T$ is the left handed lepton doublet ($\nu_l$ the left handed neutrino and $l$ the charged lepton) and $H = (h_+,\, h_0)^T$ the Higgs doublet. The index $l$ and $l'$ denote the flavor index and the parameter $C_{l l'}$ encodes a potential flavor dependence.
+The superscript $c$ defines charge conjunction, which acts on spinors as $C \psi C = i \gamma^2 \psi^*$
+and $\Lambda$ is the energy scale of this operator.
+As one can see this operator only contains left-handed leptons and no anti-leptons. Therefore
+it generates scattering processes which violate $L$ by $\Delta L = 2$.
+At lower energies, below the electro-weak phase-transition where the Higgs field takes a vacuum expectation value, this operators generates a mass-term for left-handed neutrinos of the form
 \begin{align}
-    \mathcal{L} \ni
+    C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda} C v_l v_l',
 \end{align}
-If one diagonalizes the mass matrix, one finds that ?????
+where $\langle H \rangle = (0,\, v_{\mathrm{EW}} / \sqrt{2})^T$.
+This is a Majorana mass term ????? for the mass matrix $m_{\nu, ll'} = C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda}$
+We assume flavor independence and that the sum of neutrino masses
+is of order the atmospharic neutrino mass difference $\bar{m}^2 = \sum_i m_{\nu, i} \sim \Delta m_{\mathrm{atm}} = 2.4 \cdot 10^{-3} \, \mathrm{eV}^2$ as in \cite{Kusenko_2015_Axion_Leptogenesis}.
+Then the effective cross-section for $\Delta L = 2$ processes
+is given by \cite[eq. 9]{Kusenko_2015_Axion_Leptogenesis}
 \begin{align}
-    m = ????.
+    \sigma_{\Delta L = 2} \approx \frac{3}{32 \pi^2} \frac{\bar{m}^2}{v_{\mathrm{EW}}^4}.
 \end{align}
-If we consder the Feynman diagrams in fig. ??????? at low energies i.e. the center of mass energy $s$ is small compared to the mass of the right handed neutrinos, we can neglect the momentum in the propagator.
-Then the mass sets the scale of coupling together with the vacuum expectation value of the Higgs and we
-find that the effective coupling is given by the Weinberg operator with ???
-\begin{align}
-    \Lambda =
-\end{align}
-For the sum of neutrino masses, we assume that it is of order the difference of the masses of atmospheric neutrinos ??????
-\begin{align}
-    \Delta m_\mathrm{at} = ?????
-\end{align}
-From this one finds the effective (thermally averaged) cross-section for the lepton number changing processes as
-\begin{align}
-    \langle sigma v \rangle = ?????
-\end{align}
-
+This approximation is valid if the center-of-mass energies in the processes are always small compared to the energy scale $\Lambda$.
+There are different possible UV completions that would generate the Weinberg operator
+One is the see-saw mechanism which introduces heavy right handed neutrinos and explains the low masses of the left-handed neutrinos.
+In this case the Weinberg operator is mediated by right handed neutrinos and
+couples to the left-handed lepton and the Higgs doublets via Yukawa couplings.
+If one integrates out the right handed neutrino by assuming that their mass is
+large compared to the center-of-mass energy (essentially neglecting the momentum in the denominator of the internal propagator), one obtains the Weinberg operator.
+A cartoon of this is shown in figure ?????.
+For this approximation to be valid in our computations, we require that
+the masses of the right-handed neutrinos are large compared to the temperatures
+of the thermal plasma. Then the center-of-mass energy of the scatterings are
+small compared to the mass of the mediating right-handed neutrinos.
+Also this ensures that the right-handed neutrinos are not produced in the plasma and therefore there is not interference with other mechanisms for leptogenesis.
 
 
 
@@ -544,7 +541,7 @@ One potentially cosmologically relevant type of scalar fields are axion-like fie
 Axions were first introduced as a solution to the strong CP problem.
 In QCD the operator
 \begin{align}
-    \mathrm{Tr} G_{\mu \nu} \tilde{G}^{\mu \nu},
+    \mathrm{Tr} G_{\mu \nu} 2\tilde{G}^{\mu \nu},
 \end{align}
 where $G = ?????$ is the gluon field strength tensor,
 has similar properties as the equivanlent term for the $SU(2)$ field appearing
@@ -682,6 +679,12 @@ Therefore
 
 
 \subsection{Transport Equation}
+
+\begin{align}
+    \dot{q}_i + 3 H q_i = - \sum_\alpha \Gamma_\alpha n^\alpha_i \Big[
+    \sum_j n^\alpha_j \left( \frac{\mu_j}{T} \right) - n_S^\alpha \frac{\dot{a} / f_a}{T} \Big]
+\end{align}
+
 
 
 \jana{
