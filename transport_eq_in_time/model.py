@@ -11,15 +11,15 @@ import reheating
 from common import cosmology, constants
 
 Result = namedtuple("Result",
-        ["t", "red_chem_pots", "red_chem_B_minus_L", "axion", "T_fn", "rh_final"])
+        ["t", "red_chem_pots", "red_chem_B_minus_L", "axion_fn", "T_fn", "rh_final"])
 
 AxionBaryogenesisModel = namedtuple("AxionBaryogenesisModel",
         ["source_vector", "axion_rhs", "calc_d2Vdtheta2", "axion_decay_rate", "axion_parameter",
             "Gamma_phi", "H_inf"])
 
 SolverOptions = namedtuple("SolverOptions",
-        ["solver", "rtol", "atol", "num_osc", "num_osc_step"],
-        defaults=["Radau", 1e-4, 1e-6, 50, 20],
+        ["solver", "rtol", "rtol_axion", "atol", "num_osc", "num_osc_step"],
+        defaults=["Radau", 1e-4, 1e-3, 1e-6, 50, 20],
         )
 
 SimulationState = namedtuple("SimulationState",
@@ -27,31 +27,24 @@ SimulationState = namedtuple("SimulationState",
 
 default_solver_options = SolverOptions()
 
-# TODO: clean up the options passed to the rhs function, we could also just pass the AxionBaryogenesisModel object itself
-def rhs(log_t, y, n_S, axion_rhs, axion_decay_rate, axion_parameter, T_fn, H_fn, T_dot_fn):
-    red_chem_pot, axion = y[:transport_equation.N], y[transport_equation.N:]
-    t = np.exp(log_t)
-    T = T_fn(t)
-    T_dot = T_dot_fn(t)
-    H = H_fn(t)
-    theta_dot = axion[1]
-    d_red_chem_pot_d_ln_t = transport_equation.transport_eq_rhs(t, T, H, T_dot, red_chem_pot, n_S, theta_dot)
-    d_axion_d_ln_t = axion_rhs(t, T, H, axion, axion_decay_rate, axion_parameter)
-    return np.hstack([d_red_chem_pot_d_ln_t, d_axion_d_ln_t])
-
 def evolve(model, state, options):
     start, end = np.log(state.t_start), np.log(state.t_end)
+    print("solving:", state.t_start, state.t_end)
     # solve reheating
     T_fn, H_fn, T_dot_fn, rh_final = \
             reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
+    print("reheating done")
     # solve axion
-    axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end, T_fn, H_fn, model.axion_parameter)
+    axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end,
+            T_fn, H_fn, model.axion_parameter, options.rtol_axion)
+    print("axion done")
     # solve transport equation
     ts, red_chem_pots = transport_equation.solve_transport_eq(state.t_start, state.t_end, state.initial_transport_eq,
             options.rtol, T_fn, H_fn, T_dot_fn, axion_fn, model.source_vector)
     # create result
+    print("transport eq done")
     return Result(t=ts, red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
-            red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion=axion_fn)
+            red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion_fn=axion_fn)
 
 T_eqs = [transport_equation.eqi_temp(alpha) for alpha in range(transport_equation.N_alpha)]
 
@@ -76,10 +69,11 @@ def start(model, axion_initial, options, calc_axion_mass, t_end):
     t_end = calc_t_end(calc_axion_mass, model.axion_parameter, t_end, model.Gamma_phi, model.H_inf, options)
     transport_eq_initial = np.zeros(transport_equation.N)
     state = SimulationState(
-        initial = np.hstack([transport_eq_initial, axion_initial]),
+        initial_reheating = rh_initial,
+        initial_axion = axion_initial,
+        initial_transport_eq = transport_eq_initial,
         t_start = t_start,
         t_end   = t_end,
-        initial_reheating = rh_initial,
     )
     return evolve(model, state, options)
 
@@ -93,13 +87,11 @@ def restart(res, calc_axion_mass, axion_parameter, options):
     T = res.T_fn(new_t_start)
     new_t_end = calc_next_t(calc_axion_mass, axion_parameter, new_t_start, T, options.num_osc_step)
     return SimulationState(
-        initial = np.hstack([
-            res.red_chem_pots.T[-1] / transport_equation.unit,
-            res.axion.T[-1],
-        ]),
+        initial_reheating = res.rh_final,
+        initial_axion = res.axion_fn(res.t[-1]),
+        initial_transport_eq = res.red_chem_pots.T[-1] / transport_equation.unit,
         t_start = new_t_start,
         t_end   = new_t_end,
-        initial_reheating = res.rh_final,
     )
 
 def done(res, debug):

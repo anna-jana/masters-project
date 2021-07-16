@@ -5,6 +5,7 @@ import sys
 import numpy as np
 from scipy.optimize import root_scalar
 from scipy.interpolate import interp1d
+from scipy.integrate import solve_ivp
 from numba import njit
 
 if ".." not in sys.path: sys.path.append("..")
@@ -174,6 +175,7 @@ def transport_eq_rhs(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
     T = T_fn(t)
     if T <= 0.0:
         return np.zeros(N)
+    T_dot = T_dot_fn(t)
     H = H_fn(t)
     _, theta_dot = axion_fn(log_t)
     d_red_chem_pot_d_t = (
@@ -183,8 +185,21 @@ def transport_eq_rhs(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
     d_red_chem_pot_d_ln_t = d_red_chem_pot_d_t * t
     return d_red_chem_pot_d_ln_t
 
+jac_mats = [1 / dofs[:, None] * np.outer(charge_vector[alpha, :], charge_vector[alpha, :]) for alpha in range(N_alpha)]
+I = np.eye(N)
+
+def transport_eq_jac(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
+    t = np.exp(log_t)
+    T = T_fn(t)
+    if T <= 0.0: return np.zeros((N, N))
+    R = rate(T)
+    T_dot = T_dot_fn(t)
+    H = H_fn(t)
+    return (- sum(jac_mats[alpha] * R[alpha] for alpha in range(N_alpha)) - 3 * (T_dot / T + H) * I) * t
+
 def solve_transport_eq(t_start, t_end, initial_red_chem_pots, rtol, T_fn, H_fn, T_dot_fn, axion_fn, source_vector):
     sol = solve_ivp(transport_eq_rhs, (np.log(t_start), np.log(t_end)), initial_red_chem_pots / unit,
-            method="Radau", rtol=rtol,
-            args=(T_fn, H_fn, T_dot_fn, axion_fn, source_vector)
+            # method="Radau", rtol=rtol, # jac=transport_eq_jac,
+            method="BDF", rtol=rtol, jac=transport_eq_jac,
+            args=(T_fn, H_fn, T_dot_fn, axion_fn, source_vector))
     return np.exp(sol.t), sol.y * unit

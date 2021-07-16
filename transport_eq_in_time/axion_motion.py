@@ -5,7 +5,7 @@ from collections import namedtuple
 import numpy as np
 from numba import njit
 from scipy.optimize import root
-#from scipy.integrate import sove_ivp
+from scipy.integrate import solve_ivp
 
 from common import cosmology
 
@@ -14,7 +14,6 @@ AxionMotionModel = namedtuple("AxionMotionModel",
 
 def make_single_axion_rhs(calc_dVdtheta_over_f_a_squared):
     calc_dVdtheta_over_f_a_squared = njit(calc_dVdtheta_over_f_a_squared)
-    @njit
     def axion_rhs_standard(log_t, y, T_fn, H_fn, axion_parameter):
         theta, v = y
         t = np.exp(log_t)
