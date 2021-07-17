@@ -29,20 +29,16 @@ default_solver_options = SolverOptions()
 
 def evolve(model, state, options):
     start, end = np.log(state.t_start), np.log(state.t_end)
-    print("solving:", state.t_start, state.t_end)
     # solve reheating
     T_fn, H_fn, T_dot_fn, rh_final = \
             reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
-    print("reheating done")
     # solve axion
     axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end,
             T_fn, H_fn, model.axion_parameter, options.rtol_axion)
-    print("axion done")
     # solve transport equation
     ts, red_chem_pots = transport_equation.solve_transport_eq(state.t_start, state.t_end, state.initial_transport_eq,
             options.rtol, T_fn, H_fn, T_dot_fn, axion_fn, model.source_vector)
     # create result
-    print("transport eq done")
     return Result(t=ts, red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
             red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion_fn=axion_fn)
 
