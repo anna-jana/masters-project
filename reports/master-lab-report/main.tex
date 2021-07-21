@@ -227,192 +227,112 @@ Then one finds that
 since $CPT$ communtes with the hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium. This derivation and discussion can also be found in \cite[sec. II]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
 
 
-
-
-
-
-
-
-
-\subsection{Baryogenesis and the Standard Model}
-In this section we discuss the violation of baryon and lepton number in the standard model. This issue is releated to vacuum stucture of the theory of electro-weak interactions as a
-non-albelian gauge theory.
-We will consider a general non-albelian gauge theory with a gauge group $\mathcal{G}$ as this discssion will also play a role in theory of axion discussed in section ???????.  \footnote{
-The lagraigian is
+\subsection{Baryon and Lepton Number in the Standard Model}
+The baryon number $B$ and the lepton number $L$ are so called accidental
+symmetries of the standard model. They are symmetries of the classical lagrangian
+and follow directly from the conservation of weak hypercharge \cite[part II.B]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
+But this doesn't directly imply that they are also good symmetries of the
+quantum theory. Indeed they are not conserved quantities and the four-divergences
+of the corresponding Noether-currents are given as \cite[eq. 2.1]{Cline:2006ts_Baryogenesis}
 \begin{align}
-    \mathcal{L} = \psi_i \left( i D_\mu \gamma^\mu - \mathcal{M} \right) \bar{\psi}_i - \frac{1}{4} G^{a \, \mu \nu} G^a_{\mu \nu}
+    \label{eq:B_and_L_current_equations}
+    \partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a,
 \end{align}
-with the covariant derivative
+where $N_f$ is the number of fermions, $F$ the SU(2) field strength tensor, $\tilde{F}$ its dual and $g_2$ the SU(2) coupling constant.
+One can see how this violation is possible in the quantum theory by considering the path-integral formulation of the theory.
+As in the classical theory the lagrangian is invariant under the U(1) transformation of the B and L symmetries but the integration measure of the path-integral is not. This way one could also derive eq. \eqref{eq:B_and_L_current_equations} via the so called ?????-method ???????.
+The right hand side of eq. \eqref{eq:B_and_L_current_equations} is a topological quantity.
+A first step in understanding this is to realize that one can write the right hand side as the divergence of the Chern-Simons current \cite[eq. 4.2, 4.3]{Cline:2006ts_Baryogenesis}.
 \begin{align}
-    D_\mu = \partial_\mu - i g T^a A^a_\mu
+    \label{eq:chern_simons_current}
+    K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right),
 \end{align}
-where $T^a$ are the generators of the Lie algebra of the gauge group of the theory with structure constants
+where $A$ is the SU(2) gauge field and $f^{abc}$ the SU(2) structure constants.
+This allows to write the integral of eq. \eqref{eq:B_and_L_current_equations}
+over all of space-time as an expression on the bounary of space-time.
+First we consider vacuum field configurations i.e. field configurations with zero energy density i.e. with vanishing field strength tensor of the SU(2) gauge fields in eucleadian space-time. While a vanishing four-potential gives the desired result, any gauge transformed potential yields the same result.
+Therefore the gauge fields are given in this case as so called pure gauges \cite[sec. 2.1]{Di_Luzio_2020_Landscape_of_QCD_Axion_models}
 \begin{align}
-    [T^a, T^b] = f^{abc} T^c
+    A_\mu = \frac{i}{g} U^{-1} \partial_\mu U.
 \end{align}
-the field strength tensor
+for some gauge transformation $U(x)$.
+Then we find
 \begin{align}
-    G^a_{\mu \nu} = \partial_\mu A^a_\nu - \partial_\nu A^a_\mu + g f^{abc} A^b_\mu A^c_\nu
+    \label{eq:chern_simons_number}
+    \frac{g_2^3}{32 \pi^2} \int \mathrm{d}^4 x \, \partial_\mu K^\mu =
+    \frac{g_2^3}{32 \pi^2} \int \mathrm{d}^3 \sigma_\mu K_\mu
+     =: N_{\mathrm{CS}}.
 \end{align}
-and its dual
+As SU(2) is topologically equivalent to the tree-sphere $S^3$ and the boundary of euclidean space-time is also the $S^3$, the gauge transformations $U$ are
+mappings $S^3 \to S^3$ i.e. the third homotopy group of $S^3$.
+It can be shown that this homotopy group is divided into homotopy classes labeled by the value of the integral in eq. \eqref{eq:chern_simons_number} that takes integers values the Chern-Simons number $N_\mathrm{CW}$ ????????.
+As the integers are a discrete set, one can not continuously deform a gauge configuration into another with a different Chern-Simons number.
+Back in Minkowski space-time we can define the Chern-Simons number of a gauge configuration at time $t$ as ?????
 \begin{align}
-    \tilde{G}_{\mu \nu}^a = \frac{1}{2} \epsilon_{\mu \nu \rho \sigma} G^{\rho \sigma}
+    N_{\mathrm{CS}} := \int \mathrm{d}^3 x \, K^0
 \end{align}
-where we use the convention
+Using the temporal gauge ???? defined by $A^0 = 0$ where $K^i = 0$ we can
+write the change of Chern-Simons number between $t_i$ and $t_f$ as
 \begin{align}
-    \epsilon^{0123} = -1
+    \int \mathrm{d}^4 x \partial_\mu K^\mu = \int \mathrm{d} t \, \partial_t \int \mathrm{d}^3 x \, K^0 =
+    N_{\mathrm{CS}}(t_f) - N_{\mathrm{CS}}(t_i) = \Delta N_{\mathrm{CS}}(t_i, t_f)
 \end{align}
-}
-\jana{TODO: find a better start!!!}
-In this theory we consider the expression
+which is an integer if (as in the euclidean case above) the initial and final gauge configurations are pure gauges i.e. vacuum configurations.
+This change between vaccua is a quantum tunneling process. Its rate can be computed from instanton configurations which are the solutions to classical equations of motion in euclidean space-time that have finite energy i.e. are localized all dimensions. These solution therefore have to mediate between pure  gauges and change the Chern Simons number by an integer value.
+The path integral for the transition rate can be expanded around this instanton solution in euclidean space-time. An introduction to this technique can be found in ????. The tunneling process itself is also called an instanton ??????.
+The resulting amplitude is approximately given by \cite[4.8]{Cline:2006ts_Baryogenesis}
 \begin{align}
-    G^{\mu \nu}_a \tilde{G}^a_{\mu \nu}
+    e^{-8 \pi 2 / g_2} \approx 10^{-173}
 \end{align}
-that can be writte as a total derivative
+This rate is too low to be observed in any physical process. While it ensures
+that matter such our own bodies are stable, it also means that these processes
+can't play a role in baryogenesis.
+This changes drastically once we consider the system at finite temperature.
+Here a change in Chern-Simons number is enhanced by thermal fluctuations (they are also called sphalerons).
+Below the electro-weak phase-transition the height of the barrier still
+suppresses changes of $N_{\mathrm{CS}}$ but above the vanishing vacuum-expectation value of the Higgs field implies at large rate.
+A state of the art computation of the sphaleron rate \cite{Cline:2006ts_Baryogenesis} \cite[eq. ]{sphaleron_rate_Moore_2011} gave
 \begin{align}
-    G^{\mu \nu}_a \tilde{G}^a_{\mu \nu} = \partial_\mu K^\mu
+    \Gamma_{WS} = (1.06 \pm 0.08) \times 10^{− 6} T^4
 \end{align}
-of the Cern-Simons current
+The energy $E_{\mathrm{sph}}$ is the energy of the so called sphaleron configuration. Formally it is a static finite energy solution to the classical
+equations of motion that sits on top of the potential barrier between two vacuua (technically the saddle point). In a sense it is the "middle" of the instanton configuration. The thermal
+In this regime this process is in equilibrium. From considering the
+equilibrium relations between chemical potetials for different charges one
+can derive the relation between the $B - L$ and the $B$ charges as \cite[eq. 22]{Trodden:2004mj_baryogenesis_and_leptogenesis}
 \begin{align}
-    K_\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha G^a_{\beta \gamma} - \frac{g}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right)
+    B = \frac{8 N_f + 4 N_H}{22 N_f + 13 N_H} (B - L),
 \end{align}
-In euclidian space-time:
-\begin{align}
-    \label{eq:eucleadian_integral}
-    \int \mathrm{d}^4 x \, G^a_{\mu \nu} \tilde{G}^a_{\mu \nu} = \int \mathrm{d}^4 x \, \partial_\mu K_\mu = \int_{S^3 @ |x| \to \infty} \mathrm{d}^3 \sigma_\mu K_\mu
-\end{align}
-This shows that including such a term in the lagragian has no effect in perturbation theory since perturbativly the gauge configurations vanish at infinity.
-On the other hand the path integral runs over classical field configurations, where this term does not vanish.
-In order for the euclidean action to be finite (otherwise the weight in the path integral would be vanishing and those configuration would not contribute) the field strength tensor $G^a_{\mu \nu}$ haa to vanish.
-This does not require the potential $A^a_\mu$ to vanish since one can obtain configurations by gauge transformation of the form
-\begin{align}
-    A_\mu = U^{-1} A_\mu U + \frac{i}{g} U^{-1} \partial_\mu U
-\end{align}
-where $U$ is some local gauge transformations i.e. $U(x) \in \mathcal{G}$.
-These gauge configrations are called \emph{pure gauges}.
-If we restrict the map $U$ to the surface at infinity, as in the surface integral in eq. \eqref{eq:eucleadian_integral} and we only consider a $\mathrm{SU}(2)$ subgroup of $\mathcal{G}$,
-then $U$ is a map of $S^3 \to S^3$.
-These kinds of maps form the third homotopy group of $S^3$ and it has been shown that the winding number
-\begin{align}
-    \label{eq:winding_number}
-    \frac{g^3}{32 \pi^2} \int \mathrm{d}^3 \sigma_\mu K_\mu
-    = \nu,
-\end{align}
-is an integer i.e. a topological property.
-This means that one can not continuously deform the gauge configuration to the trivial one. In fact we have different vacuum configurations for each $\nu$.
-Because these field configurations are of finite action they have to be localized in space-time.
-It was also shown that they are minima of the action ????, implying that they are solutions of the classical equations of motion.
-
-Now we want to look at this property in Minkowski space-time.
-For this we use the temporal gauge where $A_a^0 = 0$. One finds that $K^i = 0$ in this gauge.
-Using this we can write
-\begin{align}
-    \int \mathrm{d} t \, \partial_0 K^0 = N_{\mathrm{CS}}(t = \infty) - N_{\mathrm{CS}}(t = -\infty) = \Delta N_{\mathrm{CS}}
-\end{align}
-
-
-\jana{
-\begin{enumerate}
-    \item Instantons
-    \begin{itemize}
-        \item In eucleadian space-time
-        \item finite action
-        \item $\Rightarrow$ localized in all four dimensions
-        \item integer Cherm-Simons number (check this again!!!!)
-        \item does $A_\mu(x) \to \frac{i}{g} U^{-1}(x) \partial_\mu U(x)$ as $x \to \infty$ or $A_\mu \to 0$???
-    \end{itemize}
-    \item Vacuum configuration:
-    \begin{itemize}
-        \item lowest energy state.
-        \item solution to classical eq. of motion
-        \item time independent
-    \end{itemize}
-    \item Sphaleron:
-    \begin{itemize}
-        \item solution to classical eq. of motion
-        \item stationary action but maximal (saddel point)
-        \item time independent
-        \item unstable (slippery hence the name in greek)
-    \end{itemize}
-    \item Sphalron Process:
-    \begin{itemize}
-        \item physical process
-        \item thermal fluctuation over the potetial barrier
-        \item rate for this procees given by hthrougheight of the barrier i.e. the energy of the sphaleron
-        \item low rate at low temperatures
-        \item high rate at hgher temperatures
-        \item dependence on higgs phase?
-    \end{itemize}
-    \item Instanton Process:
-    \begin{itemize}
-        \item physical process
-        \item quantum tunnneling through the potential barrier
-        \item rate given by instanton solution
-        \item in euledian space-time the equation of motion has the negative potential.
-        Compared to a 1D QM examples. A particle (the field) can now move from one potetial minimum (in minkowski, vacuum) (in eucledian a maximum) to the next by being displaced infintacinmal, rolling down and going up again and finally reaching the next eucledian maximum, minkwski vacuum. This process descibes tunneling in Minkowski spacetime (WOW!!!)
-    \end{itemize}
-\end{enumerate}
-}
-
-\jana{TODO: describe as text all the things in the enumeration above, find good references:
-\begin{itemize}
-    \item original paper by 't hooft
-    \item aspects of symmetry (get is from the library?)
-    \item this really good masters thesis
-    \item the de luzio paper
-\end{itemize}
-}
-
-\jana{TODO:
-    \begin{itemize}
-        \item what is the rate for spharelrons then?
-        \item what is the energy for sphalerons?
-        \item what is the rate for quantum tunneling?
-        \item what does this have to do with B and L symmetries
-        \item where does the anomaly come from?
-        \item connnection to axions??? maybe????
-    \end{itemize}
-}
-
+where $N_H$ is the Higgs doublets ($N_H = 1$ in the SM).
+This shows an important requirement for a bayrogenesis model.
+A baryogenesis process has to produce a $B - L$ asymmetry otherwise the sphalerons
+will washout the asymmetry in $B$. Since B - L is a conserved quantity in the standard model, physics beyond the standard model is needed.
 
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-        \draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Chern-Simons Number};
-        \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south] {Field Energy};
-        \draw[scale=1, domain=-4.5:4.5, smooth, variable=\x, blue] plot ({\x}, {1.8*(1 - cos(2 * \x r))});
-        \foreach \x in {0,3.14,-3.14}
-             \filldraw[color=red] (\x, 0) circle (0.1);
-        \foreach \x in {3.14/2, -3.14/2}
-             \filldraw[color=green] (\x, 1.8*2) circle (0.1);
-        \draw[thick,->] (0.0, -0.5) -- (3.14, -0.5);
-        \draw[->] (3.3 / 2 + 0.5, 1.8*2 + 0.5 + 0.1) node[anchor=south]  {Sphaleron} -- (3.4 / 2, 1.8*2 + 0.1) ;
-        \draw[->] (-2.7, -0.7) node[anchor=north]  {Vacuum Configuration} -- (-3, -0.2) ;
-        \node at (1.5, -0.7) {Instanton};
-        \draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
+    \draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Chern-Simons Number};
+    \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south] {Field Energy};
+    \draw[scale=1, domain=-4.5:4.5, smooth, variable=\x, blue] plot ({\x}, {1.8*(1 - cos(2 * \x r))});
+    \foreach \x in {0,3.14,-3.14}
+    \filldraw[color=red] (\x, 0) circle (0.1);
+    \foreach \x in {3.14/2, -3.14/2}
+    \filldraw[color=green] (\x, 1.8*2) circle (0.1);
+    \draw[thick,->] (0.0, -0.5) -- (3.14, -0.5);
+    \draw[->] (3.3 / 2 + 0.5, 1.8*2 + 0.5 + 0.1) node[anchor=south]  {Sphaleron} -- (3.4 / 2, 1.8*2 + 0.1) ;
+    \draw[->] (-2.7, -0.7) node[anchor=north]  {Vacuum Configuration} -- (-3, -0.2) ;
+    \node at (1.5, -0.7) {Instanton};
+    \draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
     \end{tikzpicture}
     \caption{Cartoon of the vacuum structure of an non-albelian gauge theory.
-\jana{TODO: the x axis is N\_CS, change the arrow of the instanton to a curly and
-add quantum tunneling as an arrow??}
-\jana{TOOD: reference in text}
-}
+        \jana{TODO: the x axis is N\_CS, change the arrow of the instanton to a curly and
+            add quantum tunneling as an arrow??}
+        \jana{TOOD: reference in text}
+    }
     \label{fig:vacuum_cartoon}
 \end{figure}
 
 
-
-
-\jana{
-\begin{itemize}
-    \item satisfies the conditions
-    \item B and L anaomalies
-    \item Vacuum structure of non-albelian gauge theories
-    \item instantons
-    \item sphalerons
-    \item C and CP violation
-    \item does not work
-\end{itemize}
-}
 
 \subsection{Baryogenesis Models}
 The two most popular models for baryogensis are electro-weak baryogensis (EW-BG) and baryogensis via leptogenesis (leptogenesis).
