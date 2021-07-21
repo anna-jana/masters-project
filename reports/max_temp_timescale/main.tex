@@ -1,0 +1,150 @@
+\documentclass[13pt,a4paper]{article}
+\usepackage[ngerman, english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym,amssymb,amsmath,amstext}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[backend=bibtex, sorting=none]{biblatex}
+\usepackage{amsmath}
+\usepackage{ dsfont }
+\usepackage{csquotes}
+\usepackage{slashed}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{subfigure}
+\usepackage{verbatim}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{feynmf}
+\usepackage{abstract}
+\usepackage{bbold}
+\usepackage[a4paper, left=2cm, right=2cm, top=2cm, bottom=3cm, bindingoffset=10mm]{geometry}
+\usepackage[compat=1.1.0]{tikz-feynman}
+%\usepackage[onehalfspacing]{setspace}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\lstset{
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\note}[1]{{\color{red}[\textbf{#1}]}}
+\newcommand{\diff}{\ensuremath{\mathrm{d}}}
+
+\bibliography{refs}
+
+\begin{document}
+
+%\tableofcontents
+%\newpage
+
+\newcommand{\jana}[1]{{\color{magenta}{#1}}}
+\noindent
+Equations:
+\begin{align}
+    \dot{\rho_\phi} + 3 H \rho_\phi &= - \Gamma_\phi \rho_\phi \\
+    \dot{\rho_R} + 4 H \rho_R &= + \Gamma_\phi \rho_\phi \\
+    3 H^2 M_{\mathrm{pl}}^2 &= \rho_\phi + \rho_R
+\end{align}
+Initial conditions:
+\begin{align}
+    \label{eq:initial}
+    &\rho_0 := \rho_\phi(t = t_0 := t_\mathrm{inf} = 1 / H_\mathrm{inf}) = 3 M_{\mathrm{pl}}^2 H_{\mathrm{inf}}^2 \\
+    &\rho_R(t = t_0) = 0
+\end{align}
+Exact:
+\begin{align}
+    \label{eq:inflaton_solution}
+    \rho_\phi = \rho_0 \left( \frac{a_0}{a} \right)^3 e^{- \Gamma_\phi (t - t_0)}
+\end{align}
+Approximation (until much later when $t \sim 1 / \Gamma_\phi$):
+\begin{align}
+    \label{eq:energy_assuption}
+    \rho_\phi \gg \rho_R
+\end{align}
+Therefore we are in matter domination:
+\begin{align}
+    H &= \frac{2}{3} \frac{1}{t} \\
+    a &= a_0 \left(\frac{t} {t_0}\right)^{2 / 3}
+\end{align}
+Initially:
+\begin{align}
+    \label{eq:decay_assumption}
+    H \gg \Gamma_\phi
+\end{align}
+but I assume that \eqref{eq:energy_assuption} wins over \eqref{eq:decay_assumption} and therefore:
+\begin{align}
+    \label{eq:condition}
+    4 H \rho_R \ll \Gamma_\phi \rho_\phi
+\end{align}
+i.e. the decay of the inflaton dominates the change of the radiation energy density.
+This makes physically sense.
+The initial fast rise in temperature stops once this assumption is violated. Also mathematically initial the right hand side is vanishing while the left hand side is not. Therefore there is a finite period in which this inequality holds.
+Idea: get timescale for this process by computing how long this assumption holds i.e. when is this inequality saturated?
+As long this assumption holds (this computation breaks down before the inequality is saturated but this is only order of magnitude only anyway) the equation for the radiation energy density reads:
+\begin{align}
+    \dot{\rho_R} = + \Gamma_\phi \rho_\phi
+\end{align}
+Inserting \eqref{eq:inflaton_solution} and matter domaination:
+\begin{align}
+    \dot{\rho_R} &= + \Gamma_\phi \rho_0 \left( \frac{a_0}{a} \right)^3 e^{- \Gamma_\phi (t - t_0)} \\
+    &=  + \Gamma_\phi \rho_0 \left( \frac{t_0}{t} \right)^2 e^{- \Gamma_\phi (t - t_0)}
+\end{align}
+Integrating both sides:
+\begin{align}
+    \rho_R = \int_{t_0}^t \mathrm{d} t' \, \rho_0 \Gamma_\phi \left( \frac{t_0}{t'} \right)^2 e^{- \Gamma_\phi (t' - t_0)}
+\end{align}
+Unfortunately this is not an elemental integral. The solution is given by generalized exponentials.
+Let's approximate!
+Assuming that
+\begin{align}
+    \Gamma_\phi(t - t') \ll 1
+\end{align}
+we can Taylor the exponential
+\begin{align}
+    \rho_R &= \int_{t_0}^t \mathrm{d} t' \, \rho_0 \Gamma_\phi \left( \frac{t}{t_0} \right)^2 \left(1 - \Gamma_\phi (t - t_0) \right) \\
+    &= \rho_0 t_0^2 \Gamma_\phi \int_{t_0}^t \mathrm{d} t' \, \left[ \frac{1 + \Gamma_\phi t_0}{t'^2} - \frac{\Gamma_\phi}{t'} \right]  \\
+    &= \rho_0 t_0^2 \Gamma_\phi \left[ (1 + \Gamma_\phi t_0) \left( - \frac{1}{t} + \frac{1}{t_0} \right) - \Gamma_\phi \ln \left( \frac{t}{t_0} \right) \right] \\
+    &\approx \rho_0 t_0^2 \Gamma_\phi \left[ (1 + \Gamma_\phi t_0) \left( - \frac{1}{t} + \frac{1}{t_0} \right) + \Gamma_\phi \left( \frac{t_0}{t} - 1\right) \right] \\
+   &= \rho_0 t_0^2 \Gamma_\phi \left[  - \frac{1}{t} + \frac{1}{t_0}  \right]
+\end{align}
+Side mark: this is not really a taylor expansion, why can we do this but not $\ln(t / t_0) \approx t / t_0 - 1$.
+Now using
+\begin{align}
+    3 M_{\mathrm{pl}}^2 H^2 \approx \rho_\phi
+\end{align}
+compare the two sides of \eqref{eq:condition}:
+\begin{align}
+   \rho_R \sim \frac{\Gamma_\phi \rho_\phi}{4 H}
+   =  \frac{\Gamma_\phi 3 M_{\mathrm{pl}}^2 H^2}{4 H}
+   = \frac{3}{4} \Gamma_\phi M_{\mathrm{pl}}^2 H
+   = \frac{3}{4} \Gamma_\phi M_{\mathrm{pl}}^2 \frac{2}{3} \frac{1}{t}
+   = \frac{1}{2} \Gamma_\phi M_{\mathrm{pl}}^2 \frac{1}{t}
+\end{align}
+Inserting our result for $\rho_R$
+\begin{align}
+\rho_0 t_0^2 \Gamma_\phi \left[  - \frac{1}{t} + \frac{1}{t_0}  \right] = \frac{1}{2} \Gamma_\phi M_{\mathrm{pl}}^2 \frac{1}{t}
+\end{align}
+Multiply by $t t_0$:
+\begin{align}
+\rho_0 t_0 \left[ t - t_0 \right] = \frac{1}{2} M_{\mathrm{pl}}^2
+\end{align}
+Then inserting \eqref{eq:initial}
+\begin{align}
+t - t_0 = \frac{M_{\mathrm{pl}}^2}{2 \rho_0 t_0}
+= \frac{M_{\mathrm{pl}}^2}{2 \rho_0 t_0}
+= \frac{M_{\mathrm{pl}}^2}{2 \cdot 3 M_{\mathrm{pl}}^2 H_{\mathrm{inf}}^2 \cdot 1 / H_{\mathrm{inf}}}
+= \frac{1}{6} \frac{1}{H_{\mathrm{inf}}} = \frac{1}{6} t_0
+\end{align}
+Finally:
+\begin{align}
+    t_{\mathrm{max}} = \frac{7}{6} t_0
+\end{align}
+
+
+
+\newpage
+\printbibliography
+\end{document}
+
