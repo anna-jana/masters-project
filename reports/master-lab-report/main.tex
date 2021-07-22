@@ -165,16 +165,10 @@ A resent analysis ????? finds a value of
 
 
 
-
-
-
-
-
-
 \subsection{Sakharov Conditions}
-The \emph{Sakharov Condtions} are a set of three nessisary but not sufficient condtions for baryogenesis to happen in the universe \cite{Sakharov_1991}. These are:
+The \emph{Sakharov Conditions} are a set of three necessary but not sufficient conditions for baryogenesis to happen in the universe \cite{Sakharov_1991}. These are:
 \begin{itemize}
-    \item Baryon Number has to violated.
+    \item Baryon Number has to be violated.
     \item C and CP symmetries have to be broken.
     \item The universe has to be out of equilibrium.
 \end{itemize}
@@ -191,7 +185,7 @@ This condition can be formally shown by considering the density matrix $\rho$ of
 where $H$ is the Hamiltonain of the system.
 In order to generate an asymmetry i.e.
 \begin{align}
-    \langle B \rangle = \sum_n  \langle n | B \rho | n \rangle = \Tr [ B \rho ] \neq 0
+    \langle B \rangle = \Tr [ B \rho ] \neq 0
 \end{align}
 the total time derivative has to vanish.
 We use that the baryon number operator commutes with C and CP transformations
@@ -200,7 +194,7 @@ We use that the baryon number operator commutes with C and CP transformations
     (C P) B (C P)^\dagger &= B
 \end{align}
 as the baryon number and the charge number both flip sign under charge conjugation.
-If we assume that C or CP is conserved i.e. that
+If we assume that C or CP is conserved i.e. (by C/CP we mean C or CP)
 \begin{align}
 [H, C/CP] = 0,
 \end{align}
@@ -224,7 +218,7 @@ Then one finds that
     \Tr [ B \rho ] &=  \Tr [ (CPT) (CPT)^\dagger B \rho ] = \Tr [ (CPT)^\dagger B \rho (CPT) ]  \\
                    &= - \Tr [ B (CPT)^\dagger \rho (CPT) ] = - \Tr [ B \rho ],
 \end{align}
-since $CPT$ communtes with the hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium. This derivation and discussion can also be found in \cite[sec. II]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
+since $CPT$ commutes with the Hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium. This derivation and discussion can also be found in \cite[sec. II]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
 
 
 \subsection{Baryon and Lepton Number in the Standard Model}
@@ -240,7 +234,8 @@ of the corresponding Noether-currents are given as \cite[eq. 2.1]{Cline:2006ts_B
 \end{align}
 where $N_f$ is the number of fermions, $F$ the SU(2) field strength tensor, $\tilde{F}$ its dual and $g_2$ the SU(2) coupling constant.
 One can see how this violation is possible in the quantum theory by considering the path-integral formulation of the theory.
-As in the classical theory the lagrangian is invariant under the U(1) transformation of the B and L symmetries but the integration measure of the path-integral is not. This way one could also derive eq. \eqref{eq:B_and_L_current_equations} via the so called ?????-method ???????.
+As in the classical theory the lagrangian is invariant under the U(1) transformation of the B and L symmetries but the integration measure of the path-integral is not. This way one could also derive eq. \eqref{eq:B_and_L_current_equations} via the so called Fujikawa-method \cite{Fujikawa_method_PhysRevD.21.2848}.
+
 The right hand side of eq. \eqref{eq:B_and_L_current_equations} is a topological quantity.
 A first step in understanding this is to realize that one can write the right hand side as the divergence of the Chern-Simons current \cite[eq. 4.2, 4.3]{Cline:2006ts_Baryogenesis}.
 \begin{align}
@@ -250,10 +245,12 @@ A first step in understanding this is to realize that one can write the right ha
 where $A$ is the SU(2) gauge field and $f^{abc}$ the SU(2) structure constants.
 This allows to write the integral of eq. \eqref{eq:B_and_L_current_equations}
 over all of space-time as an expression on the bounary of space-time.
+
+\noindent
 First we consider vacuum field configurations i.e. field configurations with zero energy density i.e. with vanishing field strength tensor of the SU(2) gauge fields in eucleadian space-time. While a vanishing four-potential gives the desired result, any gauge transformed potential yields the same result.
 Therefore the gauge fields are given in this case as so called pure gauges \cite[sec. 2.1]{Di_Luzio_2020_Landscape_of_QCD_Axion_models}
 \begin{align}
-    A_\mu = \frac{i}{g} U^{-1} \partial_\mu U.
+    A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U.
 \end{align}
 for some gauge transformation $U(x)$.
 Then we find
@@ -265,13 +262,15 @@ Then we find
 \end{align}
 As SU(2) is topologically equivalent to the tree-sphere $S^3$ and the boundary of euclidean space-time is also the $S^3$, the gauge transformations $U$ are
 mappings $S^3 \to S^3$ i.e. the third homotopy group of $S^3$.
-It can be shown that this homotopy group is divided into homotopy classes labeled by the value of the integral in eq. \eqref{eq:chern_simons_number} that takes integers values the Chern-Simons number $N_\mathrm{CW}$ ????????.
-As the integers are a discrete set, one can not continuously deform a gauge configuration into another with a different Chern-Simons number.
-Back in Minkowski space-time we can define the Chern-Simons number of a gauge configuration at time $t$ as ?????
+It can be shown that this homotopy group is divided into homotopy classes labeled by the value of the Chern-Simons number $N_\mathrm{CW}$ in eq. \eqref{eq:chern_simons_number} which takes integers values (for pure gauge configurations) \cite{homotopy_spheres}.
+As the integers are a discrete set, one can not continuously deform a gauge configuration into another one with a different Chern-Simons number.
+
+\noindent
+Back in Minkowski space-time we can define the Chern-Simons number of a gauge configuration at time $t$ as \cite[eq. 23]{Dine_2003_Bayrogenesis}
 \begin{align}
     N_{\mathrm{CS}} := \int \mathrm{d}^3 x \, K^0
 \end{align}
-Using the temporal gauge ???? defined by $A^0 = 0$ where $K^i = 0$ we can
+Using the temporal gauge \cite{temporal_gauge_10.1007/BFb0015141} defined by $A^0 = 0$ where $K^i = 0$ we can
 write the change of Chern-Simons number between $t_i$ and $t_f$ as
 \begin{align}
     \int \mathrm{d}^4 x \partial_\mu K^\mu = \int \mathrm{d} t \, \partial_t \int \mathrm{d}^3 x \, K^0 =
@@ -279,36 +278,29 @@ write the change of Chern-Simons number between $t_i$ and $t_f$ as
 \end{align}
 which is an integer if (as in the euclidean case above) the initial and final gauge configurations are pure gauges i.e. vacuum configurations.
 This change between vaccua is a quantum tunneling process. Its rate can be computed from instanton configurations which are the solutions to classical equations of motion in euclidean space-time that have finite energy i.e. are localized all dimensions. These solution therefore have to mediate between pure  gauges and change the Chern Simons number by an integer value.
-The path integral for the transition rate can be expanded around this instanton solution in euclidean space-time. An introduction to this technique can be found in ????. The tunneling process itself is also called an instanton ??????.
+The path integral for the transition rate can be expanded around this instanton solution in euclidean space-time. An introduction to this technique can be found in \cite[Chap. 7]{aspects_of_symmmetry}. The tunneling process itself is also called an instanton.
 The resulting amplitude is approximately given by \cite[4.8]{Cline:2006ts_Baryogenesis}
 \begin{align}
-    e^{-8 \pi 2 / g_2} \approx 10^{-173}
+    e^{-8 \pi^2 / g_2} \approx 10^{-173}
 \end{align}
 This rate is too low to be observed in any physical process. While it ensures
 that matter such our own bodies are stable, it also means that these processes
 can't play a role in baryogenesis.
-This changes drastically once we consider the system at finite temperature.
-Here a change in Chern-Simons number is enhanced by thermal fluctuations (they are also called sphalerons).
+This changes once we consider the system at finite temperature.
+Here a change in Chern-Simons number is enhanced by thermal fluctuations called  sphalerons (processes).
 Below the electro-weak phase-transition the height of the barrier still
-suppresses changes of $N_{\mathrm{CS}}$ but above the vanishing vacuum-expectation value of the Higgs field implies at large rate.
-A state of the art computation of the sphaleron rate \cite{Cline:2006ts_Baryogenesis} \cite[eq. ]{sphaleron_rate_Moore_2011} gave
+suppresses changes of $N_{\mathrm{CS}}$.
+The rate in this phase is given as \cite[eq. 4.10]{Cline:2006ts_Baryogenesis}
 \begin{align}
-    \Gamma_{WS} = (1.06 \pm 0.08) \times 10^{− 6} T^4
+    \Gamma_{\mathrm{sph}} \sim \left( \frac{E_{\mathrm{sph}}}{T} \right)^3 \left( \frac{m_W(T)}{T} \right)^4 T^4 e^{- E_{\mathrm{sph}} / T}
 \end{align}
 The energy $E_{\mathrm{sph}}$ is the energy of the so called sphaleron configuration. Formally it is a static finite energy solution to the classical
-equations of motion that sits on top of the potential barrier between two vacuua (technically the saddle point). In a sense it is the "middle" of the instanton configuration. The thermal
-In this regime this process is in equilibrium. From considering the
-equilibrium relations between chemical potetials for different charges one
-can derive the relation between the $B - L$ and the $B$ charges as \cite[eq. 22]{Trodden:2004mj_baryogenesis_and_leptogenesis}
-\begin{align}
-    B = \frac{8 N_f + 4 N_H}{22 N_f + 13 N_H} (B - L),
-\end{align}
-where $N_H$ is the Higgs doublets ($N_H = 1$ in the SM).
-This shows an important requirement for a bayrogenesis model.
-A baryogenesis process has to produce a $B - L$ asymmetry otherwise the sphalerons
-will washout the asymmetry in $B$. Since B - L is a conserved quantity in the standard model, physics beyond the standard model is needed.
-
+equations of motion that sits on top of the potential barrier between two vaccua (technically the saddle point). In a sense it is the "middle" of the instanton configuration and its free energy represents the height of the barrier between
+neighboring vacuua.
+It is given by $E_{\mathrm{sph}} \approx 8\pi v / g_2$ with the VEV of the Higgs field $v$ \cite[eq. 4.5]{Cline:2006ts_Baryogenesis}.
+A cartoon of the dependence of the energy on the Chern-Simons number and the instanton and sphaleron processes is shown in figure \ref{fig:sphaleron_cartoon}.
 \begin{figure}[H]
+    \label{fig:sphaleron_cartoon}
     \centering
     \begin{tikzpicture}
     \draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Chern-Simons Number};
@@ -324,36 +316,49 @@ will washout the asymmetry in $B$. Since B - L is a conserved quantity in the st
     \node at (1.5, -0.7) {Instanton};
     \draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
     \end{tikzpicture}
-    \caption{Cartoon of the vacuum structure of an non-albelian gauge theory.
-        \jana{TODO: the x axis is N\_CS, change the arrow of the instanton to a curly and
-            add quantum tunneling as an arrow??}
-        \jana{TOOD: reference in text}
+    \caption{Cartoon of the vacuum structure of a non-albelian gauge theory, which leads to the non-conservation of baryon and lepton numbers in the standard model.
     }
-    \label{fig:vacuum_cartoon}
 \end{figure}
 
+\noindent
+Above the electro-weak phase-transition the vanishing vacuum-expectation value of the Higgs field implies the non-existence of a sphaelron configration and hence a large rate of \cite{sphaleron_rate_symmetric_phase_Moore_2011}
+%\cite[]{Cline:2006ts_Baryogenesis}
+%\begin{align}
+%\Gamma_{\mathrm{sph}} = (1.06 \pm 0.08) \times 10^{- 6} \, T^4
+%\end{align}
+\begin{align}
+    \Gamma_{\mathrm{sph}} &= (0.21 \pm 0.01) \left(\frac{N_c g^2 T}{m_D^2} \right) \left(\ln \left(\frac{m_D}{\gamma} \right) + 3.0410 \right) \frac{N_c^2 - 1}{N_c^2} (N_c \sqrt{2 \pi g})^5 T^4 \\
+    \gamma &= \frac{N_c g^2 T}{4 \pi} \left(\ln \left(\frac{m_D}{\gamma}\right) + 3.0410 \right) \\
+    m_D^2 &= \frac{2N_c + N_f}{6} g^2 T^2,
+\end{align}
+where $N_c$ the number of "colors" ($N_c = 2$ for the weak SU(2) theory) and $g = g_2$ the coupling constant.
+
+\noindent
+In this regime this process is in equilibrium. From considering the
+equilibrium relations between chemical potentials for different charges one
+can derive the relation between the $B - L$ and the $B$ charges as \cite[eq. 22]{Trodden:2004mj_baryogenesis_and_leptogenesis}
+\begin{align}
+    B = \frac{8 N_f + 4 N_H}{22 N_f + 13 N_H} (B - L),
+\end{align}
+where $N_H$ is the number of Higgs doublets ($N_H = 1$ in the SM). We define the prefactor as the sphaeloron conversion factor $C_\mathrm{sph}$.
+This shows an important requirement for a bayrogenesis model.
+A baryogenesis process has to produce a $B - L$ asymmetry otherwise the sphalerons
+will washout the asymmetry in $B$ if the process happens in the symmetric (un-broken) phase. Since $B - L$ is a conserved quantity in the standard model, physics beyond the standard model is needed.
 
 
 \subsection{Baryogenesis Models}
-The two most popular models for baryogensis are electro-weak baryogensis (EW-BG) and baryogensis via leptogenesis (leptogenesis).
-Electroweak BG ????? is implemented at the elektro-weak phasetransition. It is based on the formation of nuleation bubbles which contain parts of space where the EW symmetry is broken while the outside is jet unbroken. The baryogenesis process happens in this case via the transition rates of leptons passing trough (durch) the domain wall being different from the rates for anti-leptons. Inside the wall the sphaleron rate are highly suppressed (see eq. ??????) ant the asymmetry is frozen (can not be balanced by the sphalerons).
-The formation of theses nucleation-bubbles requires the EQ-PT to be first order. This is not the case in the SM and requires at modification of the effective Higgs potetials. ??????
-
-\noindent
-Leptogenesis on the other hand is a natural consequence of the introduction of neutrino masses via the see-saw mechanism.
-\jana{Describe the see-saw mechanism briefly}
-
-In the usual implementation of leptogenesis heavy
-
+In this section we will briefly describe several possible models for baryogenesis but will go into detail for any of them.
 
 \begin{itemize}
-    \item GUT-baryogenesis
+    \item GUT bayrogenesis
     \item Electro-Weak Baryogenesis
     \item Leptogenesis
     \item Afleck-Dime baryogenesis
 \end{itemize}
 
- and therefore creates an asymmetry ?????:
+
+
+
 
 \subsection{Spontaneous Baryogenesis}
 \label{sec:spontaneour_bayrogenesis}
