@@ -178,11 +178,11 @@ First, to generate an asymmetry here need to be processes which produce more bar
 Second lets consider C and CP violation. They are needed to distinguish between particles and anti-particles. Otherwise here might be processes that produce an asymmetry in the
 particle vs anti-particle number but both the process producing more particles and the (conjugated) one that produces more anti-particles happen at the same rate.
 Then on average the total number of particles is zero again.
-This condition can be formally shown by considering the density matrix $\rho$ of the universe in the Heisenberg picture \footnote{That is the density matrix $\rho$ and all states are time-independent while all observables are time-dependent.}. Its time evolution is coverened by the Heisenberg equation
+This condition can be formally shown by considering the density matrix $\rho$ of the universe in the Heisenberg picture \footnote{That is the density matrix $\rho$ and all states are time-independent while all observables are time-dependent.}. Its time evolution is governed by the Heisenberg equation
 \begin{align}
     i \frac{\mathrm{d} \rho}{\mathrm{d} t} = [H, \rho],
 \end{align}
-where $H$ is the Hamiltonain of the system.
+where $H$ is the Hamiltonian of the system.
 In order to generate an asymmetry i.e.
 \begin{align}
     \langle B \rangle = \Tr [ B \rho ] \neq 0
@@ -206,7 +206,7 @@ then
 Therefore C and CP violation is required for bayrogenesis. The violation of C and CP symmetry can also be discussed more on the level of the B violating processes. A detailed discussion can be found in \cite[sec 2.3]{Cline:2006ts_Baryogenesis} as well as %\cite[sec. 6.3]{the_early_universe_kolb_and_turner}.
 
 Finally departure from thermal equilibrium is required. This is because in thermal equilibrium the number densities are purely set by the
-masses of the particles or anti-particles. If the theory is CPT symmetric, as very QFT with a Lorentz invariant groundstate (vacuum), then the
+masses of the particles or anti-particles. If the theory is CPT symmetric, as very QFT with a Lorentz invariant ground-state (vacuum), then the
 masses of particles and their anti-particles are the same ??????? \jana{felix an ref fragen}.
 Formally lets consider the density matrix in thermal equilibrium
 \begin{align}
@@ -221,7 +221,7 @@ Then one finds that
 since $CPT$ commutes with the Hamiltonian. Therefore $\langle B \rangle = 0$ in this case and one also requires thermal non-equilibrium. This derivation and discussion can also be found in \cite[sec. II]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
 
 
-\subsection{Baryon and Lepton Number in the Standard Model}
+\subsection{Sphalerons: Baryon and Lepton Number in the Standard Model}
 The baryon number $B$ and the lepton number $L$ are so called accidental
 symmetries of the standard model. They are symmetries of the classical lagrangian
 and follow directly from the conservation of weak hypercharge \cite[part II.B]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
@@ -247,7 +247,7 @@ This allows to write the integral of eq. \eqref{eq:B_and_L_current_equations}
 over all of space-time as an expression on the bounary of space-time.
 
 \noindent
-First we consider vacuum field configurations i.e. field configurations with zero energy density i.e. with vanishing field strength tensor of the SU(2) gauge fields in eucleadian space-time. While a vanishing four-potential gives the desired result, any gauge transformed potential yields the same result.
+First we consider vacuum field configurations i.e. field configurations with zero energy density i.e. with vanishing field strength tensor of the SU(2) gauge fields in euclidean space-time. While a vanishing four-potential gives the desired result, any gauge transformed potential yields the same result.
 Therefore the gauge fields are given in this case as so called pure gauges \cite[sec. 2.1]{Di_Luzio_2020_Landscape_of_QCD_Axion_models}
 \begin{align}
     A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U.
@@ -336,7 +336,7 @@ where $N_c$ the number of "colors" ($N_c = 2$ for the weak SU(2) theory) and $g 
 \noindent
 In this regime this process is in equilibrium. From considering the
 equilibrium relations between chemical potentials for different charges one
-can derive the relation between the $B - L$ and the $B$ charges as \cite[eq. 22]{Trodden:2004mj_baryogenesis_and_leptogenesis}
+can derive the relation between the $B - L$ and the $B$ charges as \cite[sec 2.5]{Leptogenesis_review_doi:10.1146/annurev.nucl.55.090704.151558}
 \begin{align}
     B = \frac{8 N_f + 4 N_H}{22 N_f + 13 N_H} (B - L),
 \end{align}
@@ -345,20 +345,89 @@ This shows an important requirement for a bayrogenesis model.
 A baryogenesis process has to produce a $B - L$ asymmetry otherwise the sphalerons
 will washout the asymmetry in $B$ if the process happens in the symmetric (un-broken) phase. Since $B - L$ is a conserved quantity in the standard model, physics beyond the standard model is needed.
 
+\subsection{The Weinberg Operator: Effective Lepton-Number Violations}
+\label{sec:lapton_number_violations}
+
+In effective field theory one can generate lepton violations at dimension five only from the
+Weinberg operator \cite{Weinberg_operator_original_PhysRevLett.43.1566}. It is given by \cite[eq. 2]{Weinberg_at_colliders_Fuks_2021}
+\begin{align}
+\mathcal{L}_5 = \frac{C_{l l'}}{\Lambda} [H \cdot \bar{L}^c_l] [L_{l'} \cdot H] + h.c.
+\end{align}
+where $L = (\nu_l,\, l)^T$ is the left handed lepton doublet ($\nu_l$ the left handed neutrino and $l$ the charged lepton) and $H = (h_+,\, h_0)^T$ the Higgs doublet. The index $l$ and $l'$ denote the flavor index and the parameter $C_{l l'}$ encodes a potential flavor dependence.
+The superscript $c$ defines charge conjunction, which acts on spinors as $C \psi C = i \gamma^2 \psi^*$
+and $\Lambda$ is the energy scale of this operator.
+As one can see this operator only contains left-handed leptons and no anti-leptons. Therefore
+it generates scattering processes which violate $L$ by $\Delta L = 2$.
+At lower energies, below the electro-weak phase-transition where the Higgs field takes a vacuum expectation value, this operators generates a mass-term for left-handed neutrinos of the form
+\begin{align}
+C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda} C v_l v_l',
+\end{align}
+where $\langle H \rangle = (0,\, v_{\mathrm{EW}} / \sqrt{2})^T$.
+This is a Majorana mass term ????? for the mass matrix $m_{\nu, ll'} = C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda}$
+We assume flavor independence and that the sum of neutrino masses
+is of order the atmospharic neutrino mass difference $\bar{m}^2 = \sum_i m_{\nu, i} \sim \Delta m_{\mathrm{atm}} = 2.4 \cdot 10^{-3} \, \mathrm{eV}^2$ as in \cite{Kusenko_2015_Axion_Leptogenesis}.
+Then the effective cross-section for $\Delta L = 2$ processes
+is given by \cite[eq. 9]{Kusenko_2015_Axion_Leptogenesis}
+\begin{align}
+\sigma_{\Delta L = 2} \approx \frac{3}{32 \pi^2} \frac{\bar{m}^2}{v_{\mathrm{EW}}^4}.
+\end{align}
+This approximation is valid if the center-of-mass energies in the processes are always small compared to the energy scale $\Lambda$.
+There are different possible UV completions that would generate the Weinberg operator
+One is the see-saw mechanism which introduces heavy right handed neutrinos and explains the low masses of the left-handed neutrinos.
+In this case the Weinberg operator is mediated by right handed neutrinos and
+couples to the left-handed lepton and the Higgs doublets via Yukawa couplings.
+If one integrates out the right handed neutrino by assuming that their mass is
+large compared to the center-of-mass energy (essentially neglecting the momentum in the denominator of the internal propagator), one obtains the Weinberg operator.
+A cartoon of this is shown in figure ?????.
+For this approximation to be valid in our computations, we require that
+the masses of the right-handed neutrinos are large compared to the temperatures
+of the thermal plasma. Then the center-of-mass energy of the scatterings are
+small compared to the mass of the mediating right-handed neutrinos.
+Also this ensures that the right-handed neutrinos are not produced in the plasma and therefore there is not interference with other mechanisms for leptogenesis.
+
+
 
 \subsection{Baryogenesis Models}
 In this section we will briefly describe several possible models for baryogenesis but will go into detail for any of them.
+We give a source that serves as a pedagogical introduction for each of them.
 
 \begin{itemize}
-    \item GUT bayrogenesis
-    \item Electro-Weak Baryogenesis
-    \item Leptogenesis
-    \item Afleck-Dime baryogenesis
+    \item The oldest mechanism for baryogenesis is baryogenesis in grand unified theories (GUT-BG).
+    For instance in an SU(5) GUT all requirements for successful baryogenesis are
+    fulfilled. This theory contains gauge bosons $X^\mu$ and Higgs bosons $Y$ with decays that directly
+    violate baryon and/or lepton number. Given appropriate complex phases in the Yukawa couplings
+    their decays violate CP. The decay of particles is a non-equilibrium process. Hence the Sakharov conditions are satisfied and indeed successful baryogenesis can be realized as detailed computations show.
+    Unfortunately this mechanism requires a reheating temperature that is too high to avoid other constrains. For a detailed discussion see ref. \cite[sec. 3]{Dine_2003_Bayrogenesis}.
+    \item Another mechanism for baryogenesis is electro-weak baryogenesis (EW-BG).
+    This model implements baryogenesis at the electro-weak phase transition.
+    Above symmetry breaking the net baryon number is zero.
+    At the phase transition bubbles where the electro-weak symmetry $SU(2)_W \times U(1)_Y$ is broken might form, which then
+    move through the plasma.
+    Scatterings with the bubble wall create an asymmetry in CP and C in front of the bubble if C and CP violating interactions are present.
+    Those asymmetries bias the sphaleron rate to create more particles than anti-particles in the unbroken phase.
+    Some particles then are collected by the bubble. Inside the bubble the sphaleron rate is suppressed and the
+    baryon number is not washed-out.
+    The formation of bubbles only happens if the elector-weak phase-transition is first order.
+    Unfortunately this is only the case in the standard model if the mass of the Higgs boson is much lower than
+    the measured value.
+    This property is modified if additional particles are introduced that then modify the effective finite-temperature
+    Higgs-potential that determines whether the phase-transition is first order.
+    For instance the minimal supersymmetric standard model (MSSM) would allow for this mechanism to happen.
+    One appealing aspect of the theory is that the additional couplings need to appear at energies expressible to future collider
+    experiments. An overview over this field is given in \cite{Electroweak_baryogenesis_Morrissey_2012}.
+    \item Leptogenesis is a mechanism that requires comparatively little additional assumptions beyond the standard model.
+    A natural way to explain the small neutrino masses in the standard model is to introduce heavy right handed neutrinos via the see-saw mechanism.
+    Those neutrinos could be produced in the early universe and then decay into leptons violating lepton number as well as C and CP. No particles carrying baryon
+    number take part in this process.
+    Therefore a $B - L$ asymmetry is generated that is converted into baryons by the sphalerons. An introduction to the model is given in \cite{Leptogenesis_review_doi:10.1146/annurev.nucl.55.090704.151558} and \cite{Leptogenesis_Buchmüller:2014} while more technical details are discussed in \cite{Pedestrians_Buchm_ller_2005}.
+    \item The last model we will discuss in this section is Affleck-Dine baryogenesis (AD-BG).
+    In this mechanism a scalar field carrying baryon number is introduced (such as in a super-symmetric model).
+    This scalar field has a cosmological evolution leading to a high occupation number. This scalar field then decays into standard model particles, creating the baryon asymmetry today.
+    This model works at lower energy-scales and it can also explain why the abundance of baryonic and dark matter is so similar. An introduction to AD-BG can be found in \cite[Part III]{Dine_2003_Bayrogenesis}.
 \end{itemize}
 
 
-
-
+\section{Spontaneous Leptogenesis with Axions}
 
 \subsection{Spontaneous Baryogenesis}
 \label{sec:spontaneour_bayrogenesis}
@@ -409,45 +478,6 @@ What kind of field could $\phi$ be?
 \end{itemize}
 }
 
-\subsection{Lepton-Number Violations and the Weinberg Operator}
-\label{sec:lapton_number_violations}
-
-In effective field theory one can generate lepton violations at dimension five only from the
-Weinberg operator \cite{Weinberg_operator_original_PhysRevLett.43.1566}. It is given by \cite[eq. 2]{Weinberg_at_colliders_Fuks_2021}
-\begin{align}
-    \mathcal{L}_5 = \frac{C_{l l'}}{\Lambda} [H \cdot \bar{L}^c_l] [L_{l'} \cdot H] + h.c.
-\end{align}
-where $L = (\nu_l,\, l)^T$ is the left handed lepton doublet ($\nu_l$ the left handed neutrino and $l$ the charged lepton) and $H = (h_+,\, h_0)^T$ the Higgs doublet. The index $l$ and $l'$ denote the flavor index and the parameter $C_{l l'}$ encodes a potential flavor dependence.
-The superscript $c$ defines charge conjunction, which acts on spinors as $C \psi C = i \gamma^2 \psi^*$
-and $\Lambda$ is the energy scale of this operator.
-As one can see this operator only contains left-handed leptons and no anti-leptons. Therefore
-it generates scattering processes which violate $L$ by $\Delta L = 2$.
-At lower energies, below the electro-weak phase-transition where the Higgs field takes a vacuum expectation value, this operators generates a mass-term for left-handed neutrinos of the form
-\begin{align}
-    C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda} C v_l v_l',
-\end{align}
-where $\langle H \rangle = (0,\, v_{\mathrm{EW}} / \sqrt{2})^T$.
-This is a Majorana mass term ????? for the mass matrix $m_{\nu, ll'} = C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda}$
-We assume flavor independence and that the sum of neutrino masses
-is of order the atmospharic neutrino mass difference $\bar{m}^2 = \sum_i m_{\nu, i} \sim \Delta m_{\mathrm{atm}} = 2.4 \cdot 10^{-3} \, \mathrm{eV}^2$ as in \cite{Kusenko_2015_Axion_Leptogenesis}.
-Then the effective cross-section for $\Delta L = 2$ processes
-is given by \cite[eq. 9]{Kusenko_2015_Axion_Leptogenesis}
-\begin{align}
-    \sigma_{\Delta L = 2} \approx \frac{3}{32 \pi^2} \frac{\bar{m}^2}{v_{\mathrm{EW}}^4}.
-\end{align}
-This approximation is valid if the center-of-mass energies in the processes are always small compared to the energy scale $\Lambda$.
-There are different possible UV completions that would generate the Weinberg operator
-One is the see-saw mechanism which introduces heavy right handed neutrinos and explains the low masses of the left-handed neutrinos.
-In this case the Weinberg operator is mediated by right handed neutrinos and
-couples to the left-handed lepton and the Higgs doublets via Yukawa couplings.
-If one integrates out the right handed neutrino by assuming that their mass is
-large compared to the center-of-mass energy (essentially neglecting the momentum in the denominator of the internal propagator), one obtains the Weinberg operator.
-A cartoon of this is shown in figure ?????.
-For this approximation to be valid in our computations, we require that
-the masses of the right-handed neutrinos are large compared to the temperatures
-of the thermal plasma. Then the center-of-mass energy of the scatterings are
-small compared to the mass of the mediating right-handed neutrinos.
-Also this ensures that the right-handed neutrinos are not produced in the plasma and therefore there is not interference with other mechanisms for leptogenesis.
 
 
 
@@ -459,7 +489,7 @@ Also this ensures that the right-handed neutrinos are not produced in the plasma
 
 
 
-\section{Axions}
+\subsection{Axions}
 \label{sec:axions}
 
 One potentially cosmologically relevant type of scalar fields are axion-like fields.
@@ -539,15 +569,7 @@ Axions are pseudo scalar bosons
 \end{itemize}
 }
 
-\section{Spontaneous Leptogenesis with Axions}
-\label{sec:spont_bg_lepto_with_axions}
-
-
-\jana{WARNING: this is old!!!!}
-
-In this section we will implement a concrete model for leptogenesis using axions.
-
-\subsection{Setup of the Mechanism}
+\subsection{Reheating}
 The violation of lepton number comes from the Weinberg operator (discussed in section ????).
 The temperature scale for our model is routhly given by the equilibration temperature of the Weinberg operator i.e.
 \begin{align}
@@ -585,12 +607,12 @@ This set of differential equations can then be solved numerically. The evolution
 Furthermore one has to take the decay of the axion into account.
 Since it couples the lepton current, it also couples to the
 
-\subsection{Discssion of the Mechanism and Analytical Approximation}
+\subsection{Discssion of the Mechanism}
 Let us now discuss the mechanism and limit on the parameters in particular.
 The parameter of this model are $(\theta_i, m_a, f_a, H_\mathrm{inf}, \Gamma_\phi)$.
 For simplicity we assume
 
-\subsection{Origin of the Coupling to the Lepton Current and the Problem of Field Basis}
+\subsection{The Problem of Field Basis and the Transport Equation}
 The model we discussed so far is based on ref. ??????.
 There the authors argumeted that the coupling originates from a field redefinition
 \begin{align}
@@ -602,14 +624,10 @@ As pointed out in ref. ???? and ref. ???????, this simultaneously induces an ene
 ?????????????????????????????????
 Therefore
 
-
-\subsection{Transport Equation}
-
 \begin{align}
     \dot{q}_i + 3 H q_i = - \sum_\alpha \Gamma_\alpha n^\alpha_i \Big[
     \sum_j n^\alpha_j \left( \frac{\mu_j}{T} \right) - n_S^\alpha \frac{\dot{a} / f_a}{T} \Big]
 \end{align}
-
 
 
 \jana{
@@ -631,7 +649,7 @@ Therefore
 \end{itemize}
 }
 
-\section{Outlook}
+\subsection{Outlook}
 \label{sec:outlook}
 
 Starting from the foundation established above, we can processed in several directions.
@@ -641,73 +659,21 @@ experimental constrains.
 In particular we are interested in models that also implement a viable dark matter candidate
 and/or are in regions of the parameter that, while not excluded right now, allow for realistic future experimental searches.
 
-\subsection{Multi-Field Extensions}
-\label{sec:multi_fields}
-
-\jana{
-\begin{itemize}
-    \item Problem: How do we get Axion SBG to work at lower axion masses?
-    \item Problem: Can we include some kind of production mechanism for dark matter?
-    \item Idea: Introduce a second scalar field beside the axion
-    \item This other field will induce an effective mass in the axion via a quatic coupling
-    \item more complicated parameter space
-    \item bare masses relevant
-    \item sometimes chaotic behaviour
-    \item different energy scaling
-    \item TODO: decay?????
-    \item present preliminary constrains on parameters
-\end{itemize}
-}
 
 
-\subsection{Kinetic Realignment}
-In ????? an alternative to the conventual misalignment mechanism was proposed.
-In contrast to the standard mechanism, one doesn't assume the initial velocity of the axion field to be vanishing.
-This can't happend in the standard senario of the breaking of the PQ symmetry.
-Instead the the axion field obtains a non-vanishing velocity from coupling to higher
-dimensional operators at some higher energy scale.
-In this scenario the axion can overcome the barrier from its potetial (eq. ?????),
-potetially multiple times.
-This happens until the energy density has redshifted enougha such that it can no longer
-overcome the potential. Then the axion beginnns to oscillate into its minimum.
-It was shown that in this case the relic aboundance is given by
-\begin{align}
-    Y = ????
-\end{align}
-This mechanism allows for the opportunity to have the nessisary velocity at high temperature for sucessfl baryogenssis with the mechanism described above while also
-generating a high
 
-\subsection{Clockwork Model and Deformed Potentials}
 
-\subsection{Spacial Dependence}
 
-\jana{
-I could work on:
-\begin{itemize}
-    \item play more with the two field model
-    \item cosine potential i.e. two axions
-    \begin{itemize}
-        \item what about decay?
-        \item constrains?
-    \end{itemize}
-    \item Afleck-Dime BG with axions
-    \item linear response formalism
-    \begin{itemize}
-        \item how does it work in detail?
-        \item comparison with Boltzmann
-        \item scenarios in the paper
-    \end{itemize}
-\end{itemize}
-}
+
+
+
+
+
+
 
 \section{Conclusion}
 \label{sec:conclusion}
 \jana{TODO!!!!!}
-
-
-\appendix
-
-\section{Numerics}
 
 
 \newpage
