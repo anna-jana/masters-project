@@ -2,7 +2,6 @@ import sys
 import numpy as np
 from scipy.integrate import solve_ivp
 
-import transport_equation
 from common import cosmology, constants
 
 def rhs_axion_decay(log_t, y, Gamma_a):

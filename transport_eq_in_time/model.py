@@ -84,8 +84,8 @@ def restart(res, calc_axion_mass, axion_parameter, options):
     new_t_end = calc_next_t(calc_axion_mass, axion_parameter, new_t_start, T, options.num_osc_step)
     return SimulationState(
         initial_reheating = res.rh_final,
-        initial_axion = res.axion_fn(res.t[-1]),
-        initial_transport_eq = res.red_chem_pots.T[-1] / transport_equation.unit,
+        initial_axion = res.axion_fn(np.log(res.t[-1])),
+        initial_transport_eq = res.red_chem_pots.T[-1],
         t_start = new_t_start,
         t_end   = new_t_end,
     )
@@ -101,7 +101,8 @@ def done(res, debug):
 
 def final_result(res):
     T = res.T_fn(res.t[-1])
-    return cosmology.calc_eta_B_final(res.red_chem_B_minus_L[-1], T)
+    x = res.red_chem_B_minus_L[-1]
+    return cosmology.calc_eta_B_final(x, T)
 
 def solve_to_end(model, axion_initial, options=default_solver_options, calc_axion_mass=None, t_end=None, debug=False, collect=False):
     result = start(model, axion_initial, options, calc_axion_mass, t_end)
@@ -119,11 +120,13 @@ def solve_to_end(model, axion_initial, options=default_solver_options, calc_axio
         return steps
     else:
         eta_B = final_result(result)
-        T = result.T_fn(result.t[-1])
-        return eta_B, result.red_chem_B_minus_L[-1], T, result.axion.T[-1]
+        t_final = result.t[-1]
+        T = result.T_fn(t_final)
+        axion_final = result.axion_fn(np.log(t_final))
+        return eta_B, result.red_chem_B_minus_L[-1], T, axion_final, t_final
 
 def solve(model, axion_initial, f_a, options=default_solver_options, calc_axion_mass=None, debug=False):
-    eta_B, red_chem_pot_B_minus_L, T, (theta, theta_dot) = \
+    eta_B, red_chem_pot_B_minus_L, T, (theta, theta_dot), t_final = \
             solve_to_end(model, axion_initial, options=options, calc_axion_mass=calc_axion_mass, debug=debug)
     if model.axion_decay_rate != 0:
         m_a = calc_axion_mass(T, *model.axion_parameter) # NOTE: this is not 100% correct
