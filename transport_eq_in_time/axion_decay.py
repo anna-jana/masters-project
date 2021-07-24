@@ -13,6 +13,7 @@ def rhs_axion_decay(log_t, y, Gamma_a):
     d_log_R_d_log_t = t * H
     return d_log_rho_R_d_log_t, d_log_rho_a_d_log_t, d_log_R_d_log_t
 
+
 def compute_axion_decay(T_start, red_chem_B_minus_L, theta, theta_dot, m_a, f_a, axion_decay_rate):
     # initial condition
     R_0 = 1.0
