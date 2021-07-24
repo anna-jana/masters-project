@@ -346,7 +346,7 @@ A baryogenesis process has to produce a $B - L$ asymmetry otherwise the sphalero
 will washout the asymmetry in $B$ if the process happens in the symmetric (un-broken) phase. Since $B - L$ is a conserved quantity in the standard model, physics beyond the standard model is needed.
 
 \subsection{The Weinberg Operator: Effective Lepton-Number Violations}
-\label{sec:lapton_number_violations}
+\label{sec:lepton_number_violations}
 
 In effective field theory one can generate lepton violations at dimension five only from the
 Weinberg operator \cite{Weinberg_operator_original_PhysRevLett.43.1566}. It is given by \cite[eq. 2]{Weinberg_at_colliders_Fuks_2021}
@@ -413,7 +413,7 @@ We give a source that serves as a pedagogical introduction for each of them.
     This property is modified if additional particles are introduced that then modify the effective finite-temperature
     Higgs-potential that determines whether the phase-transition is first order.
     For instance the minimal supersymmetric standard model (MSSM) would allow for this mechanism to happen.
-    One appealing aspect of the theory is that the additional couplings need to appear at energies expressible to future collider
+    One appealing aspect of the theory is that the additional couplings need to appear at energies accessible to future collider
     experiments. An overview over this field is given in \cite{Electroweak_baryogenesis_Morrissey_2012}.
     \item Leptogenesis is a mechanism that requires comparatively little additional assumptions beyond the standard model.
     A natural way to explain the small neutrino masses in the standard model is to introduce heavy right handed neutrinos via the see-saw mechanism.
@@ -432,7 +432,7 @@ We give a source that serves as a pedagogical introduction for each of them.
 \subsection{Spontaneous Baryogenesis}
 \label{sec:spontaneour_bayrogenesis}
 
-All the mechanism above mentioned fullfill the Sakharov conditions.
+All the mechanism above mentioned fulfill the Sakharov conditions.
 
 In ???? ???? and ???? pointed out that there is a loop hole in the Sakharov conditions
 and that is that they assume the theory to be invariant under CPT.
@@ -471,107 +471,57 @@ But in later cases we need to study the case where the interaction is only close
 \noindent
 What kind of field could $\phi$ be?
 
-\jana{
-\begin{itemize}
-    \item original idea
-    \item violation of CPT, why okay?
-\end{itemize}
-}
-
-
-
-
-
-
-
-
-
-
-
-
 \subsection{Axions}
 \label{sec:axions}
 
-One potentially cosmologically relevant type of scalar fields are axion-like fields.
-Axions were first introduced as a solution to the strong CP problem.
-In QCD the operator
+For our model we will use an axion-like field for the scalar-field.
+We consider the effective axion Lagrangian ??????
 \begin{align}
-    \mathrm{Tr} G_{\mu \nu} 2\tilde{G}^{\mu \nu},
+    \mathcal{L}_{\mathrm{axion}} &= \mathcal{L}_{\mathrm{axion-eff}} + \mathcal{L}_{\mathrm{axion-SM}} \\
+    \mathcal{L}_{\mathrm{axion-eff}} &= - \frac{1}{2} (\partial_\mu \phi) (\partial^\mu \phi) - V_\mathrm{eff}(\phi; T) \\
+    \mathcal{L}_{\mathrm{axion-SM}} &=
+        - \frac{C_{W\tilde{W}}}{32 \pi^2} \frac{\phi}{f_a} W_a^{\mu \nu}\tilde{W}^a_{\mu \nu}
+        - \frac{C_{G\tilde{G}}}{32 \pi^2} \frac{\phi}{f_a} G_a^{\mu \nu}\tilde{G}^a_{\mu \nu}
+        - C_{L} \frac{\partial_\mu \phi}{f_a} J^\mu_L,
 \end{align}
-where $G = ?????$ is the gluon field strength tensor,
-has similar properties as the equivanlent term for the $SU(2)$ field appearing
-in ???????. But there it is not connected to a symmetry and therefore can't
-be removed from the lagagian ????? TODO: make sure that I understand this correctly
-Therefore a new term has to appear in the lagragian
+where $W$ is the SU(2) field strength tensor of the electro-weak interaction and $G$ the SU(3) field strength tensor for the strong interaction, $\tilde{W}$ and $\tilde{G}$ are their duals, $f_a$ the axion decay constant and $J_L$ the lepton current.
+The dimension-less parameters $C_{W\tilde{W}}$, $C_{G\tilde{G}}$ and $C_L$ are taken to be either vanishing or unity in this work.
+Note that by rotating the fermion fields one can get rid of either the anomulus term of the form $\sim F \tilde{F}$ or the coupling to the current of the form $\sim \partial \phi J$
+or a linear combination of them. This way one could only write two coupling terms or
+introduce a coupling to the baryon current ??????. The choice of field basis use above will be useful later.
+The axion field forms a condensate in a coherent state that is governed by classical
+equations of motion. Hence the cosmological evolution of the axion field is given by
+the Klein Gordon equation on an FLRW background ??????? with the effective potential $V_\mathrm{eff}$ for the zero-mode i.e.
 \begin{align}
-    \mathcal{L}
+    \label{eq:axion_klein_gordon}
+    \ddot{\phi} + 3 H \dot{\phi} + \frac{\partial V(\phi; T)}{\partial \phi} = 0.
 \end{align}
-In princple the parameter $\theta$ can take values betwenn 0 and $2\pi$ but measurements of the electric dipol moment of the neutron constrain $\theta$ to
-be $\theta < ????$ ?????.
-This fine tuning problem is the strong CP problem.
-The axion solution to this problem is to introduce a new pseudo-scalar field
-$\theta$, the axion field that couples as ????
+The effective potetial for the axion field is generated from instanton effects.
+For QCD axion from SU(3) instanton in the stnadard model strong sector and hidden sector axions from some hidden stronly coupled sector. It is then given approximatly as ???????
 \begin{align}
-    ???????
+   &V_\mathrm{eff}(\phi; T) = m_a^2(T) (1 - \cos(\phi / N f_a)) \\
+   &m_a^2(T) = m_a(T = 0) \cdot \min\left(1, \left( T / \Lambda \right)^p \right)
 \end{align}
-and therefore corrects the theta parameter. The ?????? theorem ensurs that
-the mimium of this potetial is at the CP conserving minimum.
-This coupling comes from the field rotation from a couping to fermions which in turn comes from
-the coupling of the UV completion of the axion theory.
-The axion is a pseudo-Nambu-Goldstone boson. Its dynamics are derived from
-Gnerically we call all pseudo scalar bosons that couple to gauge fields via anaomaly term as in eq. ????.
-axion-like particles (APLs).
-The effective potetial for the axion field is given by the dependence of QCD vacuum energy
-on the theta parameter $\theta$ and is given (in the one-instanton gas approximation) as ??????
+in the dilute instanton gas / one-instanton approximation.
+The integer value $N$ is the axion domain-wall number, which we set to $N = 1$ as in the ???-model ?????.
+The form above should be used for a detailed analysis. But for simplicity we assume a temperature independent harmonic potential
 \begin{align}
-    V(\theta; T) &= m_a^2(T) (1 - \cos(\theta)) \\
-    m_a &= m_a(T = 0) \cdot \min\left(1, \left( T / \Lambda \right)^p \right)
+    V_\mathrm{eff} = \frac{1}{2} m_a^2 \left( \frac{\phi}{f_a} \right)^2,
 \end{align}
-Cosmologically an axion field is in a coherent state that can be described by classical field equations.
-The effective axion action is given by
-\begin{align}
-    1 = 1
-\end{align}
-Varying the action yields the equations of motion
-\begin{align}
-    \ddot{a} + 3 H \dot{a} + \frac{\partial V(a; T)}{\partial a} = 0
-\end{align}
-The most well known application of axions is that they could be the dark matter since
-the coherent oscillations of the axion field have the equation of state of matter.
-Typically one assumes the realignment mechanism, where the initial kinetic energy is not large enough to overcome the potential barrier of the axion potential. In this case the initial motion of the axion is damped and the field is frozen in (is approximately constant in time). Then only the initial value of the field is relevant.
-When the Hubble friction no longer dominates the axion mass i.e.
-\begin{align}
-    3H(T_\mathrm{osc}) = m_a(T_\mathrm{osc}),
-\end{align}
-the field starts to oscillate.
-Then the co-moving number density is conserved and the final dark matter abundance is given by
-\begin{align}
-    \Omega_a h^2 = ???????
-\end{align}
-This means at very high masses the relic abundance is too low to be a relevant dark matter component.
+where the axion mass $m_a$ is the only free parameter.
+The cosmological evolution of the axion field is as follows. We assume that the
+symmetry related to the axion UV completion is broken before or during inflation.
+Then the axion field is homogeneous over one Hubble patch and is described by eq. \eqref{eq:axion_klein_gordon} ?????.
+If the potential and kinetic energy are of the same order, any initial motion of the axion is damped by Hubble friction. Therefore one can assume the initial conditions $\phi = \phi_i$ and $\dot{\phi} = 0$ at the end of inflation ?????.
+Once the Hubble parameter is succinctly low for the axion to overcome Hubble friction the axion rolls down its potential and starts to oscillate. This roll-down generates the time derivative
+required for the baryogenesis process.
+The coherent oscillations have a matter-type equation of state and therefore behave as non-relativistic matter. This makes axions a dark matter candidate as long as the axion
+doesn't decay.
 
-In quantum chromodynamics (QCD) the vacuum structure is non trivial.
-????
-In general axion like particles (APLs) are pseudo scalar bosons that couple
-to gauge field via an anomaly term.
-Axions are pseudo scalar bosons
-
-
-\jana{
-\begin{itemize}
-    \item strong cp problem
-    \item axion solution
-    \item axion like particles
-    \item efftive couplings to gauge bosons and ferminons
-    \item decay rate into gauge bosons (like pion)
-    \item cosmological axion field
-
-\end{itemize}
-}
 
 \subsection{Reheating}
-The violation of lepton number comes from the Weinberg operator (discussed in section ????).
-The temperature scale for our model is routhly given by the equilibration temperature of the Weinberg operator i.e.
+The violation of lepton number comes from the Weinberg operator (discussed in section \ref{sec:lepton_number_violations}).
+The temperature scale for our model is rougmmmhly given by the equilibration temperature of the Weinberg operator i.e.
 \begin{align}
     \Gamma_W(T_\mathrm{eq}) = H(T_\mathrm{eq}) \Rightarrow T \approx 10^{13} \, \mathrm{GeV}
 \end{align}
@@ -581,33 +531,27 @@ This means this process has to happen during/directly after reheating. The rehea
     \dot{\rho_R} + 4 H \rho_R &= + \Gamma_\phi \rho_\phi \\
     3 H^2 M_\mathrm{pl}^2 &= \rho_\mathrm{tot} \approx \rho_\phi + \rho_R,
 \end{align}
-where $\rho_\phi$ is the energy density of the inflaton field, $\rho_R$ the radiation energy density and $\Gamma_\phi$ the decay rate of the inflaton to SM particles.
-During this epoch we describe the motion of the axion field using eq. ?????????? with given the Hubble parameter.
-For simplicity we assume that the axion has a constant fixed mass, that we treed as an open parameter. We assume the standard relaighment scenario. Since the oscillation has to start at very high values of the Hubble parameter, the mass of the axion has to be high as well (see eq. ???).
-This means that this axion can't be the QCD axion. Its mass is assumed to come from some hidden sector.
-We then assume that the axion directly couples to the lepton current like in eq. ?????. Then effective chemical potential is given by $\mu_\mathrm{eff} = \dot{a}/f_a$ according to eq. ????.
-The process of creating the asymmetry is described by the Boltzmann equation ??????
+where $\rho_\phi$ is the energy density of the inflaton field, $\rho_R$ the radiation energy density and $\Gamma_\phi$ the effective decay rate of the inflaton to SM particles.
+We use the instantaneous thermalization approximation for the temperature
 \begin{align}
-    \dot{n_L} + 3 H n_L = - \Gamma_L(T) (n_L - n_L^\mathrm{eq}(\mu_\mathrm{eff}, T))
+    \rho_R = \frac{\pi^2}{30} g_{*}(T) T^4,
 \end{align}
-with
+i.e. we assume that after the decay of an inflaton particle, the decay products immediatly follow a thermal distribution, which is not true exactly.
+The temperature start at zero since no raidation exits. Then is quickly, within one dynamical time, rises to a maximal
+value ??????
 \begin{align}
-    \rho_R = \frac{\pi^2}{30} g_{*}(T) T^4
+    T_\mathrm{max} = 1
 \end{align}
+After that the energy density is still dominated by the inflaton field (matter domination) until
+$\rho_\phi = \rho_R$, were the reheating temperature ?????????
 \begin{align}
-    n_L^\mathrm{eq} =
+    T_\mathrm{RH} = 1
 \end{align}
-\begin{align}
-    \Gamma_L =
-\end{align}
-We assume that there is no initial adunance of letpon asymmetry i.e. $n_L = 0$ at the end of inflation.
-The
-This set of differential equations can then be solved numerically. The evolution of projected final baryon asymmetry (from eq. ?????) is shown in figure ????? for two different values of the inflaton decay rate $\Gamma_\phi$ and the axion mass $m_a$.
+is reached. At this point the reheating epoch is over and the universe continues to evolve radiation dominated.
 
-Furthermore one has to take the decay of the axion into account.
-Since it couples the lepton current, it also couples to the
 
 \subsection{Discssion of the Mechanism}
+
 Let us now discuss the mechanism and limit on the parameters in particular.
 The parameter of this model are $(\theta_i, m_a, f_a, H_\mathrm{inf}, \Gamma_\phi)$.
 For simplicity we assume
@@ -630,24 +574,8 @@ Therefore
 \end{align}
 
 
-\jana{
-\begin{itemize}
-    \item coupling of axion derivative to lepton current -> effective chemical potential
-    \item $\Delta L = 2$ processes and the efftive crossection
-    \item Boltzmann equation of the asymmetry
-    \item required temperature
-    \item reheating (energy + Friedmann eq.)
-    \item decay of axions via the anomaly
-    \item present solution
-    \item decay of inflaton injects entropy $\rightarrow$ dilution
-    \item decay of axion injects entropy $\rightarrow$ dilution
-    \item washout from oscillations
-    \item analytical solution
-    \item a-priori constrains
-    \item dilution frmo axion ineffctive at low $f_a$
-    \item apriori constrains lead to minimal $m_a, \Gamma_\phi$
-\end{itemize}
-}
+
+
 
 \subsection{Outlook}
 \label{sec:outlook}
