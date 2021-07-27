@@ -58,6 +58,37 @@ prepared by\\[0.2cm]
 {\bfseries Jana Riess}\\[0.2cm]
 }
 
+\vspace*{1cm}
+{
+    \centering\Large
+    advised by\\[0.2cm]
+    {\bfseries Prof. Dr. Laura Covi}\\[0.2cm]
+}
+
+\vspace*{1cm}
+{
+    \centering\Large
+    co-advised by\\[0.2cm]
+    {\bfseries Prof. Dr. David J. E. Marsh}\\[0.2cm]
+}
+
+\vspace*{1cm}
+{
+    \centering\Large
+    at the\\[0.2cm]
+    {\bfseries Institute for Theoretical Physics \\ George August Universität Göttingen}\\[0.2cm]
+}
+
+\vspace*{1cm}
+{
+    \centering\Large
+    Date of Submission:\\[0.2cm]
+    {\bfseries 30.7.2020}\\[0.2cm]
+}
+
+
+
+
 \vspace*{2cm}
 
 \begin{Large}
@@ -73,7 +104,7 @@ prepared by\\[0.2cm]
 \tableofcontents
 \newpage
 
-\newcommand{\jana}[1]{{\color{magenta}{#1}}}t
+\newcommand{\jana}[1]{{\color{magenta}{#1}}}
 
 
 \section{Introduction}
@@ -94,9 +125,9 @@ This report is organized as follows: It is split into two parts.
 In the first part we discuss the basics of baryogenesis (sec. \ref{sec:basics_of_baryogenesis}).
 This includes parts like baryon number violations in the standard model from sphalerons in section
 \ref{sec:sphaelrons} and the Weinberg operator in section \ref{sec:lepton_number_violations} that will
-be used in the second part as well as general considerations.
+be used in the second part as well as general considerations like the Sakharov conditions in sec. \ref{sec:sakharov_conditions} and an overview over different baryogenesis models in sec. \ref{sec:baryogenesis_models}.
 In the second part (sec. \ref{sec:spontaneour_bayrogenesis}) we will discuss the model that will be topic of this
-thesis project namely spontaneous baryogenesis in particular its implementation with axions.
+thesis project, namely spontaneous baryogenesis and its implementation with axions.
 This involves as the main parts the discussion of the mechanism and the computations involved in sec. \ref{sec:spontaneour_bayrogenesis_tradiaonal} and \ref{sec:model}.
 As well as some background about axions (sec. \ref{sec:axions}) and the reheating epoch (\ref{sec:reheating}).
 
@@ -109,17 +140,17 @@ This section reviews the fundamentals of baryogenesis.
 \label{sec:evolution_of_the_baryon_asymmetry}
 First let us review the evolution of the baryon density. We know from collider experiments that at energies below $\sim 1 \, \mathrm{TeV}$ the baryon and lepton numbers are conserved.
 Therefore the process of baryogenesis had to happen at higher energies.
-At these energies the baryons/lepton and photons are in chemical equilibrium.
-This means that from thermodynamics
+At these energies the baryons/leptons and photons are in chemical equilibrium.
+This means that from thermodynamics we know that
 \begin{align}
 \label{eq:baryon_equilibrium}
-n_b + n_{\bar{b}} \approx n_\gamma
+n_b + n_{\bar{b}} \approx n_\gamma,
 \end{align}
-At lower energies the baryons annihilate into photons. That is all except the baryon excess $n_B$. Now the baryon asymmetry $n_B$ is maximal. Those remaining baryons make up the baryon density today.
-
-We want to quantify the amount of asymmetry between baryons and anti-baryons.
-Today the asymmetry is maximal but
-above temperatures of $\sim 1 \, \mathrm{GeV}$ baryons and anti-baryons are in chemical equilibrium.
+where $n_b, n_{\bar{b}}, n_\gamma$ are the number densities of baryons, anti-baryons and photons.
+At lower energies the baryons annihilate into photons. That is all except the baryon excess $n_B = n_b - n_{\bar{b}}$. Now the baryon asymmetry $n_B$ is maximal. Those remaining baryons make up the baryon density today.
+%We want to quantify the amount of asymmetry between baryons and anti-baryons.
+%Today the asymmetry is maximal but
+%above temperatures of $\sim 1 \, \mathrm{GeV}$ baryons and anti-baryons are in chemical equilibrium.
 Because of eq. \eqref{eq:baryon_equilibrium} it is convenient to express the asymmetry as
 the ratio between the difference between the number densities of baryons $n_b$ and anti-baryons $n_{\hat{b}}$
 over the number densities of photons \cite[eq. 3.52]{the_early_universe_kolb_and_turner}
@@ -133,19 +164,18 @@ i.e. as the asymmetry parameter \cite[eq. 1.2]{Cline:2006ts_Baryogenesis}
 This quantity is conserved as the universe expands because both the baryon number density
 and the photon density scale as $\sim 1/R^3 \sim T^3$.
 
-However this is not conserved quantity if the co-moving number of photons changes due to annihilation
+However this is not a conserved quantity if the co-moving number of photons changes due to annihilation
 of particles e.g. baryons or leptons into photons.
 Since the total co-moving entropy is conserved (the entropy of the annihilating particles is converted into the photons), the baryon abundance
 \begin{align}
     \label{eq:baryon_abundance}
     Y_B := \frac{n_B}{s},
 \end{align}
-where
+where $s$ is the entropy density
 \begin{align}
     s = \frac{2 \pi^2}{45} g_{*, s}(T) T^3
 \end{align}
 with the effective relativistic degrees of freedom for the entropy density $g_{*, s}(T)$
-is the entropy density
 is conserved since both scale as $\sim T^3$.
 Alternatively one can compute the present day baryon asymmetry $\eta_B^0$ from eq. \eqref{eq:baryon_abundance} by considering the ratio
 \begin{align}
@@ -158,15 +188,14 @@ leading to
 \end{align}
 where in the standard model one has $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mathrm{Gev}} = 427/4$ \cite[sec. 3.4]{the_early_universe_kolb_and_turner}.
 
-The present value of the baryon asymmetry $\eta_B^0$ can be determined from separate measurements
-of the baryon number density $n_B$ and the photon number density $n_\gamma$.
-Historically these numbers were determined from nucleosynthesis \cite[sec. III.1]{Matter_and_Antimatter_Canetti_2012} but modern measurement are based on observations of the cosmic microwave background (CMB).
+\noindent
+Historically the numbers were determined from big bang nucleosynthesis (BBN) \cite[sec. III.1]{Matter_and_Antimatter_Canetti_2012} but modern measurement are based on observations of the cosmic microwave background (CMB).
 One finds a value of \cite[eq. 7]{Matter_and_Antimatter_Canetti_2012}
 \begin{align}
-    \eta_B^0 = 6.160^{+ 0.153}_{-0.156} \cdot 10^{-10}.
+    \label{eq:observed_bau}
+    \eta_B^\mathrm{obs} = 6.160^{+ 0.153}_{-0.156} \cdot 10^{-10}
 \end{align}
-
-
+for the observed baryon asymmetry.
 
 \subsection{Sakharov Conditions}
 \label{sec:sakharov_conditions}
@@ -180,7 +209,8 @@ The \emph{Sakharov Conditions} are a set of three necessary but not sufficient c
 Lets proof and discuss them in order.
 First, to generate an asymmetry here need to be processes which produce more baryons than anti-baryons i.e. that violate $B$ symmetry.
 
-Second lets consider C and CP violation. They are needed to distinguish between particles and anti-particles. Otherwise here might be processes that produce an asymmetry in the
+\noindent
+Second let us consider C and CP violation. They are needed to distinguish between particles and anti-particles. Otherwise there might be processes that produce an asymmetry in the
 particle vs anti-particle number but both the process producing more particles and the (conjugated) one that produces more anti-particles happen at the same rate.
 Then on average the total number of particles is zero again.
 This condition can be formally shown by considering the density matrix $\rho$ of the universe in the Heisenberg picture \footnote{That is the density matrix $\rho$ and all states are time-independent while all observables are time-dependent.}. Its time evolution is governed by the Heisenberg equation
@@ -208,11 +238,12 @@ then
     \frac{\mathrm{d}}{\mathrm{d} t} \Tr [ B \rho ] &= \Tr [ B \dot{\rho} ] = \Tr [ B [H, \rho] ] \\
     &= \Tr [ (C/CP)^\dagger B (C/CP) [H, \rho] ] = \Tr [ \rho (C/CP)^\dagger B [C/CP, H] ] = 0.
 \end{align}
-Therefore C and CP violation is required for bayrogenesis. The violation of C and CP symmetry can also be discussed more on the level of the B violating processes. A detailed discussion can be found in \cite[sec 2.3]{Cline:2006ts_Baryogenesis} as well as %\cite[sec. 6.3]{the_early_universe_kolb_and_turner}.
+Therefore C and CP violation is required for bayrogenesis. The violation of C and CP symmetry can also be discussed more on the level of the B violating processes. A detailed discussion can be found in \cite[sec 2.3]{Cline:2006ts_Baryogenesis}. % as well as %\cite[sec. 6.3]{the_early_universe_kolb_and_turner}.
 
-Finally departure from thermal equilibrium is required. This is because in thermal equilibrium the number densities are purely set by the
+\noindent
+Finally departure from thermal equilibrium is required. This is because in thermal equilibrium the number densities are set by the
 masses of the particles or anti-particles. If the theory is CPT symmetric, as very QFT with a Lorentz invariant ground-state (vacuum), then the
-masses of particles and their anti-particles are the same ??????? \jana{felix an ref fragen}.
+masses of particles and their anti-particles are the same. % ??????? \jana{felix an ref fragen}.
 Formally lets consider the density matrix in thermal equilibrium
 \begin{align}
     \rho = \frac{e^{- \beta H}}{Z},
@@ -231,7 +262,7 @@ since $CPT$ commutes with the Hamiltonian. Therefore $\langle B \rangle = 0$ in 
 
 The baryon number $B$ and the lepton number $L$ are so called accidental
 symmetries of the standard model. They are symmetries of the classical lagrangian
-and follow directly from the conservation of weak hypercharge \cite[part II.B]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
+\cite[part II.B]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
 But this doesn't directly imply that they are also good symmetries of the
 quantum theory. Indeed they are not conserved quantities and the four-divergences
 of the corresponding Noether-currents are given as \cite[eq. 2.1]{Cline:2006ts_Baryogenesis}
@@ -257,7 +288,7 @@ over all of space-time as an expression on the bounary of space-time.
 First we consider vacuum field configurations i.e. field configurations with zero energy density i.e. with vanishing field strength tensor of the SU(2) gauge fields in euclidean space-time. While a vanishing four-potential gives the desired result, any gauge transformed potential yields the same result.
 Therefore the gauge fields are given in this case as so called pure gauges \cite[sec. 2.1]{Di_Luzio_2020_Landscape_of_QCD_Axion_models}
 \begin{align}
-    A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U.
+    A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U
 \end{align}
 for some gauge transformation $U(x)$.
 Then we find
@@ -288,22 +319,22 @@ This change between vaccua is a quantum tunneling process. Its rate can be compu
 The path integral for the transition rate can be expanded around this instanton solution in euclidean space-time. An introduction to this technique can be found in \cite[Chap. 7]{aspects_of_symmmetry}. The tunneling process itself is also called an instanton.
 The resulting amplitude is approximately given by \cite[4.8]{Cline:2006ts_Baryogenesis}
 \begin{align}
-    e^{-8 \pi^2 / g_2} \approx 10^{-173}
+    e^{-8 \pi^2 / g_2} \approx 10^{-173}.
 \end{align}
 This rate is too low to be observed in any physical process. While it ensures
-that matter such our own bodies are stable, it also means that these processes
+that matter like our own bodies are stable, it also means that these processes
 can't play a role in baryogenesis.
 This changes once we consider the system at finite temperature.
-Here a change in Chern-Simons number is enhanced by thermal fluctuations called  sphalerons (processes).
-Below the electro-weak phase-transition the height of the barrier still
+Here a change in Chern-Simons number is enhanced by thermal fluctuations called sphalerons (processes).
+Below the electro-weak phase-transition the height of the potential barrier still
 suppresses changes of $N_{\mathrm{CS}}$.
 The rate in this phase is given as \cite[eq. 4.10]{Cline:2006ts_Baryogenesis}
 \begin{align}
-    \Gamma_{\mathrm{sph}} \sim \left( \frac{E_{\mathrm{sph}}}{T} \right)^3 \left( \frac{m_W(T)}{T} \right)^4 T^4 e^{- E_{\mathrm{sph}} / T}
+    \Gamma_{\mathrm{sph}} \sim \left( \frac{E_{\mathrm{sph}}}{T} \right)^3 \left( \frac{m_W(T)}{T} \right)^4 T^4 e^{- E_{\mathrm{sph}} / T}.
 \end{align}
 The energy $E_{\mathrm{sph}}$ is the energy of the so called sphaleron configuration. Formally it is a static finite energy solution to the classical
 equations of motion that sits on top of the potential barrier between two vaccua (technically the saddle point). In a sense it is the "middle" of the instanton configuration and its free energy represents the height of the barrier between
-neighboring vacuua.
+neighboring vacua.
 It is given by $E_{\mathrm{sph}} \approx 8\pi v / g_2$ with the VEV of the Higgs field $v$ \cite[eq. 4.5]{Cline:2006ts_Baryogenesis}.
 A cartoon of the dependence of the energy on the Chern-Simons number and the instanton and sphaleron processes is shown in figure \ref{fig:sphaleron_cartoon}.
 \begin{figure}[H]
@@ -344,14 +375,14 @@ Above the electro-weak phase-transition the vanishing vacuum-expectation value o
 where $N_c$ the number of "colors" ($N_c = 2$ for the weak SU(2) theory) and $g = g_2$ the coupling constant.
 
 \noindent
-In this regime this process is in equilibrium. From considering the
+In this regime the process is in equilibrium. From considering the
 equilibrium relations between chemical potentials for different charges one
 can derive the relation between the $B - L$ and the $B$ charges as \cite[sec 2.5]{Leptogenesis_review_doi:10.1146/annurev.nucl.55.090704.151558}
 \begin{align}
     \label{eq:sphaleron_conversion}
     B = \frac{8 N_f + 4 N_H}{22 N_f + 13 N_H} (B - L),
 \end{align}
-where $N_H$ is the number of Higgs doublets ($N_H = 1$ in the SM). We define the prefactor as the sphaeloron conversion factor $C_\mathrm{sph}$.
+where $N_H$ is the number of Higgs doublets ($N_H = 1$ in the SM). We define the prefactor as the sphaleron conversion factor $C_\mathrm{sph}$.
 This shows an important requirement for a bayrogenesis model.
 A baryogenesis process has to produce a $B - L$ asymmetry otherwise the sphalerons
 will washout the asymmetry in $B$ if the process happens in the symmetric (un-broken) phase. Since $B - L$ is a conserved quantity in the standard model, physics beyond the standard model is needed.
@@ -364,7 +395,7 @@ Weinberg operator \cite{Weinberg_operator_original_PhysRevLett.43.1566}. It is g
 \begin{align}
 \mathcal{L}_5 = \frac{C_{l l'}}{\Lambda} [H \cdot \bar{L}^c_l] [L_{l'} \cdot H] + h.c.
 \end{align}
-where $L = (\nu_l,\, l)^T$ is the left handed lepton doublet ($\nu_l$ the left handed neutrino and $l$ the charged lepton) and $H = (h_+,\, h_0)^T$ the Higgs doublet. The index $l$ and $l'$ denote the flavor index and the parameter $C_{l l'}$ encodes a potential flavor dependence.
+where $L = (\nu_l,\, l)^T$ is the left handed lepton doublet ($\nu_l$ the left handed neutrino and $l$ the charged lepton) and $H = (h_+,\, h_0)^T$ the Higgs doublet. The indices $l$ and $l'$ denote the flavor index and the parameter $C_{l l'}$ encodes a potential flavor dependence (which we will ignore).
 The superscript $c$ defines charge conjunction, which acts on spinors as $C \psi C = i \gamma^2 \psi^*$
 and $\Lambda$ is the energy scale of this operator.
 As one can see this operator only contains left-handed leptons and no anti-leptons. Therefore
@@ -376,7 +407,7 @@ C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda} C v_l v_l',
 where $\langle H \rangle = (0,\, v_{\mathrm{EW}} / \sqrt{2})^T$.
 This is a Majorana mass term ????? for the mass matrix $m_{\nu, ll'} = C_{ll'} \frac{v_{\mathrm{EW}}^2}{\Lambda}$
 We assume flavor independence and that the sum of neutrino masses
-is of order the atmospharic neutrino mass difference $\bar{m}^2 = \sum_i m_{\nu, i} \sim \Delta m_{\mathrm{atm}} = 2.4 \cdot 10^{-3} \, \mathrm{eV}^2$ as in \cite{Kusenko_2015_Axion_Leptogenesis}.
+is of order the atmospheric neutrino mass difference $\bar{m}^2 = \sum_i m_{\nu, i} \sim \Delta m_{\mathrm{atm}} = 2.4 \cdot 10^{-3} \, \mathrm{eV}^2$ as in \cite{Kusenko_2015_Axion_Leptogenesis}.
 Then the effective cross-section for $\Delta L = 2$ processes
 is given by \cite[eq. 9]{Kusenko_2015_Axion_Leptogenesis}
 \begin{align}
@@ -390,7 +421,6 @@ In this case the Weinberg operator is mediated by right handed neutrinos and
 couples to the left-handed lepton and the Higgs doublets via Yukawa couplings.
 If one integrates out the right handed neutrino by assuming that their mass is
 large compared to the center-of-mass energy (essentially neglecting the momentum in the denominator of the internal propagator), one obtains the Weinberg operator.
-\jana{A cartoon of this is shown in figure ?????. Do I want to do this?}
 For this approximation to be valid in our computations, we require that
 the masses of the right-handed neutrinos are large compared to the temperatures
 of the thermal plasma. Then the center-of-mass energy of the scatterings are
@@ -398,7 +428,8 @@ small compared to the mass of the mediating right-handed neutrinos.
 Also this ensures that the right-handed neutrinos are not produced in the plasma and therefore there is not interference with other mechanisms for leptogenesis.
 
 \subsection{Baryogenesis Models}
-In this section we will briefly describe several possible models for baryogenesis but will go into detail for any of them.
+\label{sec:baryogenesis_models}
+In this section we will briefly describe several possible models for baryogenesis but will not go into detail for any of them.
 We give a source that serves as a pedagogical introduction for each of them.
 
 \begin{itemize}
@@ -420,7 +451,7 @@ We give a source that serves as a pedagogical introduction for each of them.
     The formation of bubbles only happens if the elector-weak phase-transition is first order.
     Unfortunately this is only the case in the standard model if the mass of the Higgs boson is much lower than
     the measured value.
-    This property is modified if additional particles are introduced that then modify the effective finite-temperature
+    This property is modified if additional particles are introduced which then modify the effective finite-temperature
     Higgs-potential that determines whether the phase-transition is first order.
     For instance the minimal supersymmetric standard model (MSSM) would allow for this mechanism to happen.
     One appealing aspect of the theory is that the additional couplings need to appear at energies accessible to future collider
@@ -439,8 +470,8 @@ We give a source that serves as a pedagogical introduction for each of them.
 
 \section{Spontaneous Leptogenesis with Axions}
 \label{sec:spontaneour_bayrogenesis}
-This second hafe of the report will deal with the concrete model that will be
-topic of this thesis project namely the implementation of \emph{spontaneous baryogenesis} using \emph{axion}.
+This second half of the report will deal with the model that will be
+topic of the thesis project namely the implementation of \emph{spontaneous baryogenesis} using \emph{axion}.
 
 \subsection{Spontaneous Baryogenesis}
 \label{sec:spontaneour_bayrogenesis_tradiaonal}
@@ -454,14 +485,13 @@ due to the expanding background. In particular the expectation value of a scalar
     \label{eq:sbg_coupling_classical}
     \mathcal{L} \ni - \frac{1}{f} \phi \partial_\mu J^\mu_B
 \end{align}
-violates CPT. Here $\phi$ is the scalar field, $f$ some energy scale of this new physics and $J_B$ the Baryon current.
-By partial integration and by assuming that the field $\phi$ is homogenious one finds \cite[1.3]{COHEN1987251}
+violates CPT. Here $\phi$ is the scalar field, $f$ some energy scale of this new physics and $J_B$ the baryon current.
+By partial integration and by assuming that the field $\phi$ is homogeneous one finds \cite[1.3]{COHEN1987251}
 \begin{align}
     \frac{1}{f} J_B^\mu \partial_\mu \phi = \frac{1}{f} J_B^0 \dot{\phi}
     %= \frac{1}{f} (n_b - n_{\bar{b}}) \dot{\phi}
-    = \frac{1}{f} n_B \dot{\phi},
+    = \frac{1}{f} n_B \dot{\phi}.
 \end{align}
-where $n_b$ is the number density of the baryons and $n_{\bar{b}}$ of the anti-baryons respectively.
 If one then compares this term with the density matrix of the grand-canonical ensemble
 \begin{align}
     \mathcal{Z} = e^{-\beta H + \beta \mu N}
@@ -476,10 +506,9 @@ If the baryon asymmetry is not protected i.e. there exist B-violating processes 
     n_B^\mathrm{eq} = \mu_\mathrm{eff} \frac{T^2}{6}
 \end{align}
 In this case the final baryon asymmetry is given by the value of $n^\mathrm{eq}_B$ at the freeze-out of the baryon number violating interaction.
-This mechanism indeed does not require C and CP violation because the baies of the interaction towards baryons comes from the chemical potentials and not from the cross-sections of the interactions.
+This mechanism indeed does not require C and CP violation because the bias of the interaction towards baryons comes from the chemical potentials and not from the cross-sections of the interactions.
 Note that still C and CP violation are allowed to occur.
 Furthermore this mechanism also works in equilibrium.
-But in later cases we need to study the case where the interaction is only close to equilibrium.
 This is the "classic" picture of how spontaneous baryogenesis works. Later we will discuss a more general picture
 that also works for more general couplings then eq. \eqref{eq:sbg_coupling_classical}.
 This approach will also be needed for the implementation of the model with the axion as the case discussed here is too
