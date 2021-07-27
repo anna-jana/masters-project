@@ -151,6 +151,7 @@ Alternatively one can compute the present day baryon asymmetry $\eta_B^0$ from e
 \end{align}
 leading to
 \begin{align}
+    \label{eq:asymmetry_redshift}
     \eta_B^0 = \frac{g_{*,s}^0}{g_{*, s}^{\gg 1 \, \mathrm{Gev}}} \eta_B^{\gg 1 \, \mathrm{Gev}}.
 \end{align}
 where in the standard model one has $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mathrm{Gev}} = 427/4$ \cite[sec. 3.4]{the_early_universe_kolb_and_turner}.
@@ -338,6 +339,7 @@ In this regime this process is in equilibrium. From considering the
 equilibrium relations between chemical potentials for different charges one
 can derive the relation between the $B - L$ and the $B$ charges as \cite[sec 2.5]{Leptogenesis_review_doi:10.1146/annurev.nucl.55.090704.151558}
 \begin{align}
+    \label{eq:sphaleron_conversion}
     B = \frac{8 N_f + 4 N_H}{22 N_f + 13 N_H} (B - L),
 \end{align}
 where $N_H$ is the number of Higgs doublets ($N_H = 1$ in the SM). We define the prefactor as the sphaeloron conversion factor $C_\mathrm{sph}$.
@@ -433,23 +435,23 @@ We give a source that serves as a pedagogical introduction for each of them.
 \label{sec:spontaneour_bayrogenesis}
 
 All the mechanism above mentioned fulfill the Sakharov conditions.
-
-In ???? ???? and ???? pointed out that there is a loop hole in the Sakharov conditions
-and that is that they assume the theory to be invariant under CPT.
-In general any QFT with a Lorentz invariant groundstate is CPT symmetric but in the early universe the ground state of the theory not Lorentz invariant due to being at finite temperature and more importantly \footnote{Some thing about curved backgrounds???????}
-due to the expanding background. In particular the expectation value of a scalar field and its time derivtive will not vanish in general. A coupling to such a field such as ???????
+In refs. \cite{COHEN1987251}, \cite{COHEN1988913} Cohen and Kaplan pointed out that there is a loop hole in the Sakharov conditions.
+This loop hole is connected to the assumption that the theory is invariant under CPT.
+In general any QFT with a Lorentz invariant groundstate is CPT symmetric but in the early universe the ground state of the theory not Lorentz invariant due to being at finite temperature and more importantly
+due to the expanding background. In particular the expectation value of a scalar field and its time derivative will not vanish in general. A coupling to such a field such as \cite[eq. 1.2]{COHEN1987251}
 \begin{align}
+    \label{eq:sbg_coupling_classical}
     \mathcal{L} \ni - \frac{1}{f} \phi \partial_\mu J^\mu_B
 \end{align}
 violates CPT. Here $\phi$ is the scalar field, $f$ some energy scale of this new physics and $J_B$ the Baryon current.
-By partial integration and by assuming that the field $\phi$ is homogenious one finds
+By partial integration and by assuming that the field $\phi$ is homogenious one finds \cite[1.3]{COHEN1987251}
 \begin{align}
     \frac{1}{f} J_B^\mu \partial_\mu \phi = \frac{1}{f} J_B^0 \dot{\phi}
     %= \frac{1}{f} (n_b - n_{\bar{b}}) \dot{\phi}
     = \frac{1}{f} n_B \dot{\phi},
 \end{align}
 where $n_b$ is the number density of the baryons and $n_{\bar{b}}$ of the anti-baryons respectively.
-If one then compares this term with the density matrix of the grand-canoncal ensemble
+If one then compares this term with the density matrix of the grand-canonical ensemble
 \begin{align}
     \mathcal{Z} = e^{-\beta H + \beta \mu N}
 \end{align}
@@ -458,30 +460,32 @@ interaction as
 \begin{align}
     \mu \to \mu_\mathrm{eff} = \mu + \frac{\phi}{f}
 \end{align}
-If the baryon asymmetry is not protected i.e. there exist B-violating processes in the thermal plasma, the baryon asymmetry is then given in equilibrium as ?????
+If the baryon asymmetry is not protected i.e. there exist B-violating processes in the thermal plasma, the baryon asymmetry is then given in equilibrium as \cite[eq. 3.58]{the_early_universe_kolb_and_turner}
 \begin{align}
     n_B^\mathrm{eq} = \mu_\mathrm{eff} \frac{T^2}{6}
 \end{align}
 In this case the final baryon asymmetry is given by the value of $n^\mathrm{eq}_B$ at the freeze-out of the baryon number violating interaction.
-This mechanism indeed does not require C and CP violation because the baies of the interacion towards baryons comes from the chemical potetials and not from the cross-sections of the interactions.
+This mechanism indeed does not require C and CP violation because the baies of the interaction towards baryons comes from the chemical potentials and not from the cross-sections of the interactions.
 Note that still C and CP violation are allowed to occur.
-Furhtermore this mechanism also works in equilibrium.
+Furthermore this mechanism also works in equilibrium.
 But in later cases we need to study the case where the interaction is only close to equilibrium.
-
-\noindent
-What kind of field could $\phi$ be?
+This is the "classic" picture of how spontaneous baryogenesis works. Later we will discuss a more general picture
+that also works for more general couplings then eq. \eqref{eq:sbg_coupling_classical}.
+This approach will also be needed for the implementation of the model with the axion as the case discussed here is too
+specific. Nevertheless this gives an intuitive picture of what the fundamental idea behind SBG is.
 
 \subsection{Axions}
 \label{sec:axions}
 
 For our model we will use an axion-like field for the scalar-field.
-We consider the effective axion Lagrangian ??????
+The axion is a pseudo-scalar field that arises as a Nanbu-Goldstone boson $\phi = f_a \arg \Phi$ of the spontaneous symmetry breaking of some UV completing field $\Phi$ with the axion decay constant $f_a$.
+We consider the effective axion Lagrangian that arises as the low-energy description of the axion field \cite[sec. 2.5]{Di_Luzio_2020_Landscape_of_QCD_Axion_models}
 \begin{align}
     \mathcal{L}_{\mathrm{axion}} &= \mathcal{L}_{\mathrm{axion-eff}} + \mathcal{L}_{\mathrm{axion-SM}} \\
     \mathcal{L}_{\mathrm{axion-eff}} &= - \frac{1}{2} (\partial_\mu \phi) (\partial^\mu \phi) - V_\mathrm{eff}(\phi; T) \\
     \mathcal{L}_{\mathrm{axion-SM}} &=
-        - \frac{C_{W\tilde{W}}}{32 \pi^2} \frac{\phi}{f_a} W_a^{\mu \nu}\tilde{W}^a_{\mu \nu}
-        - \frac{C_{G\tilde{G}}}{32 \pi^2} \frac{\phi}{f_a} G_a^{\mu \nu}\tilde{G}^a_{\mu \nu}
+        - \frac{g_2^2 C_{W\tilde{W}}}{32 \pi^2} \frac{\phi}{f_a} W_a^{\mu \nu}\tilde{W}^a_{\mu \nu}
+        - \frac{g_3^2 C_{G\tilde{G}}}{32 \pi^2} \frac{\phi}{f_a} G_a^{\mu \nu}\tilde{G}^a_{\mu \nu}
         - C_{L} \frac{\partial_\mu \phi}{f_a} J^\mu_L,
 \end{align}
 where $W$ is the SU(2) field strength tensor of the electro-weak interaction and $G$ the SU(3) field strength tensor for the strong interaction, $\tilde{W}$ and $\tilde{G}$ are their duals, $f_a$ the axion decay constant and $J_L$ the lepton current.
@@ -491,42 +495,46 @@ or a linear combination of them. This way one could only write two coupling term
 introduce a coupling to the baryon current ??????. The choice of field basis use above will be useful later.
 The axion field forms a condensate in a coherent state that is governed by classical
 equations of motion. Hence the cosmological evolution of the axion field is given by
-the Klein Gordon equation on an FLRW background ??????? with the effective potential $V_\mathrm{eff}$ for the zero-mode i.e.
+the Klein Gordon equation on an FLRW background \cite[chap. 1, 2]{the_early_universe_kolb_and_turner} with the effective potential $V_\mathrm{eff}$ for the zero-mode i.e. \cite[sec. 4.1, 4.2]{Axion_Cosmology_Marsh_2016}
 \begin{align}
     \label{eq:axion_klein_gordon}
     \ddot{\phi} + 3 H \dot{\phi} + \frac{\partial V(\phi; T)}{\partial \phi} = 0.
 \end{align}
-The effective potetial for the axion field is generated from instanton effects.
-For QCD axion from SU(3) instanton in the stnadard model strong sector and hidden sector axions from some hidden stronly coupled sector. It is then given approximatly as ???????
+The effective potential for the axion field is generated from instanton effects.
+For QCD axion from SU(3) instanton in the standard model strong sector and hidden sector axions from some hidden strongly coupled sector. It is then given approximately as \cite[sec. 2.2]{Axion_Cosmology_Marsh_2016}
 \begin{align}
    &V_\mathrm{eff}(\phi; T) = m_a^2(T) (1 - \cos(\phi / N f_a)) \\
    &m_a^2(T) = m_a(T = 0) \cdot \min\left(1, \left( T / \Lambda \right)^p \right)
 \end{align}
 in the dilute instanton gas / one-instanton approximation.
-The integer value $N$ is the axion domain-wall number, which we set to $N = 1$ as in the ???-model ?????.
+The integer value $N$ is the axion domain-wall number, which we set to $N = 1$ as in the DFSZ-model \cite[sec. 2.7]{Di_Luzio_2020_Landscape_of_QCD_Axion_models}.
 The form above should be used for a detailed analysis. But for simplicity we assume a temperature independent harmonic potential
 \begin{align}
-    V_\mathrm{eff} = \frac{1}{2} m_a^2 \left( \frac{\phi}{f_a} \right)^2,
+    V_\mathrm{eff} = \frac{1}{2} m_a^2 \phi^2,
 \end{align}
 where the axion mass $m_a$ is the only free parameter.
 The cosmological evolution of the axion field is as follows. We assume that the
 symmetry related to the axion UV completion is broken before or during inflation.
-Then the axion field is homogeneous over one Hubble patch and is described by eq. \eqref{eq:axion_klein_gordon} ?????.
-If the potential and kinetic energy are of the same order, any initial motion of the axion is damped by Hubble friction. Therefore one can assume the initial conditions $\phi = \phi_i$ and $\dot{\phi} = 0$ at the end of inflation ?????.
-Once the Hubble parameter is succinctly low for the axion to overcome Hubble friction the axion rolls down its potential and starts to oscillate. This roll-down generates the time derivative
+Then the axion field is homogeneous over one Hubble patch and is described by eq. \eqref{eq:axion_klein_gordon} \cite[sec. 4, eps. 4.7]{Axion_Cosmology_Marsh_2016}.
+If the potential and kinetic energy are of the same order, any initial motion of the axion is damped by Hubble friction. Therefore one can assume the initial conditions $\phi = \phi_i$ and $\dot{\phi} = 0$ at the end of inflation \cite[sec. IV.A]{Axion_cosmology_Wantz_2010}.
+Once the Hubble parameter is succinctly low $3 H(t_\mathrm{osc}) \sim m_a(T(t_\mathrm{osc}))$ for the axion to overcome Hubble friction the axion rolls down its potential and starts to oscillate. This roll-down generates the time derivative
 required for the baryogenesis process.
 The coherent oscillations have a matter-type equation of state and therefore behave as non-relativistic matter. This makes axions a dark matter candidate as long as the axion
 doesn't decay.
+If the axion does decay it
 
 
 \subsection{Reheating}
+\label{sec:reheating}
 The violation of lepton number comes from the Weinberg operator (discussed in section \ref{sec:lepton_number_violations}).
-The temperature scale for our model is rougmmmhly given by the equilibration temperature of the Weinberg operator i.e.
+The temperature scale for our model is roughly given by the equilibration temperature of the Weinberg operator i.e.
 \begin{align}
     \Gamma_W(T_\mathrm{eq}) = H(T_\mathrm{eq}) \Rightarrow T \approx 10^{13} \, \mathrm{GeV}
 \end{align}
-This means this process has to happen during/directly after reheating. The reheating process is described by the energy rate equations and the Friedmann equation ????????
+This means this process has to happen during/directly after reheating. The reheating epoch happens right after inflation. The inflaton field, that has driven by exponential expansion of the universe during inflation has started to oscillate and decays into standard model radiation  \cite[sec. 8.3]{the_early_universe_kolb_and_turner}.
+The reheating process is described by the energy rate equations and the Friedmann equation \cite[eq. 8.29, 8.31]{the_early_universe_kolb_and_turner}
 \begin{align}
+    \label{eq:reheating_equations}
     \dot{\rho_\phi} + 3 H \rho_\phi &= - \Gamma_\phi \rho_\phi \\
     \dot{\rho_R} + 4 H \rho_R &= + \Gamma_\phi \rho_\phi \\
     3 H^2 M_\mathrm{pl}^2 &= \rho_\mathrm{tot} \approx \rho_\phi + \rho_R,
@@ -536,67 +544,122 @@ We use the instantaneous thermalization approximation for the temperature
 \begin{align}
     \rho_R = \frac{\pi^2}{30} g_{*}(T) T^4,
 \end{align}
-i.e. we assume that after the decay of an inflaton particle, the decay products immediatly follow a thermal distribution, which is not true exactly.
-The temperature start at zero since no raidation exits. Then is quickly, within one dynamical time, rises to a maximal
-value ??????
+i.e. we assume that after the decay of an inflaton particle, the decay products immediately follow a thermal distribution, which is not true exactly.
+The temperature start at zero since no radiation exits. Then is quickly, within one dynamical time, rises to a maximal
+value \cite[eq. 8.33]{the_early_universe_kolb_and_turner}
 \begin{align}
-    T_\mathrm{max} = 1
+    T_\mathrm{max} = 0.8 g_*{-1/4} \rho_0^{1/2} (\Gamma_\phi 8 \pi M_\mathrm{pl})^{1/4},
 \end{align}
+where $\rho_0 = 3 M_pl^2 H_\mathrm{inf}^2$ is the initial energy density.
 After that the energy density is still dominated by the inflaton field (matter domination) until
-$\rho_\phi = \rho_R$, were the reheating temperature ?????????
+$\rho_\phi = \rho_R$, were the reheating temperature \cite[eq. 8.34]{the_early_universe_kolb_and_turner}
 \begin{align}
-    T_\mathrm{RH} = 1
+    T_\mathrm{RH} = 0.55 g_*^{-1/4} (8 \pi M_\mathrm{pl} \Gamma_\phi)^{1/2}
 \end{align}
 is reached. At this point the reheating epoch is over and the universe continues to evolve radiation dominated.
 
 
-\subsection{Discssion of the Mechanism}
 
-Let us now discuss the mechanism and limit on the parameters in particular.
-The parameter of this model are $(\theta_i, m_a, f_a, H_\mathrm{inf}, \Gamma_\phi)$.
-For simplicity we assume
+\subsection{Implementation of the Model: Problem of Field Basis and the Transport Equation}
+\label{sec:model}
 
-\subsection{The Problem of Field Basis and the Transport Equation}
-The model we discussed so far is based on ref. ??????.
-There the authors argumeted that the coupling originates from a field redefinition
+Let us now implement a spontaneous baryogenesis model with an axion as the scalar field.
+Its evolution is governed by eq. \eqref{eq:axion_klein_gordon}.
+Let us first start with a model with $C_L = 1$ and $C_{W \tilde{W}} = C_{G \tilde{G}} = 0$.
+In this case the "classic" model from section \ref{sec:spontaneour_bayrogenesis} applies.
+We need to track the asymmetry of the leptons and do so using the Boltzmann equation \cite[eq. 7]{Axion_leptogenesis_Kusenko_2015}
 \begin{align}
-    ???????
+    \label{eq:L_violation_Boltzmann}
+    \dot{n}_L + 3 H n_L &= - \Gamma_W (n_L - n_L^\mathrm{eq}) \\
+    \Gamma_W &= n^\mathrm{eq}_L \sigma_W,
 \end{align}
-of the anaomaly coupling of the axion to the SU(2) gauge field (as in eq. ??????).
-As pointed out in ref. ???? and ref. ???????, this simultaneously induces an energy shift
-?????????????????????????????????????ß
-?????????????????????????????????
-Therefore
+where $n_L$ is the number density of leptons vs anti-leptons, $n_L^\mathrm{eq} = \mu_\mathrm{eff} \frac{T^2}{6}$ its equilibrium value and $\sigma_W$ the effective cross-section for the lepton number
+changing interactions. For this cross-section we assume the value for Weinberg operator from the see-saw mechanism as discussed in section \ref{sec:lepton_number_violations}.
+The final value of the asymmetry is determined by integrating the Boltzmann eq. \eqref{eq:L_violation_Boltzmann}, the Klein-Gordon eq. \eqref{eq:axion_klein_gordon} and the
+equations for reheating \eqref{eq:reheating_equations} numerically.
+The value of $\eta_L = n_L / n_\gamma$ will converge to
+a constant value. It can then translated to
+the present day baryon asymmetry using the sphaleron conversion factor in eq. \eqref{eq:sphaleron_conversion} and the redshift to today from eq. \eqref{eq:asymmetry_redshift}.
+The numerical result for this model is shown in figure ???????.
+We will not discuss the result in detail here and postpone these discussion to the thesis itself.
 
+The model we discussed so far is based on ref. \cite{Axion_leptogenesis_Kusenko_2015}.
+There the authors argued that the coupling originates from an axion coupling to $W \tilde{W}$ ($C_{W \tilde{W}} = 1, C_L = C_{G \tilde{G}} = 0$) and then replacing the $W \tilde{W}$ term using
+the anomolus equation (eq. \eqref{eq:B_and_L_current_equations}).
+The problem with this approach is that in the presents of the Weinberg operator eq. \eqref{eq:B_and_L_current_equations} is not true but contains in extra term from the Weinberg operator as
+is also violates L. Therefore rewriting the coupling this way would also introduce a coupling of
+the axion to the Weinberg operator, making the rate in eq. \eqref{eq:L_violation_Boltzmann} incorrect.
+Instead one has to do a field redefinition
 \begin{align}
-    \dot{q}_i + 3 H q_i = - \sum_\alpha \Gamma_\alpha n^\alpha_i \Big[
-    \sum_j n^\alpha_j \left( \frac{\mu_j}{T} \right) - n_S^\alpha \frac{\dot{a} / f_a}{T} \Big]
+    ?????
 \end{align}
-
-
-
+to remove the anomalous coupling. This would  introduce a axion dependent phase in the Weinberg operator
+but this does not effect the Born-level cross-section in eq. ??????.
+Unfortunately as pointed out in ref. ????? this induces an energy shift from the kinetic term
+\begin{align}
+\end{align}
+The energy shift cancels the energy shift from the coupling to the lepton current, making the effective
+chemical potential invariant under changes of the field basis i.e. there is no simple basis in which
+one can simply read of its value.
+This means that such a coupling can not be interpreted just as a shift of chemical potential.
+The coupling still biases the reactions.
+As an alternative the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings} developed a formalism
+to avoid this issue and that is intrinsically field basis independent.
+The equation of motion is here the transport equation for all standard model charges $q_i$.
+It is
+given as ??????
+\begin{align}
+\label{eq:transport_equation}
+\dot{q}_i + 3 H q_i = - \sum_\alpha \Gamma_\alpha n^\alpha_i \Big[
+\sum_j n^\alpha_j \left( \frac{\mu_j}{T} \right) - n_S^\alpha \frac{\dot{a} / f_a}{T} \Big].
+\end{align}
+This equation was obtained via linear response theory considering the operator equation
+\begin{align}
+    \partial_\mu J^\mu_i = - \sum_\alpha n^\alpha_i \mathcal{O}_\alpha,
+\end{align}
+where $J_i$ is the current for the charge $i$, $\mathcal{O}_\alpha$ some interaction operator and
+$n^\alpha_i$ encodes the change of charge $i$ in the process $\alpha$.
+The relevant charges for our case are ????
+\begin{align}
+i \in (??????)
+\end{align}
+The rates in eq. \eqref{eq:transport_equation} are
+\begin{align}
+    \Gamma_\alpha = ????????,
+\end{align}
+which can be computed in thermal field theory.
+The relevant processes include the sphaleron transitions discussed in section ??????,
+the Weinberg operator as discussed in section ????? that violates $B - L$ and hence allows for baryogenesis to happen as well as
+Yukawa couplings ????. These are discussed in ????? and the corresponding charge vectors are given in ??????.
+The source term from the axion is encoded in the vector $n_S^\alpha$ describing the couplings of
+the axion to the interactions $\mathcal{O}_\alpha$. It is ?????? for a coupling of the form ?????
+and ????? for a coupling of the form ??????.
+For a coupling to $W \tilde{W}$ it is given as ?????.
 
 
 \subsection{Outlook}
 \label{sec:outlook}
 
-Starting from the foundation established above, we can processed in several directions.
-In this section we briefly discuss each. The goal of this project is to explore
-different models that can successfully implement baryogenesis, while avoiding cosmological and
-experimental constrains.
-In particular we are interested in models that also implement a viable dark matter candidate
-and/or are in regions of the parameter that, while not excluded right now, allow for realistic future experimental searches.
+In the following master's thesis project we will compute the baryon asymmetry using the transport equation \eqref{eq:transport_equation} during reheating (sec. \ref{sec:reheating}) and
+solving the Klein Gordon equation for the axion field (eq. \eqref{eq:axion_klein_gordon}).
+This combines the results of ref. \cite{Axion_leptogenesis_Kusenko_2015} in which the reheating process and the motion of the axion are correctly taken care of but the asymmetry production
+is not correctly computed (see sec. \ref{sec:model}) and those of
+ref. \cite{Domcke:2020kcp_Generic_Couplings} which developed the formalism to correctly compute
+the asymmetry while not considering the reheating process and the motion of the
+axion \footnote{In this paper they considered the process only in radiation dominated epoch. While their results are correct in this respect, they can be extended to larger parts of the parameter-space this way}.
+Furthermore we will analyze the parameter space in the spirit of ref. \cite{Axion_leptogenesis_Kusenko_2015} (see sec. \ref{sec:model})to obtain bounds
+on the parameters for successful baryogenesis.
 
-
-
-
-
-
-
-
-
-
-
+Building on this, we can modify the model in several ways.
+First we could change the nature and scale of the lepton violating interactions.
+Then we could change the dynamics of the axion. This was already done in ref. ?????.
+In this work the dynamics of a clockwork axion was considered.
+This model allows a non-vanishing velocity of the axion at high energy scales as required for
+SBG while also having a low axion mass at late times making the axion stable.
+This allows the axion to explain baryogenesis and the dark matter at the same time.
+We are planing to apply the transport equation method to this model to obtain correct results
+for the asymmetry. Furthermore the model contains a moduli parameter $mR$ that is
+set to specific values in ????. A more complete model has to consider moduli-stabilization that determines the value $mR$ dynamically.
 
 
 \section{Conclusion}
