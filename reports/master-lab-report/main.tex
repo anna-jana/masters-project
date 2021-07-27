@@ -1,4 +1,5 @@
-\documentclass[13pt,a4paper,twoside,titlepage]{article}
+\documentclass[13pt,a4paper,titlepage]{article}
+%\documentclass[13pt,a4paper,twoside,titlepage]{article}
 \usepackage[ngerman, english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{latexsym,amssymb,amsmath,amstext}
@@ -79,32 +80,33 @@ prepared by\\[0.2cm]
 \label{sec:introduction}
 
 \noindent
-\jana{Überarbeiten!!!!!}
-In ????? Paul Dirac came up with an interpretation of negative energy states in his Dirac equations as anti-particles.
-These anti-particles are a fundamental feature in theories of fundamental interactions and it was long believed that
-nature is symmetric under the exchange of a particle with its anti-particle.
-At high temperatures in the early universe particles and anti-particles have been present both in high number densities due to rapid pair-production and annihilations into two photons. After the universe was been cooled down below the freeze-out temperature of these processes, all annihilations into photons happend and only the asymmetry between particles and anti-particles remained. If
-there were a symmetry between particles and anti-particles then only photons should remain.
-But the universe we observe is made out of matter. Objects like galaxies made out of anti-matter have not been observed, hence some kind of speration between matter and anti-matter within our universe seems unlikely. ???????
-Therefore some process has to have happend that created an asymmetry between particles and anti-particles. This process
-is known as \emph{baryogenesis}.
+The baryon asymmetry of the universe (BAU) is a precondition for life to exist in the universe.
+Yet its origin is unknown and a challenge in current physics research to find different possible models
+that can explain this asymmetry.
+Since the discovery of anti-particles it has been a problem to understand why here should be
+an asymmetry between particles and their anti-partners as most simple theories are symmetric under
+exchange of particles and anti-particles including some that are
+very successful in describing nature. Moreover we also need a mechanism that can
+produce the asymmetry dynamically as any initial asymmetry would have diluted away during inflation.
 
 \noindent
-In this lab report we will discuss the issue of baryogenesis and one possible solution in detail, \emph{spontaneous baryogenesis} using \emph{axions}. Furthermore we show one example of how one can implement spontaneous baryogenesis during reheating using axions coupling via an SU(2) anomaly and lepton-number violating interactions from an effective Weinberg operator arising from a type-I see-saw mechanism.
-
-\noindent
-This report is organised as follows:
-In section \ref{sec:baryogenesis} the general issue of baryogenesis is discussed and the most well known theories are presented briefly.
-Then the lesser known approach of spontaneous baryogenesis is presented in section \ref{sec:spontaneour_bayrogenesis}.
-For a concrete implementation of this idea, we cover the fundamentals of two prerequisites, namely lepton-number violation from the type-I see-saw mechanism i.e. right handed Majorana neutrinos in section \ref{sec:lapton_number_violations} and axions and their couplings as well as their cosmological dynamics in section \ref{sec:axions}. Then we will discuss the actual model in section \ref{sec:spont_bg_lepto_with_axions}.
-Finally we will discuss potential extensions of this model in section \ref{sec:multi_fields} and conclude in section \ref{sec:conclusion_and_outlook} including an outlook on other possible models for baryogenesis using axions.
+This report is organized as follows: It is split into two parts.
+In the first part we discuss the basics of baryogenesis (sec. \ref{sec:basics_of_baryogenesis}).
+This includes parts like baryon number violations in the standard model from sphalerons in section
+\ref{sec:sphaelrons} and the Weinberg operator in section \ref{sec:lepton_number_violations} that will
+be used in the second part as well as general considerations.
+In the second part (sec. \ref{sec:spontaneour_bayrogenesis}) we will discuss the model that will be topic of this
+thesis project namely spontaneous baryogenesis in particular its implementation with axions.
+This involves as the main parts the discussion of the mechanism and the computations involved in sec. \ref{sec:spontaneour_bayrogenesis_tradiaonal} and \ref{sec:model}.
+As well as some background about axions (sec. \ref{sec:axions}) and the reheating epoch (\ref{sec:reheating}).
 
 \section{Basics of Baryogenesis}
-\label{sec:baryogenesis}
+\label{sec:basics_of_baryogenesis}
 
 This section reviews the fundamentals of baryogenesis.
 
 \subsection{Evolution of the Baryon Asymmetry}
+\label{sec:evolution_of_the_baryon_asymmetry}
 First let us review the evolution of the baryon density. We know from collider experiments that at energies below $\sim 1 \, \mathrm{TeV}$ the baryon and lepton numbers are conserved.
 Therefore the process of baryogenesis had to happen at higher energies.
 At these energies the baryons/lepton and photons are in chemical equilibrium.
@@ -124,7 +126,7 @@ over the number densities of photons \cite[eq. 3.52]{the_early_universe_kolb_and
 \begin{align}
     n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3
 \end{align}
-i.e. as the asymmetry parameter ?????
+i.e. as the asymmetry parameter \cite[eq. 1.2]{Cline:2006ts_Baryogenesis}
 \begin{align}
     \eta_B = \frac{n_B}{n_\gamma}.
 \end{align}
@@ -158,15 +160,17 @@ where in the standard model one has $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, 
 
 The present value of the baryon asymmetry $\eta_B^0$ can be determined from separate measurements
 of the baryon number density $n_B$ and the photon number density $n_\gamma$.
-Historically these numbers were determined from nucleosynthesis ?????? but modern measurement are based on observations of the cosmic microwave background (CMB) ??????.
-A resent analysis ????? finds a value of
+Historically these numbers were determined from nucleosynthesis \cite[sec. III.1]{Matter_and_Antimatter_Canetti_2012} but modern measurement are based on observations of the cosmic microwave background (CMB).
+One finds a value of \cite[eq. 7]{Matter_and_Antimatter_Canetti_2012}
 \begin{align}
-    \eta_B^0 = ?????.
+    \eta_B^0 = 6.160^{+ 0.153}_{-0.156} \cdot 10^{-10}.
 \end{align}
 
 
 
 \subsection{Sakharov Conditions}
+\label{sec:sakharov_conditions}
+
 The \emph{Sakharov Conditions} are a set of three necessary but not sufficient conditions for baryogenesis to happen in the universe \cite{Sakharov_1991}. These are:
 \begin{itemize}
     \item Baryon Number has to be violated.
@@ -223,6 +227,8 @@ since $CPT$ commutes with the Hamiltonian. Therefore $\langle B \rangle = 0$ in 
 
 
 \subsection{Sphalerons: Baryon and Lepton Number in the Standard Model}
+\label{sec:sphaelrons}
+
 The baryon number $B$ and the lepton number $L$ are so called accidental
 symmetries of the standard model. They are symmetries of the classical lagrangian
 and follow directly from the conservation of weak hypercharge \cite[part II.B]{Trodden:2004mj_baryogenesis_and_leptogenesis}.
@@ -318,6 +324,9 @@ A cartoon of the dependence of the energy on the Chern-Simons number and the ins
     \draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
     \end{tikzpicture}
     \caption{Cartoon of the vacuum structure of a non-albelian gauge theory, which leads to the non-conservation of baryon and lepton numbers in the standard model.
+    On the x-axis the Chern-Simons number is shown and on the y-axis the free-energy of the gauge field.
+    The energy is sketched as a blue line. The vacuum-configurations are indicated by red dots and the sphaleron configurations by green ones. Sphaleron and instanton transitions are indicated by arrows from one vacuum state
+    to the next.
     }
 \end{figure}
 
@@ -371,6 +380,7 @@ is of order the atmospharic neutrino mass difference $\bar{m}^2 = \sum_i m_{\nu,
 Then the effective cross-section for $\Delta L = 2$ processes
 is given by \cite[eq. 9]{Kusenko_2015_Axion_Leptogenesis}
 \begin{align}
+\label{eq:weinberg_rate}
 \sigma_{\Delta L = 2} \approx \frac{3}{32 \pi^2} \frac{\bar{m}^2}{v_{\mathrm{EW}}^4}.
 \end{align}
 This approximation is valid if the center-of-mass energies in the processes are always small compared to the energy scale $\Lambda$.
@@ -380,14 +390,12 @@ In this case the Weinberg operator is mediated by right handed neutrinos and
 couples to the left-handed lepton and the Higgs doublets via Yukawa couplings.
 If one integrates out the right handed neutrino by assuming that their mass is
 large compared to the center-of-mass energy (essentially neglecting the momentum in the denominator of the internal propagator), one obtains the Weinberg operator.
-A cartoon of this is shown in figure ?????.
+\jana{A cartoon of this is shown in figure ?????. Do I want to do this?}
 For this approximation to be valid in our computations, we require that
 the masses of the right-handed neutrinos are large compared to the temperatures
 of the thermal plasma. Then the center-of-mass energy of the scatterings are
 small compared to the mass of the mediating right-handed neutrinos.
 Also this ensures that the right-handed neutrinos are not produced in the plasma and therefore there is not interference with other mechanisms for leptogenesis.
-
-
 
 \subsection{Baryogenesis Models}
 In this section we will briefly describe several possible models for baryogenesis but will go into detail for any of them.
@@ -430,9 +438,12 @@ We give a source that serves as a pedagogical introduction for each of them.
 
 
 \section{Spontaneous Leptogenesis with Axions}
+\label{sec:spontaneour_bayrogenesis}
+This second hafe of the report will deal with the concrete model that will be
+topic of this thesis project namely the implementation of \emph{spontaneous baryogenesis} using \emph{axion}.
 
 \subsection{Spontaneous Baryogenesis}
-\label{sec:spontaneour_bayrogenesis}
+\label{sec:spontaneour_bayrogenesis_tradiaonal}
 
 All the mechanism above mentioned fulfill the Sakharov conditions.
 In refs. \cite{COHEN1987251}, \cite{COHEN1988913} Cohen and Kaplan pointed out that there is a loop hole in the Sakharov conditions.
@@ -521,8 +532,10 @@ Once the Hubble parameter is succinctly low $3 H(t_\mathrm{osc}) \sim m_a(T(t_\m
 required for the baryogenesis process.
 The coherent oscillations have a matter-type equation of state and therefore behave as non-relativistic matter. This makes axions a dark matter candidate as long as the axion
 doesn't decay.
-If the axion does decay it
-
+This decay might happen from coupling to the electro-weak SU(2) field and happens at a decay rate of \cite[eq. 15]{Axion_leptogenesis_Kusenko_2015}
+\begin{align}
+    \Gamma_a = \frac{g_2^2}{256 \pi^4} \frac{m_a^3}{f_a^2}.
+\end{align}
 
 \subsection{Reheating}
 \label{sec:reheating}
@@ -566,7 +579,7 @@ is reached. At this point the reheating epoch is over and the universe continues
 Let us now implement a spontaneous baryogenesis model with an axion as the scalar field.
 Its evolution is governed by eq. \eqref{eq:axion_klein_gordon}.
 Let us first start with a model with $C_L = 1$ and $C_{W \tilde{W}} = C_{G \tilde{G}} = 0$.
-In this case the "classic" model from section \ref{sec:spontaneour_bayrogenesis} applies.
+In this case the "classic" model from section \ref{sec:spontaneour_bayrogenesis_tradiaonal} applies.
 We need to track the asymmetry of the leptons and do so using the Boltzmann equation \cite[eq. 7]{Axion_leptogenesis_Kusenko_2015}
 \begin{align}
     \label{eq:L_violation_Boltzmann}
@@ -578,10 +591,24 @@ changing interactions. For this cross-section we assume the value for Weinberg o
 The final value of the asymmetry is determined by integrating the Boltzmann eq. \eqref{eq:L_violation_Boltzmann}, the Klein-Gordon eq. \eqref{eq:axion_klein_gordon} and the
 equations for reheating \eqref{eq:reheating_equations} numerically.
 The value of $\eta_L = n_L / n_\gamma$ will converge to
-a constant value. It can then translated to
+a constant value after the rate of the lepton number violating interaction is sufficiently slow compared to the Hubble rate.
+We also include the dilution by the decay of the axion. This computation is based on the same equations
+as the reheating process (eq. \eqref{eq:reheating_equations}) with the axion field instead of the
+inflaton field. The initial conditions are set from the end of the simulation of the baryogenesis
+processs.
+After evaluating $\eta_L$ after the axion decay at $t \sim 1/\Gamma_a$, it can then be translated to
 the present day baryon asymmetry using the sphaleron conversion factor in eq. \eqref{eq:sphaleron_conversion} and the redshift to today from eq. \eqref{eq:asymmetry_redshift}.
-The numerical result for this model is shown in figure ???????.
+The numerical result for this model is shown in figure \ref{fig:naive_model_plot}.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../../plots/evolution.pdf} % evolution of the asymmetry plot
+    \includegraphics[width=0.8\linewidth]{./../../plots/transport_vs_boltzmann.pdf} % parameter space plot
+    \caption{"Preview" plots for the simulation of the spontaneous baryogenesis process with axions and via leptogenesis.
+    \textbf{Top:} The x-axis is time in GeV on logarithmic axis. A lot of an example evolution for specific parameters. On the top subplot the evolution of the temperature in GeV is shown on a log scale. Equilibration times for interactions that are within the temperature range are shown as dashed vertical lines. In the lower subplot the evolution of the chemical potential of $B - L$ over the temperature is shown with a logarithmic axis on the left. The line computed with full reheating is black while result in radiation domaination only is shown in red. The source from the axion $\dot{\theta} / T$ is shown as a blue line with a linear scale on the right.  \textbf{Bottom:} The logarithm of the resulting asymmetry as a function of the inflaton decay rate $\Gamma_\phi$ in GeV on a log-scale on the y-axis and the axion mass in GeV on a log-scale on the x-axis with fixed decay constant $f_a$ and Hubble parameter at the end of inflation. The result computed with the transport eq. is shown as solid lines and the result computed with the Boltzmann eq. as dashed lines. The observed baryon asymmetry is indicated by a red line for both cases. }
+    \label{fig:naive_model_plot}
+\end{figure}¸
 We will not discuss the result in detail here and postpone these discussion to the thesis itself.
+Instead we will now discuss an issue related to the computation of the asymmetry and the coupling of the axion.
 
 The model we discussed so far is based on ref. \cite{Axion_leptogenesis_Kusenko_2015}.
 There the authors argued that the coupling originates from an axion coupling to $W \tilde{W}$ ($C_{W \tilde{W}} = 1, C_L = C_{G \tilde{G}} = 0$) and then replacing the $W \tilde{W}$ term using
@@ -589,14 +616,15 @@ the anomolus equation (eq. \eqref{eq:B_and_L_current_equations}).
 The problem with this approach is that in the presents of the Weinberg operator eq. \eqref{eq:B_and_L_current_equations} is not true but contains in extra term from the Weinberg operator as
 is also violates L. Therefore rewriting the coupling this way would also introduce a coupling of
 the axion to the Weinberg operator, making the rate in eq. \eqref{eq:L_violation_Boltzmann} incorrect.
-Instead one has to do a field redefinition
+Instead one has to do a field redefinition of the form (here for some fermion fields $l_n$)
 \begin{align}
-    ?????
+    l_n \to e^{i c_n \phi / f_a} l_n
 \end{align}
-to remove the anomalous coupling. This would  introduce a axion dependent phase in the Weinberg operator
-but this does not effect the Born-level cross-section in eq. ??????.
-Unfortunately as pointed out in ref. ????? this induces an energy shift from the kinetic term
+to remove the anomalous coupling. This would introduce a axion dependent phase in the Weinberg operator
+but this does not effect the Born-level cross-section in eq. \eqref{eq:weinberg_rate}.
+Unfortunately as pointed out in ref. \cite{Shi_2015_Basis_Invariance_chemical_equilibrium} this induces an energy shift from the kinetic term \cite[eq. 6]{Shi_2015_Basis_Invariance_chemical_equilibrium}
 \begin{align}
+    - c_n \dot{\phi} / {f_a} l_n^{\dagger} l_n.
 \end{align}
 The energy shift cancels the energy shift from the coupling to the lepton current, making the effective
 chemical potential invariant under changes of the field basis i.e. there is no simple basis in which
@@ -607,36 +635,67 @@ As an alternative the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings} de
 to avoid this issue and that is intrinsically field basis independent.
 The equation of motion is here the transport equation for all standard model charges $q_i$.
 It is
-given as ??????
+given as \cite[eq. 3.4]{Domcke:2020kcp_Generic_Couplings}
 \begin{align}
 \label{eq:transport_equation}
 \dot{q}_i + 3 H q_i = - \sum_\alpha \Gamma_\alpha n^\alpha_i \Big[
 \sum_j n^\alpha_j \left( \frac{\mu_j}{T} \right) - n_S^\alpha \frac{\dot{a} / f_a}{T} \Big].
 \end{align}
-This equation was obtained via linear response theory considering the operator equation
+This equation was obtained via linear response theory considering the operator equation \cite[eq. 2.1]{Domcke:2020kcp_Generic_Couplings}
 \begin{align}
-    \partial_\mu J^\mu_i = - \sum_\alpha n^\alpha_i \mathcal{O}_\alpha,
+    \partial_\mu J^\mu_i = \sum_\alpha n^\alpha_i \mathcal{O}_\alpha,
 \end{align}
 where $J_i$ is the current for the charge $i$, $\mathcal{O}_\alpha$ some interaction operator and
 $n^\alpha_i$ encodes the change of charge $i$ in the process $\alpha$.
-The relevant charges for our case are ????
+The relevant charges for our case are \cite[eq. 5.6]{Domcke:2020kcp_Generic_Couplings}
 \begin{align}
-i \in (??????)
+i \in (\tau, L_{12}, L_3, q_{12}, t, b, Q_{12}, Q_3, H),
 \end{align}
-The rates in eq. \eqref{eq:transport_equation} are
+where the number indicate fermion generations, $L/Q$ the left-handed lepton/quark doublet, $q$ the right handed quark, $t,b$ the right handed top/bottom, $\tau$ the right handed tau and $H$ the Higgs.
+The rates in eq. \eqref{eq:transport_equation} are formally defined as \cite[eq. B.18]{Domcke:2020kcp_Generic_Couplings}
 \begin{align}
-    \Gamma_\alpha = ????????,
+    &\Gamma_\alpha = - \frac{T G_{\alpha \alpha}^\rho(\omega, \mathbf{0})}{2\omega} \Big|_{\omega = 0},
 \end{align}
-which can be computed in thermal field theory.
-The relevant processes include the sphaleron transitions discussed in section ??????,
-the Weinberg operator as discussed in section ????? that violates $B - L$ and hence allows for baryogenesis to happen as well as
-Yukawa couplings ????. These are discussed in ????? and the corresponding charge vectors are given in ??????.
+where $G_{\alpha \beta}^\rho(\omega, \mathbf{p})$ is the Fourier transform of the Green function \cite[eq. B.16]{Domcke:2020kcp_Generic_Couplings}
+\begin{align}
+    G^\rho_{\alpha, \beta}(x - x') = \langle [\mathcal{O}_\alpha(x), \mathcal{O}_\beta(x')] \rangle_C,
+\end{align}
+where the $C$ subscript means that the expectation value is to be taken in the canonical ensemble.
+Therefore these rates have to be computed in thermal field theory.
+The relevant processes include the sphaleron transitions discussed in section \ref{sec:sphaelrons},
+the Weinberg operator as discussed in section \ref{sec:lepton_number_violations} that violates $B - L$ and hence allows for baryogenesis to happen as well as
+Yukawa couplings (weak sphaleron, strong sphaleron, top Yukawa, top Yukawa, bottom Yukawa, Weinberg for generations 1 and 2, Weinberg for generation 3).
+These are discussed in \cite[sec. 3.1]{Domcke:2020kcp_Generic_Couplings} and the corresponding charge vectors are given in \cite[eq. 5.7]{Domcke:2020kcp_Generic_Couplings}.
 The source term from the axion is encoded in the vector $n_S^\alpha$ describing the couplings of
-the axion to the interactions $\mathcal{O}_\alpha$. It is ?????? for a coupling of the form ?????
-and ????? for a coupling of the form ??????.
-For a coupling to $W \tilde{W}$ it is given as ?????.
+the axion to the interactions $\mathcal{O}_\alpha$. It is $n_S^\alpha = \delta_{\alpha \beta}$ for a coupling of the form $\frac{\phi}{f_a} \mathcal{O}_\beta$
+and $n_S^\alpha = n_k^\alpha$ for a coupling of the form $\partial_\mu \frac{\phi}{f_a} J^\mu_k$.
+For a coupling to $W \tilde{W}$ it is given as $n_S^\alpha = (1, 0, 0, 0, 0, 0, 0)$.
+The important property of this transport equation compared to a naive Ansatz with a
+Boltzmann equation is that it is independent of the field basis.
+Finally let us look at the intuition for spontaneous baryogenesis in this more field theoretic rather then kinetic picture (adapted from \cite[sec. 1]{Domcke:2020kcp_Generic_Couplings}).
+We consider a toy theory with two charges $Q_1$ and $Q_2$. The baryon charge is given as the
+linear combination $B = Q_1 - Q_2$. There are two interaction $\mathcal{O}_X$ and $\mathcal{O}_Y$ with the operator current equations
+\begin{align}
+    \partial_\mu J_1^\mu &= \mathcal{O}_X \\
+    \partial_\mu J_2^\mu &= \mathcal{O}_Y - \mathcal{O}_X
+\end{align}
+Hence the equation for the baryon number is
+\begin{align}
+    \partial_\mu J_B^\mu = \mathcal{O}_Y.
+\end{align}
+The picture we discussed above works by introducing a coupling $\phi / f_A \mathcal{O}_Y$,
+which biases the equilibrium B charge away from zero.
+But this also works in a more general setting.
+Coupling the scalar field to $\mathcal{O}_X$ will bias the $Q_1$ charge away from zero.
+At the same time the interaction $\mathcal{O}_Y$ will washout $Q_2$ ie. drive the $Q_2$ charge towards zero. In total this means that $B$ will obtain a non-vanishing value. Once $\mathcal{O}_Y$ freezes out i.e. its rate will be low compared to the Hubble rate
+the B abundance is fixed at a finite value.
+This happens generically in the scenario we are considering. The standard model processes
+play the role of $\mathcal{O}_Y$ and are active also at lower temperatures while the Weinberg operator plays the role of $\mathcal{O}_X$ and freezes out at higher temperatures.
+The coupling of the axion can be anything unless it couples to a charge vector that is orthogonal to the desired B charge vector e.g. to the charge $- Q_1 + Q_2$ with the coupling $\phi / f_a (- \partial_\mu J_1^\mu + \partial_\mu J_2^\mu) = \phi / f_a (- 2 \mathcal{O}_X + \mathcal{O}_Y)$.
+This indeed allows for the possibility to generate the lepton charge with the coupling to the e.g.
+strong sphaleron $G \tilde{G}$ as QCD axions have.
 
-
+\newpage
 \subsection{Outlook}
 \label{sec:outlook}
 
@@ -646,25 +705,42 @@ This combines the results of ref. \cite{Axion_leptogenesis_Kusenko_2015} in whic
 is not correctly computed (see sec. \ref{sec:model}) and those of
 ref. \cite{Domcke:2020kcp_Generic_Couplings} which developed the formalism to correctly compute
 the asymmetry while not considering the reheating process and the motion of the
-axion \footnote{In this paper they considered the process only in radiation dominated epoch. While their results are correct in this respect, they can be extended to larger parts of the parameter-space this way}.
-Furthermore we will analyze the parameter space in the spirit of ref. \cite{Axion_leptogenesis_Kusenko_2015} (see sec. \ref{sec:model})to obtain bounds
+axion \footnote{In this paper they considered the process only in the radiation dominated epoch. While their results are correct in this respect, they can be extended to larger parts of the parameter-space by considering the reheating process.}.
+Furthermore we will analyze the parameter space in the spirit of ref. \cite{Axion_leptogenesis_Kusenko_2015} (see sec. \ref{sec:model}) to obtain bounds
 on the parameters for successful baryogenesis.
 
 Building on this, we can modify the model in several ways.
 First we could change the nature and scale of the lepton violating interactions.
-Then we could change the dynamics of the axion. This was already done in ref. ?????.
-In this work the dynamics of a clockwork axion was considered.
+Then we can change the coupling of the axion as discussed above to e.g. the strong sphaleron.
+Finally we could change the dynamics of the axion. This was for instance done in ref. \cite{Deformed_potential_Bae_2019}.
+In this work the dynamics of a field depended wave-function renormalization was considered,
+where the kinetic term of the axion is multiplied by a function that depends on the value of
+the axion field, leading to a deformed potential for a canonical field defined in terms of
+the axion.
 This model allows a non-vanishing velocity of the axion at high energy scales as required for
 SBG while also having a low axion mass at late times making the axion stable.
-This allows the axion to explain baryogenesis and the dark matter at the same time.
+It allows the axion to explain baryogenesis and the dark matter at the same time.
 We are planing to apply the transport equation method to this model to obtain correct results
-for the asymmetry. Furthermore the model contains a moduli parameter $mR$ that is
-set to specific values in ????. A more complete model has to consider moduli-stabilization that determines the value $mR$ dynamically.
+for the asymmetry. A particular implementation of this idea was shown in \cite[sec III]{Deformed_potential_Bae_2019} to be the continuous clockwork axion.
+In this model a moduli parameter $mR$ appears that controls the compactification from which the
+axion arises. In ref. \cite{Deformed_potential_Bae_2019} this parameter is
+set to specific values (see \cite[fig. 2]{Deformed_potential_Bae_2019}).
+A more complete model has to consider moduli-stabilization where the value of $mR$ is determined dynamically. This will also be an area of interested in the coming work.
+Finally we might be interested in the dynamics of multiple scalar fields.
+The interesting aspect here is that the motion of the axion field that drives baryogenesis
+is not mainly controlled by its mass but by the coupling to the other field. In some parts of
+the parameter space (including relevant ones for BG) the dynamics seems to be chaoic, making
+the analysis more complicated.
 
 
 \section{Conclusion}
 \label{sec:conclusion}
-\jana{TODO!!!!!}
+In this report we have discussed the basics of baryogenesis.
+This included the discussion of sphalerons and the lowest-order effective lepton number violating term the Weinberg operator.
+Building on this we have considered a lesser known model for baryogenesis, spontaneous baryogenesis. This model can be implemented using an axion-like field during or shortly after reheating with the Weinberg operator as the source of lepton number violations.
+We elaborated on an intuition on how the mechanism works as well as a subtlety related to the computation of the asymmetry.
+Let us conclude by stating that we believe that
+this research area is promising as it is comparatively little explored while a lot of different scenarios seem possible.
 
 
 \newpage
