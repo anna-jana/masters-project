@@ -218,11 +218,11 @@ This condition can be formally shown by considering the density matrix $\rho$ of
     i \frac{\mathrm{d} \rho}{\mathrm{d} t} = [H, \rho],
 \end{align}
 where $H$ is the Hamiltonian of the system.
-In order to generate an asymmetry, i.e.
+In order to generate an asymmetry, i.e. the total time derivative of
 \begin{align}
     \langle B \rangle = \Tr [ B \rho ] \neq 0,
 \end{align}
-the total time derivative has to vanish.
+has to vanish.
 We use that the baryon number operator commutes with C and CP transformations
 \begin{align}
     C B C^\dagger &= B \\
@@ -243,7 +243,7 @@ Therefore C and CP violation is required for baryogenesis. The violation of C an
 \noindent
 Finally departure from thermal equilibrium is required. This is because in thermal equilibrium the number densities are set by the
 masses of the particles or anti-particles. If the theory is CPT symmetric, as every QFT with a Lorentz invariant ground-state (vacuum) is, then the
-masses of particles and their anti-particles are the same. % ??????? \jana{felix an ref fragen}.
+masses of particles and their anti-particles are the same.
 Formally let us consider the density matrix in thermal equilibrium
 \begin{align}
     \rho = \frac{e^{- \beta H}}{Z},
@@ -472,7 +472,7 @@ We give a source that serves as a pedagogical introduction for each of them.
 \section{Spontaneous Leptogenesis with Axions}
 \label{sec:spontaneour_bayrogenesis}
 This second half of the report will deal with the model that will be
-topic of the thesis project namely the implementation of \emph{spontaneous baryogenesis} using \emph{axion}.
+topic of the thesis project namely the implementation of \emph{spontaneous baryogenesis} using \emph{axions}.
 
 \subsection{Spontaneous Baryogenesis}
 \label{sec:spontaneour_bayrogenesis_tradiaonal}
@@ -564,7 +564,7 @@ Once the Hubble parameter is succinctly low $3 H(t_\mathrm{osc}) \sim m_a(T(t_\m
 required for the baryogenesis process.
 The coherent oscillations have a matter-type equation of state and therefore behave as non-relativistic matter. This makes axions a dark matter candidate as long as the axion
 doesn't decay.
-This decay might happen from coupling to the electro-weak SU(2) field and happens at a decay rate of \cite[eq. 15]{Axion_leptogenesis_Kusenko_2015}
+This decay might for instance happen from a coupling to the electro-weak SU(2) field and happens at a decay rate of \cite[eq. 15]{Axion_leptogenesis_Kusenko_2015}
 \begin{align}
     \Gamma_a = \frac{g_2^2}{256 \pi^4} \frac{m_a^3}{f_a^2}.
 \end{align}
@@ -574,7 +574,7 @@ This decay might happen from coupling to the electro-weak SU(2) field and happen
 The violation of lepton number comes from the Weinberg operator (discussed in section \ref{sec:lepton_number_violations}).
 The temperature scale for our model is roughly given by the equilibration temperature of the Weinberg operator i.e.
 \begin{align}
-    \Gamma_W(T_\mathrm{eq}) = H(T_\mathrm{eq}) \Rightarrow T \approx 10^{13} \, \mathrm{GeV}
+    \Gamma_W(T_\mathrm{eq}) = H(T_\mathrm{eq}) \Rightarrow T \sim 10^{13} \, \mathrm{GeV}
 \end{align}
 This means this process has to happen during/directly after reheating. The reheating epoch happens right after inflation. The inflaton field, that has driven by exponential expansion of the universe during inflation has started to oscillate and decays into standard model radiation  \cite[sec. 8.3]{the_early_universe_kolb_and_turner}.
 The reheating process is described by the energy rate equations and the Friedmann equation \cite[eq. 8.29, 8.31]{the_early_universe_kolb_and_turner}
@@ -609,7 +609,8 @@ is reached. At this point the reheating epoch is over and the universe continues
 \label{sec:model}
 
 Let us now implement a spontaneous baryogenesis model with an axion as the scalar field.
-Its evolution is governed by eq. \eqref{eq:axion_klein_gordon}.
+The axion evolution is governed by eq. \eqref{eq:axion_klein_gordon}.
+The temperature scale will be around reheating. This has already been investigated in refs. \cite{Axion_leptogenesis_Kusenko_2015}, \cite{Axioleptogenesis_Co_2021} and \cite{Domcke:2020kcp_Generic_Couplings}.
 Let us first start with a model with $C_L = 1$ and $C_{W \tilde{W}} = C_{G \tilde{G}} = 0$.
 In this case the ``classic'' model from section \ref{sec:spontaneour_bayrogenesis_tradiaonal} applies.
 We need to track the asymmetry of the leptons and do so using the Boltzmann equation \cite[eq. 7]{Axion_leptogenesis_Kusenko_2015}
@@ -644,7 +645,7 @@ Instead we will now discuss an issue related to the computation of the asymmetry
 
 The model we discussed so far is based on ref. \cite{Axion_leptogenesis_Kusenko_2015}.
 There the authors argued that the coupling originates from an axion coupling to $W \tilde{W}$ ($C_{W \tilde{W}} = 1, C_L = C_{G \tilde{G}} = 0$) and then replacing the $W \tilde{W}$ term using
-the anomolus equation (eq. \eqref{eq:B_and_L_current_equations}).
+the anomaly equation (eq. \eqref{eq:B_and_L_current_equations}).
 The problem with this approach is that in the presence of the Weinberg operator eq. \eqref{eq:B_and_L_current_equations} is not true but contains in extra term from the Weinberg operator as
 is also violates L. Therefore rewriting the coupling this way would also introduce a coupling of
 the axion to the Weinberg operator, making the rate in eq. \eqref{eq:L_violation_Boltzmann} incorrect.
@@ -683,7 +684,7 @@ The relevant charges for our case are \cite[eq. 5.6]{Domcke:2020kcp_Generic_Coup
 \begin{align}
 i \in (\tau, L_{12}, L_3, q_{12}, t, b, Q_{12}, Q_3, H),
 \end{align}
-where the number indicate fermion generations, $L/Q$ the left-handed lepton/quark doublet, $q$ the right handed quark, $t,b$ the right handed top/bottom, $\tau$ the right handed tau and $H$ the Higgs.
+where the numbers indicate fermion generations, $L/Q$ the left-handed lepton/quark doublet, $q$ the right handed quark, $t,b$ the right handed top/bottom, $\tau$ the right handed tau and $H$ the Higgs.
 The rates in eq. \eqref{eq:transport_equation} are formally defined as \cite[eq. B.18]{Domcke:2020kcp_Generic_Couplings}
 \begin{align}
     &\Gamma_\alpha = - \frac{T G_{\alpha \alpha}^\rho(\omega, \mathbf{0})}{2\omega} \Big|_{\omega = 0},
