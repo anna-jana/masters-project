@@ -198,8 +198,11 @@ def transport_eq_jac(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
     return (- sum(jac_mats[alpha] * R[alpha] for alpha in range(N_alpha)) - 3 * (T_dot / T + H) * I) * t
 
 def solve_transport_eq(t_start, t_end, initial_red_chem_pots, rtol, T_fn, H_fn, T_dot_fn, axion_fn, source_vector):
+    """
+    Solve the transport equation given the axion motion and return the time and the
+    standard model charges (chemical potential over temperature)
+    """
     sol = solve_ivp(transport_eq_rhs, (np.log(t_start), np.log(t_end)), initial_red_chem_pots / unit,
-            # method="Radau", rtol=rtol, # jac=transport_eq_jac,
             method="BDF", rtol=rtol, jac=transport_eq_jac,
             args=(T_fn, H_fn, T_dot_fn, axion_fn, source_vector))
     return np.exp(sol.t), sol.y * unit

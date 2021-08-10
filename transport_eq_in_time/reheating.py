@@ -19,6 +19,11 @@ def rhs(log_t, y, Gamma_phi):
     return (d_log_rho_phi_d_log_t, d_log_rho_tot_d_log_t)
 
 def solve_reheating_eq(t_start, t_end, initial, Gamma_phi):
+    """
+    Solve the reheating equations and return the temperature (T), hubbel parameter (H),
+    time derivative of the temperature dT/dt, and the final value of the energy densities
+    of the inflaton field and the total energy density.
+    """
     interval = np.log((t_start, t_end))
     sol = solve_ivp(rhs, interval, initial, dense_output=True, rtol=1e-5, args=(Gamma_phi,))
 
@@ -43,6 +48,10 @@ def solve_reheating_eq(t_start, t_end, initial, Gamma_phi):
     return T_fn, H_fn, T_dot_fn, final
 
 def calc_initial_reheating(H_inf):
+    """
+    Calculate the initial time and energy densities for the
+    reheating process.
+    """
     rho_phi_inf = cosmology.calc_energy_density_from_hubble(H_inf)
     t_start = 1 / H_inf
     initial = (np.log(rho_phi_inf), np.log(rho_phi_inf))

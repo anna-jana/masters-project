@@ -29,8 +29,6 @@ def calc_eta_B_final(red_chem_B_minus_L, T):
 def red_chem_pot_to_B_density_final(red_chem_B_minus_L, T):
     return - g_star_0 / g_star * C_sph * T**3 / 6 * red_chem_B_minus_L
 
-
-
 @jit(nopython=True)
 def calc_temperature(rho_R):
     # in the paper its
