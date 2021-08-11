@@ -43,7 +43,8 @@ def calc_T_osc(calc_axion_mass, axion_parameter, N=2):
     # we assume raditation domination, since this is only an initial guess it will not invalidate the final result if its
     # not perfectly correct
     T_osc_initial_guess = cosmology.calc_temperature(cosmology.calc_energy_density_from_hubble(m_a_0))
-    goal_fn = lambda T: np.log(calc_axion_mass(T, *axion_parameter) / (N * cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T))))
+    goal_fn = lambda T: np.log(calc_axion_mass(T, *axion_parameter) /
+            (N * cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T))))
     res = root(goal_fn, T_osc_initial_guess)
     if not res.success:
         return np.nan
