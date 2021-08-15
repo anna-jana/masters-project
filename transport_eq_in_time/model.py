@@ -31,6 +31,7 @@ rtol_axion = 1e-4
 rtol_transport_eq = 1e-4 # 1e-6
 num_osc = 1
 num_osc_step = 20
+axion_solver = "RK45"
 
 def evolve(model, state):
     """
@@ -41,7 +42,7 @@ def evolve(model, state):
             reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
     # solve axion
     axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end,
-            T_fn, H_fn, model.axion_parameter, rtol_axion)
+            T_fn, H_fn, model.axion_parameter, rtol_axion, axion_solver)
     # solve transport equation
     ts, red_chem_pots = transport_equation.solve_transport_eq(state.t_start, state.t_end, state.initial_transport_eq,
             rtol_transport_eq, T_fn, H_fn, T_dot_fn, axion_fn, model.source_vector)

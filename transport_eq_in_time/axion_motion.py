@@ -50,9 +50,10 @@ def calc_T_osc(calc_axion_mass, axion_parameter, N=2):
         return np.nan
     return res.x[0]
 
-def solve_axion_motion(axion_rhs, axion_initial, t_start, t_end, T_fn, H_fn, axion_parameter, rtol):
+def solve_axion_motion(axion_rhs, axion_initial, t_start, t_end, T_fn, H_fn, axion_parameter, rtol, solver):
     sol = solve_ivp(axion_rhs, (np.log(t_start), np.log(t_end)), axion_initial, dense_output=True,
-            args=(T_fn, H_fn, axion_parameter,), method="RK45", rtol=rtol)
-    assert sol.success
+            args=(T_fn, H_fn, axion_parameter,),
+            method=solver, rtol=rtol)
+    assert sol.success, sol.message
     return sol.sol
 

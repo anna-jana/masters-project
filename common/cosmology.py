@@ -92,3 +92,6 @@ def calc_maximal_temperature(Gamma_phi, H_inf, result="paper"):
 
 def switch_hubble_and_time_rad_dom(x):
     return 1 / (2*x)
+
+def calc_entropy_density(T):
+    return 2*np.pi**2 / 45 * g_star * T**3
