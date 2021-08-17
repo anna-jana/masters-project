@@ -170,14 +170,14 @@ assert len([(process_name, conserved_name)
 ####################################### Transport Equation ###################################
 unit = 1e-9
 
-def transport_eq_rhs(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
+def transport_eq_rhs(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_source, n_S):
     t = np.exp(log_t)
     T = T_fn(t)
     if T <= 0.0:
         return np.zeros(N)
     T_dot = T_dot_fn(t)
     H = H_fn(t)
-    _, theta_dot = axion_fn(log_t)
+    theta_dot = axion_source(log_t)
     d_red_chem_pot_d_t = (
             - (rate(T) * (charge_vector @ red_chem_pots - n_S * theta_dot / T / unit)) @ charge_vector / dofs
             - red_chem_pots * 3 * (T_dot / T + H)
@@ -188,7 +188,7 @@ def transport_eq_rhs(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
 jac_mats = [1 / dofs[:, None] * np.outer(charge_vector[alpha, :], charge_vector[alpha, :]) for alpha in range(N_alpha)]
 I = np.eye(N)
 
-def transport_eq_jac(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
+def transport_eq_jac(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_source, n_S):
     t = np.exp(log_t)
     T = T_fn(t)
     if T <= 0.0: return np.zeros((N, N))
@@ -197,12 +197,12 @@ def transport_eq_jac(log_t, red_chem_pots, T_fn, H_fn, T_dot_fn, axion_fn, n_S):
     H = H_fn(t)
     return (- sum(jac_mats[alpha] * R[alpha] for alpha in range(N_alpha)) - 3 * (T_dot / T + H) * I) * t
 
-def solve_transport_eq(t_start, t_end, initial_red_chem_pots, rtol, T_fn, H_fn, T_dot_fn, axion_fn, source_vector):
+def solve_transport_eq(t_start, t_end, initial_red_chem_pots, rtol, T_fn, H_fn, T_dot_fn, axion_source, source_vector):
     """
     Solve the transport equation given the axion motion and return the time and the
     standard model charges (chemical potential over temperature)
     """
     sol = solve_ivp(transport_eq_rhs, (np.log(t_start), np.log(t_end)), initial_red_chem_pots / unit,
             method="BDF", rtol=rtol, jac=transport_eq_jac,
-            args=(T_fn, H_fn, T_dot_fn, axion_fn, source_vector))
+            args=(T_fn, H_fn, T_dot_fn, axion_source, source_vector))
     return np.exp(sol.t), sol.y * unit

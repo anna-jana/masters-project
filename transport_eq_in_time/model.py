@@ -18,6 +18,7 @@ Result = namedtuple("Result",
 # the model i.e. all relevant parameters and potentials etc.
 AxionBaryogenesisModel = namedtuple("AxionBaryogenesisModel",
         ["source_vector", # coupling of the axion to SM
+         "get_axion_source", # function to transform the field solution to the source term in the transport equation
          "axion_rhs", "calc_axion_mass", "axion_parameter", "axion_initial", # axion potential
          "Gamma_phi", "H_inf", # inflation model
          ])
@@ -43,9 +44,10 @@ def evolve(model, state):
     # solve axion
     axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end,
             T_fn, H_fn, model.axion_parameter, rtol_axion, axion_solver)
+    axion_source = model.get_axion_source(axion_fn, model.axion_parameter)
     # solve transport equation
     ts, red_chem_pots = transport_equation.solve_transport_eq(state.t_start, state.t_end, state.initial_transport_eq,
-            rtol_transport_eq, T_fn, H_fn, T_dot_fn, axion_fn, model.source_vector)
+            rtol_transport_eq, T_fn, H_fn, T_dot_fn, axion_source, model.source_vector)
     # create result
     return Result(t=ts, red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
             red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion_fn=axion_fn)

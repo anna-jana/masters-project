@@ -57,3 +57,5 @@ def solve_axion_motion(axion_rhs, axion_initial, t_start, t_end, T_fn, H_fn, axi
     assert sol.success, sol.message
     return sol.sol
 
+def get_standard_axion_source(field_fn, _p):
+    return lambda log_t: field_fn(log_t)[1]
