@@ -61,12 +61,8 @@ def calc_t_end(calc_axion_mass, axion_parameter, t_end, Gamma_phi, H_inf):
     """
     if t_end is not None:
         return t_end
-    T_osc = axion_motion.calc_T_osc(calc_axion_mass, axion_parameter)
-    T_end = min(T_osc, T_eqs[-1]) # min(min(T_eqs), T_osc)
     T_RH = cosmology.calc_reheating_temperature(Gamma_phi)
-    t_inf = cosmology.calc_start_time(H_inf)
-    if T_end > T_RH:
-        t_end = calc_next_t(calc_axion_mass, axion_parameter, t_inf, T_RH, num_osc)
+    T_end = min(T_RH, T_eqs[-1])
     H_end = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T_end))
     t_end = 1 / H_end
     return t_end
@@ -95,7 +91,8 @@ def calc_next_t(calc_axion_mass, axion_parameter, t, T, number_of_oscillations):
     """
     m_a = calc_axion_mass(T, *axion_parameter)
     Delta_t = number_of_oscillations * 2 * np.pi / m_a
-    return t + Delta_t
+    max_Delta_t = 1.0
+    return t + min(max_Delta_t, Delta_t)
 
 def restart(res, calc_axion_mass, axion_parameter):
     """
