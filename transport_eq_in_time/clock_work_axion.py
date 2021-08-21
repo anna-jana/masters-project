@@ -86,7 +86,7 @@ def calc_abundance(phi_over_f, phi_dot_over_f, T, eps, mR, f, M):
     return n / s
 
 def evolve(t_start, t_end, initial, args, steps=None):
-    sol = solve_ivp(rhs, (t_start, t_end), initial, t_eval=steps, method="Radau", rtol=1e-5, args=args)
+    sol = solve_ivp(rhs, (t_start, t_end), initial, t_eval=steps, method="RK45", rtol=1e-8, args=args)
     assert sol.success
     return sol
 
