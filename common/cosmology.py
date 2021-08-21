@@ -95,3 +95,9 @@ def switch_hubble_and_time_rad_dom(x):
 
 def calc_entropy_density(T, use_g_star=g_star):
     return 2*np.pi**2 / 45 * use_g_star * T**3
+
+def make_rad_dom_H_fn(t_init, T_init):
+    T_fn = lambda t: T_init * (t / t_init)**(-0.5)
+    H_fn = lambda t: 1 / (2*t)
+    return T_fn, H_fn
+
