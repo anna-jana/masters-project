@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
 import model
@@ -92,6 +91,7 @@ def evolve(t_start, t_end, initial, args, steps=None):
 
 def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
                           num_osc_per_step=5, convergence_epsilon=1e-2, debug=False, max_steps=50):
+    # integrate unitl t_osc ~ about the start of oscillations
     T_fn_rad_dom, H_fn_rad_dom = cosmology.make_rad_dom_H_fn(t_initial, T_initial)
     m_phi = calc_m_phi(mR, M)
     t_osc = cosmology.switch_hubble_and_time_rad_dom(m_phi)
@@ -99,38 +99,37 @@ def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
     eps = calc_eps(mR)
     args = (eps, M, H_fn_rad_dom)
     sol = evolve(t_initial, t_osc, field_initial_over_f, args)
-    if debug:
-        plt.plot(sol.t, sol.y[0])
-    change = 1
     step = 0
     last = -1
-    while True:  # change > convergence_epsilon:
+    # main converence loop
+    while True:
+        # now integrate num_osc_per_step oscillations at the time
         t_start = sol.t[-1]
         t_end = t_start + Delta_t
         t_steps = np.linspace(t_start, t_end, num_osc_per_step * 10)
         t_steps[0] = t_start; t_steps[-1] = t_end
         sol = evolve(t_start, t_end, sol.y[:, -1], args, steps=t_steps)
+        # get n/s
         Y = calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M)
+        # find the local minima and maxima in the solution
         is_max = np.where((Y[:-2] < Y[1:-1]) & (Y[2:] < Y[1:-1]))[0]
         is_min = np.where((Y[:-2] > Y[1:-1]) & (Y[2:] > Y[1:-1]))[0]
         if len(is_max) > 0 and len(is_min) > 0:
             Y_min, Y_max = Y[is_min[-1] + 1], Y[is_max[-1] + 1]
         else:
+            # if no local extrema are found then the hasn't started oscillating yet.
+            # We skip the convergence check and continue with the next integration interval.
             if debug:
-                print("no oscillations:", np.min(sol.y[0] / f))
-                plt.plot(sol.t, sol.y[0])
+                print("no oscillations:", "Y =", Y[-1], "t_end =", t_end)
             step += 1
             if max_steps is not None and step > max_steps:
                 break
             else:
                 continue
-            # Y_max, Y_min = np.max(Y), np.min(Y)
+        # check if the relative change of the mean value of Y between this and the last interval
+        # is below our threshold.
         Y_mean = (Y_max + Y_min) / 2
-        if debug:
-            plt.plot(sol.t, Y)
-            plt.xscale("log")
-            plt.yscale("log")
-        if step > 0:
+        if last is not None:
             change = np.abs(Y_mean - last) / Y_mean
             if debug:
                 print("change:", change, "Y:", Y_mean, "convergence_eps:", convergence_epsilon)
@@ -140,10 +139,12 @@ def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
                 last = Y_mean
         step += 1
         if max_steps is not None and step > max_steps:
-            raise RuntimeError(f"iteration for relic density took too long. last change: {change}")
+            raise RuntimeError(f"iteration for relic density took too long. last change:") #  {change}")
+    # once we are converged redshift the abundance to today and compute the relic density as
+    # the density parameter
     n_today = Y_mean * cosmology.calc_entropy_density(constants.T_CMB, constants.g_star_0)
     rho_today = m_phi * n_today
-    Omega_h_sq = rho_today * (1e9)**4 / constants.rho_c * constants.h**2
+    Omega_h_sq = rho_today * (1e9)**4 / constants.rho_c * constants.h**2 # includes conversion between eV and GeV since rho_c is in eV
     return Omega_h_sq
 
 def compute_observables(m_phi, mR, f_eff, Gamma_phi, H_inf, debug=False, relic_kwargs={}):
