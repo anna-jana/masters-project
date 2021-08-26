@@ -147,7 +147,7 @@ def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
     Omega_h_sq = rho_today * (1e9)**4 / constants.rho_c * constants.h**2 # includes conversion between eV and GeV since rho_c is in eV
     return Omega_h_sq
 
-def compute_observables(m_phi, mR, f_eff, Gamma_phi, H_inf, debug=False, relic_kwargs={}):
+def compute_observables(m_phi, mR, f_eff, Gamma_phi, H_inf, theta_i=1.0, sbg_kwargs={}, relic_kwargs={}):
     try:
         eps = calc_eps(mR)
         f = calc_f(f_eff, eps)
@@ -158,18 +158,14 @@ def compute_observables(m_phi, mR, f_eff, Gamma_phi, H_inf, debug=False, relic_k
             axion_rhs=rhs_log_t,
             calc_axion_mass=calc_mass,
             axion_parameter=(eps, M),
-            axion_initial=(theta_to_phi_over_f(1.0, eps), 0),
+            axion_initial=(theta_to_phi_over_f(theta_i, eps), 0),
             Gamma_phi=Gamma_phi,
             H_inf=H_inf,
         )
-        red_chem_pot_B_minus_L, T_final, axion_final = model.solve(m, debug=debug)
-        if debug:
-            print("baryogenesis done")
+        red_chem_pot_B_minus_L, T_final, axion_final = model.solve(m, **sbg_kwargs)
         t_final = cosmology.switch_hubble_and_time_rad_dom(cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T_final)))
         eta_B = cosmology.calc_eta_B_final(red_chem_pot_B_minus_L, T_final)
         Omega_a_h_sq = compute_relic_density(axion_final, T_final, t_final, f, mR, M, debug=debug, **relic_kwargs)
-        if debug:
-            print("relic density done")
         return eta_B, Omega_a_h_sq
     except Exception as e:
         print(e)
