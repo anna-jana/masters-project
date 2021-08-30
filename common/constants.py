@@ -33,3 +33,5 @@ Omega_DM_h_sq = 0.11933
 h = 0.673
 rho_c = 3.667106289005098e-11 # [eV^4]
 T_CMB = 2.348654180597668e-13 # GeV
+
+log_min_decay_time = 26 # [seconds]
