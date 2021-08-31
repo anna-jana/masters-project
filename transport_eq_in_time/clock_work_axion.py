@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
@@ -116,6 +117,11 @@ def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
     sol = evolve(t_initial, t_osc, field_initial_over_f, args)
     step = 0
     last = -1
+    if debug:
+        plt.subplot(2,1,1)
+        plt.semilogx(sol.t, sol.y[0])
+        plt.subplot(2,1,2)
+        plt.loglog(sol.t, calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M))
     # main converence loop
     while True:
         # now integrate num_osc_per_step oscillations at the time
@@ -124,6 +130,11 @@ def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
         t_steps = np.linspace(t_start, t_end, num_osc_per_step * 10)
         t_steps[0] = t_start; t_steps[-1] = t_end
         sol = evolve(t_start, t_end, sol.y[:, -1], args, steps=t_steps)
+        if debug:
+            plt.subplot(2,1,1)
+            plt.semilogx(sol.t, sol.y[0])
+            plt.subplot(2,1,2)
+            plt.loglog(sol.t, calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M))
         # get n/s
         Y = calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M)
         # find the local minima and maxima in the solution
@@ -185,7 +196,7 @@ def to_seconds(natural_time_in_GeV):
 
 def get_min_mR(m_phi, f_eff):
     try:
-        sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff))) - constants.log_min_decay_time, bracket=(0, 5))
+        sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff))) - constants.log_min_decay_time, bracket=(0, 15))
     except ValueError:
         return np.nan
     if sol.converged:
