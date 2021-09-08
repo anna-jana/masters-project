@@ -229,3 +229,11 @@ def compute_observables(m_phi, mR, f_eff, Gamma_phi, H_inf, theta_i=1.0, sbg_kwa
         print(e)
         return np.nan, np.nan
 
+
+################################
+e_sq = (constants.g_1 * constants.g_2)**2 / (constants.g_1**2 + constants.g_2**2)
+
+def calc_axion_photon_coupling(mR, f_eff):
+    eps = calc_eps(mR)
+    f = calc_f(f_eff, eps)
+    return e_sq * eps / (16*np.pi**2 * f)
