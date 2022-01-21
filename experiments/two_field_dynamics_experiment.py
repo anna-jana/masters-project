@@ -39,6 +39,7 @@ span = 1e2
 sol_pert = solve(f_a, chi0 + 1e5, g, g_a, g_chi, span, m_a, m_chi)
 sol = solve(f_a, chi0, g, g_a, g_chi, span, m_a, m_chi)
 
+plt.figure()
 plt.semilogx(sol.t, sol.y[0] / f_a, ls="-", color="tab:blue", label="a / a0")
 plt.semilogx(sol.t, sol.y[2] / chi0, ls="-", color="tab:orange", label="chi / chi0")
 plt.semilogx(sol_pert.t, sol_pert.y[0] / f_a, ls="--", color="tab:blue", label="a / a0 perturbed")
@@ -50,6 +51,7 @@ a_range = np.linspace(-0.8 * f_a, 1.1 * f_a, 100)
 chi_range = np.linspace(-6 * chi0, 9.5 * chi0, 100)
 aa, cc = np.meshgrid(a_range, chi_range)
 V = 0.5 * m_a**2 * aa**2 + 0.5 * m_chi**2 * cc**2 + g * aa**2 * cc**2
+plt.figure()
 plt.contourf(a_range / f_a, chi_range / chi0, np.log10(V), cmap="summer")
 plt.colorbar().set_label("log_10 (V / GeV^4)")
 plt.plot(sol.y[0] / f_a, sol.y[2] / chi0, label="unpert.")
@@ -71,18 +73,20 @@ g_chi = 0
 span = 1e3
 sol = solve(f_a, chi0, g, g_a, g_chi, span, m_a, m_chi)
 a = sol.y[0]; chi = sol.y[2]
+plt.figure()
 plt.semilogx(sol.t, a, label="axion")
 plt.semilogx(sol.t, chi, label="chion")
 plt.xlabel("t")
 plt.legend()
-plt.show()
+
 a_range = np.linspace(np.min(a), np.max(a), 100)
 chi_range = np.linspace(np.min(chi), np.max(chi), 100)
 aa, cc = np.meshgrid(a_range, chi_range)
 V = 0.5 * m_a**2 * aa**2 + 0.5 * m_chi**2 * cc**2 + g * aa**2 * cc**2 + g_a * aa**4 + g_chi * cc**4
+plt.figure()
 plt.contourf(a_range / f_a, chi_range / chi0, np.log10(V), cmap="summer")
 plt.colorbar().set_label("log_10 (V / GeV^4)")
 plt.plot(sol.y[0] / f_a, sol.y[2] / chi0)
 plt.xlabel("a / a0")
 plt.ylabel("chi / chi0");
-
+plt.show()

@@ -37,6 +37,7 @@ ds = ContinuousDynamicalSystem(coupled_fields_rhs,
 # phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
 
 # TODO: make function take argument no globals!
+# done for orbit and ts but parameters need to be passed
 # TODO: figures file output
 
 # plot field evolutions
@@ -118,30 +119,31 @@ function plot_poincare_section(ts, orbit)
     end
 end
 
-# plot the total energy TODO: should this be conserved or drop somehow because of hubble friction?
+if false
 dt = 1
-tspan = 4e5
+tspan = 1e4
 ttr = 1e3
 ts = (t0 + ttr) : dt : (t0 + ttr + tspan)
 orbit = trajectory(ds, tspan, Δt=dt, t0=t0, Ttr=ttr)
-phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-rho1 = (@. 0.5*f1^2*phi1_dot^2 + 0.5*m1*f1^2*phi1^2)
-rho2 = (@. 0.5*f2^2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
-pot  = (@. f1*f2*phi1^2*phi2^2)
-total = rho1 + rho2 + pot
-
-if true
-figure()
-plot(ts, total, lw=0.5)
-xlabel("t")
-ylabel("total energy")
 end
 
-obs = [rho1, rho2, pot]
-obs_names = ["\$\\rho_1\$", "\$\\rho_2\$", "\$\\rho_\\mathrm{pot}\$"]
+# plot the total energy TODO: should this be conserved or drop somehow because of hubble friction?
+function plot_energy(ts, orbit)
+    phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+    rho1 = (@. 0.5*f1*phi1_dot^2 + 0.5*m1*f1*phi1^2)
+    rho2 = (@. 0.5*f2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
+    pot  = (@. f1*f2*phi1^2*phi2^2)
+    total = rho1 + rho2 + pot
 
-if false
-let
+    figure()
+    plot(ts, total, lw=0.5)
+    xlabel("t")
+    ylabel("total energy")
+
+    obs = [rho1, rho2, pot]
+    obs_names = ["\$\\rho_1\$", "\$\\rho_2\$", "\$\\rho_\\mathrm{pot}\$"]
+
+    figure()
     k = 1
     for i = 1:3
         for j = 1:3
@@ -163,16 +165,43 @@ let
     ylabel("\$\\rho_2 / (\\rho_1 + \\rho_2 + \\rho_\\mathrm{pot})\$")
     tight_layout()
 
-end
+    fig = figure()
+    ax = fig.add_subplot(projection="3d")
+    ax.plot(rho1, rho2, pot)
+    ax.set_xlabel("free part of \$\\phi_1\$")
+    ax.set_ylabel("free part of \$\\phi_2\$")
+    ax.set_zlabel("shared potential energy")
+    ax.plot([rho1[1]], [rho2[1]], [pot[1]], "o")
+    ax.plot([rho1[end]], [rho2[end]], [pot[end]], "o")
 end
 
-if false
-fig = figure()
-ax = fig.add_subplot(projection="3d")
-ax.plot(rho1, rho2, pot)
-ax.set_xlabel("free part of \$\\phi_1\$")
-ax.set_ylabel("free part of \$\\phi_2\$")
-ax.set_zlabel("shared potential energy")
-ax.plot([rho1[1]], [rho2[1]], [pot[1]], "o")
-ax.plot([rho1[end]], [rho2[end]], [pot[end]], "o")
-end
+
+phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+
+num = 200
+a = maximum(phi1)
+b = minimum(phi1)
+margin = (a - b)*1e-1
+phi1_range = range(b - margin, a + margin, length=num)
+a = maximum(phi2)
+b = minimum(phi2)
+margin = (a - b)*1e-1
+phi2_range = range(b - margin, a + margin, length=num)
+V = [f1*f2*phi1^2*phi2^2 for phi2 in phi2_range, phi1 in phi1_range]
+pcolormesh(phi1_range, phi2_range, log.(V), shading="nearest")
+colorbar(label="\$\\log(V = f_1 f_2 \\phi_1^2 \\phi_2^2)\$")
+
+plot(phi1, phi2, color="red")
+
+xlabel(names[1])
+ylabel(names[3])
+
+
+
+
+
+
+
+
+
+
