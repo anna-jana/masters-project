@@ -1,6 +1,6 @@
-using DynamicalSystems, PyPlot
+using DynamicalSystems, PyPlot, LinearAlgebra, StatsBase
 
-hubble(t) = 1 / (2*t) # TODO: consider diferent epochs including reheating
+hubble(t) = 1 / (2*t) # TODO: consider different epochs including reheating
 
 function coupled_fields_rhs(s, p, t)
     H = hubble(t)
@@ -30,14 +30,14 @@ default_params = [m1, m2, f1, f2]
 ds = ContinuousDynamicalSystem(coupled_fields_rhs,
                                default_initial,
                                default_params, t0=t0)
-# tspan = 1e5
-# dt = 1.0 # tspan / 10000
-# ts = t0:dt:(t0 + tspan)
-# orbit = trajectory(ds, tspan, Δt=dt, t0=t0)
-# phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+tspan = 1e5
+dt = 1.0
+ts = t0:dt:(t0 + tspan)
+if !(@isdefined orbit)
+    println("**************** computing orbit *******************")
+    orbit = trajectory(ds, tspan, Δt=dt, t0=t0)
+end
 
-# TODO: make function take argument no globals!
-# done for orbit and ts but parameters need to be passed
 # TODO: figures file output
 
 # plot field evolutions
@@ -50,7 +50,6 @@ function plot_field_evolution(ts, orbit)
     legend()
 end
 
-# TODO:
 # plot 2D projections of the trajectory in state space
 function plot_2d_traj_projections(ts, orbit)
     fig, axes = subplots(3, 2)
@@ -59,8 +58,8 @@ function plot_2d_traj_projections(ts, orbit)
         for (j, name2) in enumerate(names)
             if j < i
                 axes[k].plot(orbit[:, i], orbit[:, j])
-                axes[k].set_xlabel(name1, fontsize=15)
-                axes[k].set_ylabel(name2, fontsize=15)
+                axes[k].set_xlabel(name1)
+                axes[k].set_ylabel(name2)
                 k += 1
             end
         end
@@ -78,9 +77,9 @@ function plot_3d_traj_projections(ts, orbit)
                 if i < j < k
                     ax = fig.add_subplot(2, 2, n, projection="3d")
                     ax.plot(orbit[:, i], orbit[:, j], orbit[:, k])
-                    ax.set_xlabel(name1, fontsize=15)
-                    ax.set_ylabel(name2, fontsize=15)
-                    ax.set_zlabel(name3, fontsize=15)
+                    ax.set_xlabel(name1)
+                    ax.set_ylabel(name2)
+                    ax.set_zlabel(name3)
                     n += 1
                 end
             end
@@ -89,16 +88,22 @@ function plot_3d_traj_projections(ts, orbit)
     tight_layout()
 end
 
-crossing_val = 0.0
-# psos = poincaresos(ds, (var_num, crossing_val), tfinal=1e7, Ttr=1e3)
-# tspan = 1e6
-# ts = t0:dt:(t0 + tspan)
-# orbit = trajectory(ds, tspan, Δt=dt, t0=t0)
-# plot3D(psos[:, 2], psos[:, 3], psos[:, 4], ".", ms=0.1)
+const crossing_val = 0.0
+
+ttr = 1e3
+# for the poincare section:
+#tspan_long = 1e6
+#ts_long = (t0 + ttr):dt:(t0 + ttr + tspan_long)
+#if !(@isdefined orbit_long)
+#    println("**************** computing long orbit *******************")
+#    orbit_long = trajectory(ds, tspan_long, Δt=dt, t0=t0, Ttr=ttr)
+#end
 
 # plot poincare sections for all state variables to equal 0
 # and plot for each psos two of the remaining coordinates
 function plot_poincare_section(ts, orbit)
+    # this doenst work for some reason
+    # psos = poincaresos(ds, (var_num, crossing_val), tfinal=1e7, Ttr=1e3)
     fig, axes = subplots(3, 4)
     for var_num = 1:4
         psos = poincaresos(orbit, (var_num, crossing_val))
@@ -119,20 +124,15 @@ function plot_poincare_section(ts, orbit)
     end
 end
 
-if false
-dt = 1
-tspan = 1e4
-ttr = 1e3
-ts = (t0 + ttr) : dt : (t0 + ttr + tspan)
-orbit = trajectory(ds, tspan, Δt=dt, t0=t0, Ttr=ttr)
-end
+calc_pot(phi1, phi2, f1, f2) = @. f1*f2*phi1^2*phi2^2
 
 # plot the total energy TODO: should this be conserved or drop somehow because of hubble friction?
-function plot_energy(ts, orbit)
+function plot_energy(ts, orbit, ds)
+    m1, m2, f1, f2 = ds.p
     phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
     rho1 = (@. 0.5*f1*phi1_dot^2 + 0.5*m1*f1*phi1^2)
     rho2 = (@. 0.5*f2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
-    pot  = (@. f1*f2*phi1^2*phi2^2)
+    pot  = calc_pot(phi1, phi2, f1, f2)
     total = rho1 + rho2 + pot
 
     figure()
@@ -176,30 +176,79 @@ function plot_energy(ts, orbit)
 end
 
 
-phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+function plot_orbit_with_pot(ts, orbit, ds)
+    phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+    m1, m2, f1, f2 = ds.p
 
-num = 200
-a = maximum(phi1)
-b = minimum(phi1)
-margin = (a - b)*1e-1
-phi1_range = range(b - margin, a + margin, length=num)
-a = maximum(phi2)
-b = minimum(phi2)
-margin = (a - b)*1e-1
-phi2_range = range(b - margin, a + margin, length=num)
-V = [f1*f2*phi1^2*phi2^2 for phi2 in phi2_range, phi1 in phi1_range]
-pcolormesh(phi1_range, phi2_range, log.(V), shading="nearest")
-colorbar(label="\$\\log(V = f_1 f_2 \\phi_1^2 \\phi_2^2)\$")
+    num = 200
+    a = maximum(phi1)
+    b = minimum(phi1)
+    margin = (a - b)*1e-1
+    phi1_range = range(b - margin, a + margin, length=num)
+    a = maximum(phi2)
+    b = minimum(phi2)
+    margin = (a - b)*1e-1
+    phi2_range = range(b - margin, a + margin, length=num)
+    V = [calc_pot(phi1, phi2, f1, f2) for phi2 in phi2_range, phi1 in phi1_range]
+    pcolormesh(phi1_range, phi2_range, log.(V), shading="nearest")
+    colorbar(label="\$\\log(V = f_1 f_2 \\phi_1^2 \\phi_2^2)\$")
 
-plot(phi1, phi2, color="red")
+    plot(phi1, phi2, color="red")
 
-xlabel(names[1])
-ylabel(names[3])
+    xlabel(names[1])
+    ylabel(names[3])
+end
 
+function sensitivity_on_initial_condition(t0, ttr, tspan, ds)
+    lambda1 = lyapunov(ds, tspan, t0=t0, Ttr=ttr)
+    println(lambda1)
+    pertubation = ones(length(ds.u0)) * 1e-5
+    ts = (t0 + ttr):dt:(t0 + ttr + tspan)
+    orbit1 = trajectory(ds, tspan, Δt=dt, t0=t0, Ttr=ttr)
+    orbit2 = trajectory(ds, tspan, ds.u0 + pertubation, Δt=dt, t0=t0, Ttr=ttr)
+    dist = [norm(a - b) for (a, b) in zip(orbit1, orbit2)]
+    figure()
+    subplot(2,1,1)
+    semilogy(ts, dist, label="simulated")
+    plot(ts, @.(exp.(lambda1 * (ts - ts[1]) + log(dist[1]))), label="lyapunov")
+    ylabel("distance between neighboring trajectories")
+    xlabel("t")
+    ylim(extrema(dist)...)
+    legend()
+    subplot(2,1,2)
+    plot(ts, orbit1[:, 1])
+    plot(ts, orbit2[:, 1])
+    xlabel("t")
+    ylabel(names[1])
+end
 
+function plot_eos(ts, orbit, ds)
+    m1, m2, f1, f2 = ds.p
+    phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+    rho1 = (@. 0.5*f1*phi1_dot^2 + 0.5*m1*f1*phi1^2)
+    rho2 = (@. 0.5*f2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
+    pot  = calc_pot(phi1, phi2, f1, f2)
+    total = rho1 + rho2 + pot
+    pressure = rho1 + rho2 - pot
+    eos = pressure ./ total
+    mean_eos = mean(eos)
+    bins = range(extrema(eos)..., length=30 + 1)
+    hist = normalize(fit(Histogram, eos, bins), mode=:pdf)
 
-
-
+    figure()
+    subplot(2,1,1)
+    plot(ts, eos, label="evolution")
+    axhline(mean_eos, label="mean", color="black", ls="--")
+    legend()
+    xlabel("t")
+    ylabel("equation of state")
+    subplot(2,1,2)
+    step(hist.edges[1][1:end-1], hist.weights, label="histogram")
+    axvline(mean_eos, color="black", ls="--", label="mean")
+    xlabel("equation of state")
+    ylabel("frequency")
+    legend()
+end
 
 
 
