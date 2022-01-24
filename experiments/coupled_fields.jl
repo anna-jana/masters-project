@@ -1,4 +1,10 @@
-using DynamicalSystems, PyPlot, LinearAlgebra, StatsBase
+using DynamicalSystems
+using PyPlot
+using LinearAlgebra
+using StatsBase
+using OrdinaryDiffEq
+using LsqFit
+using Statistics
 
 hubble(t) = 1 / (2*t) # TODO: consider different epochs including reheating
 
@@ -22,20 +28,25 @@ f1 = 1.0
 f2 = 2.0 # TODO: scan parameter
 t0 = 1e-3 # TODO: consider a specific initial hubble parameter
 
-
 default_initial = [1.0, 0.0, 1.0, 0.0]
 names = ["\$\\phi_1\$", "\$\\dot{\\phi}_1\$", "\$\\phi_2\$", "\$\\dot{\\phi}_2\$"]
 default_params = [m1, m2, f1, f2]
+ds = ContinuousDynamicalSystem(coupled_fields_rhs, default_initial, default_params, t0=t0)
 
-ds = ContinuousDynamicalSystem(coupled_fields_rhs,
-                               default_initial,
-                               default_params, t0=t0)
 tspan = 1e5
 dt = 1.0
 ts = t0:dt:(t0 + tspan)
+solver_options = (abstol = 1e-6, reltol = 1e-6, alg = AutoTsit5(Rosenbrock23()))
 if !(@isdefined orbit)
     println("**************** computing orbit *******************")
-    orbit = trajectory(ds, tspan, Δt=dt, t0=t0)
+    orbit = trajectory(ds, tspan, Δt=dt, t0=t0; solver_options...)
+end
+phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+
+function skip_transient(ts, orbit, ttr)
+    dt = ts[2] - ts[1]
+    start_index = Int(floor(ttr / dt)) + 1
+    return ts[start_index:end], orbit[start_index:end]
 end
 
 # TODO: figures file output
@@ -89,15 +100,17 @@ function plot_3d_traj_projections(ts, orbit)
 end
 
 const crossing_val = 0.0
-
 ttr = 1e3
 # for the poincare section:
-#tspan_long = 1e6
-#ts_long = (t0 + ttr):dt:(t0 + ttr + tspan_long)
-#if !(@isdefined orbit_long)
-#    println("**************** computing long orbit *******************")
-#    orbit_long = trajectory(ds, tspan_long, Δt=dt, t0=t0, Ttr=ttr)
-#end
+if true
+tspan_long = 1e6
+ts_long = (t0 + ttr):dt:(t0 + ttr + tspan_long)
+solver_options = (abstol = 1e-6, reltol = 1e-3, alg = AutoTsit5(Rosenbrock23()), maxiters=Int(1e7))
+if !(@isdefined orbit_long)
+    println("**************** computing long orbit *******************")
+    orbit_long = trajectory(ds, tspan_long, Δt=dt, t0=t0, Ttr=ttr) #  solver_options...)
+end
+end
 
 # plot poincare sections for all state variables to equal 0
 # and plot for each psos two of the remaining coordinates
@@ -126,24 +139,35 @@ end
 
 calc_pot(phi1, phi2, f1, f2) = @. f1*f2*phi1^2*phi2^2
 
-# plot the total energy TODO: should this be conserved or drop somehow because of hubble friction?
-function plot_energy(ts, orbit, ds)
+function calc_energies(orbit, ds)
     m1, m2, f1, f2 = ds.p
     phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
     rho1 = (@. 0.5*f1*phi1_dot^2 + 0.5*m1*f1*phi1^2)
     rho2 = (@. 0.5*f2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
     pot  = calc_pot(phi1, phi2, f1, f2)
     total = rho1 + rho2 + pot
+    return rho1, rho2, pot, total
+end
 
+obs_names = ["\$\\rho_1\$", "\$\\rho_2\$", "\$\\rho_\\mathrm{pot}\$", "\$\\rho_\\mathrm{total}\$"]
+
+# plot the total energy TODO: should this be conserved or drop somehow because of hubble friction?
+function plot_energy(ts, orbit, ds)
+    rho1, rho2, pot, total = calc_energies(orbit, ds)
+    # timeseries plot of the energy densities
+    fig, axes = subplots(2, 2)
+    for (k, ob) in enumerate([rho1, rho2, pot, total])
+        axes[k].plot(ts, ob, lw=0.5)
+        axes[k].set_xscale("log")
+        axes[k].set_yscale("log")
+        axes[k].set_xlabel("t")
+        axes[k].set_ylabel(obs_names[k])
+    end
+    tight_layout()
+
+    # plot all energy components against each other
     figure()
-    plot(ts, total, lw=0.5)
-    xlabel("t")
-    ylabel("total energy")
-
     obs = [rho1, rho2, pot]
-    obs_names = ["\$\\rho_1\$", "\$\\rho_2\$", "\$\\rho_\\mathrm{pot}\$"]
-
-    figure()
     k = 1
     for i = 1:3
         for j = 1:3
@@ -165,14 +189,15 @@ function plot_energy(ts, orbit, ds)
     ylabel("\$\\rho_2 / (\\rho_1 + \\rho_2 + \\rho_\\mathrm{pot})\$")
     tight_layout()
 
-    fig = figure()
-    ax = fig.add_subplot(projection="3d")
-    ax.plot(rho1, rho2, pot)
-    ax.set_xlabel("free part of \$\\phi_1\$")
-    ax.set_ylabel("free part of \$\\phi_2\$")
-    ax.set_zlabel("shared potential energy")
-    ax.plot([rho1[1]], [rho2[1]], [pot[1]], "o")
-    ax.plot([rho1[end]], [rho2[end]], [pot[end]], "o")
+    # 3d plot of all energy components
+    # fig = figure()
+    # ax = fig.add_subplot(projection="3d")
+    # ax.plot(rho1, rho2, pot)
+    # ax.set_xlabel("free part of \$\\phi_1\$")
+    # ax.set_ylabel("free part of \$\\phi_2\$")
+    # ax.set_zlabel("shared potential energy")
+    # ax.plot([rho1[1]], [rho2[1]], [pot[1]], "o")
+    # ax.plot([rho1[end]], [rho2[end]], [pot[end]], "o")
 end
 
 
@@ -222,35 +247,75 @@ function sensitivity_on_initial_condition(t0, ttr, tspan, ds)
     ylabel(names[1])
 end
 
-function plot_eos(ts, orbit, ds)
-    m1, m2, f1, f2 = ds.p
-    phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-    rho1 = (@. 0.5*f1*phi1_dot^2 + 0.5*m1*f1*phi1^2)
-    rho2 = (@. 0.5*f2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
-    pot  = calc_pot(phi1, phi2, f1, f2)
-    total = rho1 + rho2 + pot
+function calc_eos(orbit, ds)
+    rho1, rho2, pot, total = calc_energies(orbit, ds)
     pressure = rho1 + rho2 - pot
     eos = pressure ./ total
+    return eos
+end
+
+function plot_eos(ts, orbit, ds)
+    eos = calc_eos(orbit, ds)
     mean_eos = mean(eos)
+    std_eos = std(eos)
     bins = range(extrema(eos)..., length=30 + 1)
     hist = normalize(fit(Histogram, eos, bins), mode=:pdf)
 
     figure()
     subplot(2,1,1)
     plot(ts, eos, label="evolution")
-    axhline(mean_eos, label="mean", color="black", ls="--")
-    legend()
+    axhline(mean_eos, label="mean", color="black", ls="-")
+    axhline(mean_eos - std_eos, label="error", color="black", ls="--")
+    axhline(mean_eos + std_eos, color="black", ls="--")
+    legend(framealpha=1.0)
     xlabel("t")
     ylabel("equation of state")
     subplot(2,1,2)
     step(hist.edges[1][1:end-1], hist.weights, label="histogram")
-    axvline(mean_eos, color="black", ls="--", label="mean")
+    axvline(mean_eos, color="black", ls="-", label="mean")
+    axvline(mean_eos - std_eos, color="black", ls="--", label="error")
+    axvline(mean_eos + std_eos, color="black", ls="--")
     xlabel("equation of state")
     ylabel("frequency")
     legend()
 end
 
+function fit_total_energy_power_law(ts, orbit, ds; plot_it=true)
+    rho1, rho2, pot, total = calc_energies(orbit, ds)
+    model(x, p) = @. p[1] * x + p[2]
+    log_ts = log.(ts)
+    start_idx = 2
+    end_idx = findfirst(ts .> 1e4)
+    fit_res = curve_fit(model, log_ts[start_idx:end_idx], log.(total[start_idx:end_idx]), [1.0, 0.0])
+    p = 2*fit_res.param[1] # power law rho ~ a^p
+    # w_fit = -1/3*p - 1
+    if plot_it
+        figure()
+        loglog(ts, total, label="simulation")
+        loglog(ts, exp.(model(log_ts, fit_res.param)), label="fit")
+        xlabel("t")
+        ylabel(obs_names[4])
+        legend()
+    end
+    return p # , w_fit
+end
 
-
-
-
+# test code to see if the fitting of the energy power law works
+#function test_rhs(s, p, t)
+#    m, = p
+#    phi, phi_dot = s
+#    return SVector(phi_dot, -3*hubble(t)*phi_dot - m^2*phi)
+#end
+#m = 1.0
+#test_ds = ContinuousDynamicalSystem(test_rhs, [1.0, 0.0], [m], t0=t0)
+#test_tspan = 100.0
+#test_dt = 0.1
+#test_ts = t0:test_dt:(t0 + test_tspan)
+#phi, phi_dot = columns(trajectory(test_ds, test_tspan, t0=t0, Δt=test_dt))
+#energy = @. 0.5*phi_dot^2 + 0.5*m^2*phi^2
+#loglog(test_ts, energy)
+#start_idx = findfirst(test_ts .> 2)
+#model(x, p) = @. p[1] * x + p[2]
+#fit_res = curve_fit(model, log.(test_ts[start_idx:end]), log.(energy[start_idx:end]), [1.0, 0.0])
+#loglog(test_ts[start_idx:end], exp.(model(log.(test_ts[start_idx:end]), fit_res.param)))
+#@show fit_res.param[1]*2
