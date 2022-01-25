@@ -60,7 +60,19 @@ plt.legend()
 plt.xlabel("a / a0")
 plt.ylabel("chi / chi0")
 
+# fit the total energy power law
+chi_energy = 0.5 * sol.y[3]**2 + 0.5 * m_chi**2 * sol.y[2]**2 + g * sol.y[0]**2 * sol.y[2]**2 / 2
+a_energy = 0.5 * sol.y[1]**2 + 0.5 * m_a**2 * sol.y[0]**2 + g * sol.y[0]**2 * sol.y[2]**2 / 2
+total = chi_energy + a_energy
+p, b = np.polyfit(np.log(sol.t), np.log(total), 1)
+plt.figure()
+plt.loglog(sol.t, total)
+plt.loglog(sol.t, np.exp(p*np.log(sol.t) + b))
+plt.xlabel("t * GeV")
+plt.ylabel("total energy density")
+plt.title(f"rho ~ t^{p:.2} ~ a^{2*p:.2}, w = {-2/3*p - 1:.2}")
 
+# case in which the chion field is frozen and the axion oscillates
 f_a = 1e9
 chi0 = 1e10
 m_chi = 1e-2
@@ -90,3 +102,5 @@ plt.plot(sol.y[0] / f_a, sol.y[2] / chi0)
 plt.xlabel("a / a0")
 plt.ylabel("chi / chi0");
 plt.show()
+
+
