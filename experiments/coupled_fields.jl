@@ -102,7 +102,7 @@ end
 const crossing_val = 0.0
 ttr = 1e3
 # for the poincare section:
-if true
+if false
 tspan_long = 1e6
 ts_long = (t0 + ttr):dt:(t0 + ttr + tspan_long)
 solver_options = (abstol = 1e-6, reltol = 1e-3, alg = AutoTsit5(Rosenbrock23()), maxiters=Int(1e7))
@@ -319,3 +319,58 @@ end
 #fit_res = curve_fit(model, log.(test_ts[start_idx:end]), log.(energy[start_idx:end]), [1.0, 0.0])
 #loglog(test_ts[start_idx:end], exp.(model(log.(test_ts[start_idx:end]), fit_res.param)))
 #@show fit_res.param[1]*2
+
+function chaos_test(ds; plot_it=true)
+    # GALI_k test
+    k = 2
+    threshold = 1e-12
+    tspan = 1e3
+    g, t = gali(ds, tspan, k, threshold=threshold)
+    if plot_it
+        figure()
+        loglog(t, g, label="GALI")
+        axhline(threshold, label="threshold")
+        xlabel("t")
+        ylabel("GALI_$k")
+        legend()
+    end
+    println("minimal gali reached:", minimum(g), "with threshold ", threshold, "stopped at ",
+            t[end], " tmax = ", tspan, "should not be under the threshold within tmax")
+
+    # expansion-entropy
+    sampler, restrainer = boxregion(.-ones(4), ones(4))
+    ee = expansionentropy(ds, sampler, restrainer)
+    println("expansionentropy (should be positive for chaos) = ", ee)
+end
+
+function sample_trajectories(; tspan = 1e4, num_bins = 30, num_samples = 50, num_steps = 100.0, plot_traj = true, plot_hist = true)
+    samples = Float64[]
+    figure()
+    dt = plot_traj ? tspan/num_steps : tspan/3.0
+    ts = t0:dt:(t0 + tspan)
+    for i = 1:num_samples
+        u0 = [2*rand() - 1.0, 0.0, 2*rand() - 1.0, 0.0]
+        orbit = trajectory(ds, tspan, u0, Δt=dt,
+                           t0=t0; solver_options...)
+        if plot_traj
+            plot(ts, orbit[:, 1], lw=0.5, alpha=0.3, color="black")
+        end
+        push!(samples, orbit[end, 1])
+    end
+    if plot_traj
+        xlabel("t")
+        ylabel("\$\\phi_1\$")
+        axhline(0.0, color="red")
+    end
+    if plot_hist
+        a, b = extrema(samples)
+        bins = a:(b - a)/num_bins:b
+        hist = normalize(fit(Histogram, samples, bins), mode=:pdf)
+        figure()
+        step(hist.edges[1][1:end-1], hist.weights)
+        xlabel("\$\\phi\$ final")
+    end
+    return hist, samples
+end
+
+
