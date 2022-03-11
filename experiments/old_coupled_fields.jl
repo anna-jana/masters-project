@@ -11,25 +11,27 @@ hubble(t) = 1 / (2*t) # TODO: consider different epochs including reheating
 function coupled_fields_rhs(s, p, t)
     H = hubble(t)
     phi1, phi1_dot, phi2, phi2_dot = s
-    m1, m2, g = p
+    m1, m2, f1, f2 = p
     return SVector(
         phi1_dot,
-        - 3*H*phi1_dot - g*phi1*phi2^2 - m1*phi1,
+        - 3*H*phi1_dot - f2*phi1*phi2^2 - m1*phi1,
+        # - 3*H*phi1_dot - f2*g*phi1*phi2^2 - m1*phi1,
         phi2_dot,
-        - 3*H*phi2_dot - g*phi2*phi1^2 - m2*phi2,
+        - 3*H*phi2_dot - f1*phi2*phi1^2 - m2*phi2,
+        # - 3*H*phi2_dot - f1*g*phi2*phi1^2 - m2*phi2,
     )
 end
 
 names = ["\$\\phi_1\$", "\$\\dot{\\phi}_1\$", "\$\\phi_2\$", "\$\\dot{\\phi}_2\$"]
 
-function sim(m1, m2, g;
+function sim(m1, m2, f1, f2;
         t0 = 1e-3, tspan = 1e5, ttr = 0.0,
-        initial = [1.0, 0.0, 1.0, 0.0], dt = 1.0,
+        default_initial = [1.0, 0.0, 1.0, 0.0], dt = 1.0,
         solver_options = (abstol = 1e-6, reltol = 1e-6,
                           alg = AutoTsit5(Rosenbrock23())))
-    default_params = [m1, m2, g]
+    default_params = [m1, m2, f1, f2]
     ds = ContinuousDynamicalSystem(coupled_fields_rhs,
-                                   initial, default_params, t0=t0)
+                                   default_initial, default_params, t0=t0)
     ts = (t0 + ttr):dt:(t0 + ttr + tspan)
     orbit = trajectory(ds, tspan, Δt=dt, t0=t0, Ttr=ttr; solver_options...)
     return ts, orbit, ds
@@ -91,8 +93,6 @@ function plot_3d_traj_projections(ts, orbit)
     tight_layout()
 end
 
-const crossing_val = 0.0
-
 # plot poincare sections for all state variables to equal 0
 # and plot for each psos two of the remaining coordinates
 function plot_poincare_section(ts, orbit)
@@ -118,20 +118,21 @@ function plot_poincare_section(ts, orbit)
     end
 end
 
-calc_pot(phi1, phi2, g) = @. g*phi1^2*phi2^2
+calc_pot(phi1, phi2, f1, f2) = @. f1*f2*phi1^2*phi2^2
 
 function calc_energies(orbit, ds)
-    m1, m2, g = ds.p
+    m1, m2, f1, f2 = ds.p
     phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-    rho1 = (@. 0.5*phi1_dot^2 + 0.5*m1*phi1^2)
-    rho2 = (@. 0.5*phi2_dot^2 + 0.5*m2*phi2^2)
-    pot  = calc_pot(phi1, phi2, g)
+    rho1 = (@. 0.5*f1*phi1_dot^2 + 0.5*m1*f1*phi1^2)
+    rho2 = (@. 0.5*f2*phi2_dot^2 + 0.5*m2*f2*phi2^2)
+    pot  = calc_pot(phi1, phi2, f1, f2)
     total = rho1 + rho2 + pot
     return rho1, rho2, pot, total
 end
 
 obs_names = ["\$\\rho_1\$", "\$\\rho_2\$", "\$\\rho_\\mathrm{pot}\$", "\$\\rho_\\mathrm{total}\$"]
 
+# plot the total energy TODO: should this be conserved or drop somehow because of hubble friction?
 function plot_energy(ts, orbit, ds)
     rho1, rho2, pot, total = calc_energies(orbit, ds)
     # timeseries plot of the energy densities
@@ -183,7 +184,7 @@ end
 
 function plot_orbit_with_pot(ts, orbit, ds)
     phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-    m1, m2, g = ds.p
+    m1, m2, f1, f2 = ds.p
 
     num = 200
     a = maximum(phi1)
@@ -194,9 +195,9 @@ function plot_orbit_with_pot(ts, orbit, ds)
     b = minimum(phi2)
     margin = (a - b)*1e-1
     phi2_range = range(b - margin, a + margin, length=num)
-    V = [calc_pot(phi1, phi2, g) for phi2 in phi2_range, phi1 in phi1_range]
+    V = [calc_pot(phi1, phi2, f1, f2) for phi2 in phi2_range, phi1 in phi1_range]
     pcolormesh(phi1_range, phi2_range, log.(V), shading="nearest")
-    colorbar(label="\$\\log(V = g \\phi_1^2 \\phi_2^2)\$")
+    colorbar(label="\$\\log(V = f_1 f_2 \\phi_1^2 \\phi_2^2)\$")
 
     plot(phi1, phi2, color="red")
 
@@ -321,8 +322,7 @@ function chaos_test(ds; plot_it=true)
     println("expansionentropy (should be positive for chaos) = ", ee)
 end
 
-function sample_trajectories(; tspan = 1e4, num_bins = 30, num_samples = 50,
-        num_steps = 100.0, plot_traj = true, plot_hist = true)
+function sample_trajectories(; tspan = 1e4, num_bins = 30, num_samples = 50, num_steps = 100.0, plot_traj = true, plot_hist = true)
     samples = Float64[]
     figure()
     dt = plot_traj ? tspan/num_steps : tspan/3.0
