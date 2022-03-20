@@ -8,7 +8,7 @@ using OrdinaryDiffEq
 using DelimitedFiles
 using Random
 
-############################ the model #############################
+################################ the model ##################################
 function coupled_fields_rhs(s, p, t)
     H, phi1, phi1_dot, phi2, phi2_dot = s
     M, G = p
@@ -26,12 +26,14 @@ function coupled_fields(M, G, initial_ratio, H_start)
     return ContinuousDynamicalSystem(coupled_fields_rhs, initial, [M, G])
 end
 
+calc_pot(phi1, phi2, G) = G*phi1^2*phi2^2
+
 function calc_energies(sys, orbit)
     M, G = sys.p
     H, phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
     rho1 = @. 0.5*(phi1_dot^2 + phi1^2)
     rho2 = @. 0.5*M*(phi2_dot^2 + phi2^2)
-    pot  = @. G*phi1^2*phi2^2
+    pot  = @. calc_pot.(phi1, phi2, G)
     total = @. rho1 + rho2 + pot
     return rho1, rho2, pot, total
 end
@@ -43,69 +45,41 @@ end
 model(x, p) = @. p[1] * x + p[2]
 H_to_t(H, H_start) = 0.5*(1/H - 1/H_start)
 
-################################### basic analysis ##################################
-function simulate(M, G, initial_ratio, H_start; nsteps=1000, H_end=M/3, H_fit_start=M/2)
-    sys = coupled_fields(M, G, initial_ratio, H_start)
+######################## plot trajectories and phasespace projections ###################
+function plot_evolution(M, G, initial_ratio, H_start; nsteps=1000, H_end=M/3)
     tmax = H_to_t(H_end, H_start)
-    dt = tmax / (nsteps - 1)
-    ts = 0.0:dt:tmax
-    orbit = trajectory(sys, tmax; Δt=dt, diffeq=(alg=AutoTsit5(Rosenbrock23())))
-    rho1, rho2, pot, total = calc_energies(sys, orbit)
-    t_fit_start = H_to_t(H_fit_start, H_start)
-    i = ceil(Int, t_fit_start / dt)
-    log_t = log.(ts)
-    fit_res = curve_fit(model, @view(log_t[i:end]), log.(@view(total[i:end])), [1.0, 0.0])
-    p = 2*fit_res.param[1] # power law rho ~ a^panalyse
-    m1, m2 = calc_eff_masses(sys, orbit)
-    return (sys=sys, ts=ts, H=orbit[:,1],
-            phi1=orbit[:,2], phi2=orbit[:,4], phi1_dot=orbit[:,3], phi2_dot=orbit[:,5],
-            rho1=rho1, rho2=rho2, pot=pot, total=total,
-            p=p, m1=m1, m2=m2, t_fit_start=t_fit_start, fit_res=fit_res,
-            M=M, G=G, initial_ratio=initial_ratio, H_start=H_start)
-end
+    t0 = H_to_t(H_start / 1.001, H_start)
+    ts = [0.0; exp.(range(log(t0), log(tmax), length=nsteps - 1))]
+    problem = ODEProblem(coupled_fields(M, G, initial_ratio, H_start) , (0, tmax))
+    sol = solve(problem, AutoTsit5(Rosenbrock23()), reltol=1e-6, abstol=1e-6, saveat=ts)
+    H, phi1, phi1_dot, phi2, phi2_dot = sol[1,:], sol[2,:], sol[3,:], sol[4,:], sol[5,:]
+    n = 100
+    a = minimum(phi1)
+    b = maximum(phi1)
+    l = b - a
+    phi1_range = range(a - l/10, b + l/10, length=n+1)
+    a = minimum(phi2)
+    b = maximum(phi2)
+    l = b - a
+    phi2_range = range(a - l/10, b + l/10, length=n)
+    log10_V = [log10(calc_pot(a, b, G)) for b = phi2_range, a = phi1_range]
 
-function plot_sim(sim)
-    shape = (2, 3)
     figure()
-
-    subplot2grid(shape, (1, 1))
-    plot(sim.H, sim.phi1, label=raw"$\phi_1$")
-    plot(sim.H, sim.phi2, label=raw"$\phi_2$")
+    subplot(2,1,1)
+    plot(H, phi1, label=raw"$\phi_1$")
+    plot(H, phi2, label=raw"$\phi_2$")
+    gca().invert_xaxis()
     xscale("log")
     xlabel("H")
     ylabel("fields")
     legend(ncol=2)
-
-    subplot2grid(shape, (1, 2))
-    plot(sim.phi1, sim.phi2)
+    subplot(2,1,2)
+    pcolormesh(phi1_range, phi2_range, log10_V, shading="nearest", cmap="summer")
+    colorbar(label=raw"$\log_{10}(V)$")
+    plot(phi1, phi2, color="red")
     xlabel(raw"$\phi_1$")
     ylabel(raw"$\phi_2$")
-
-    subplot2grid(shape, (2, 1))
-    loglog(sim.ts, sim.total, label="simulation data")
-    loglog(sim.ts, exp.(model(log.(sim.ts), sim.fit_res.param)), label="power law fit")
-    axvline(sim.t_fit_start, color="black")
-    axvline(sim.ts[end], color="black")
-    xlabel("t")
-    ylabel("total energy of the coupled fields")
-    legend()
-    title(@sprintf("\$\\rho_\\mathrm{total} \\sim a^{%.2f}\$", sim.p))
-
-    subplot2grid(shape, (2, 2))
-    plot(sim.rho1 ./ sim.total, sim.rho2 ./ sim.total, lw=0.3)
-    xlabel(raw"$\rho_{\mathrm{kin}, 1} / \rho_\mathrm{total}$")
-    ylabel(raw"$\rho_{\mathrm{kin}, 2} / \rho_\mathrm{total}$")
-
-    subplot2grid(shape, (3, 1))
-    plot(sim.H, sim.m1, label="m1")
-    plot(sim.H, sim.m2, label="m2")
-    xscale("log")
-    yscale("log")
-    ylim(min(minimum(sim.m1[2:end]), minimum(sim.m2[2:end])),
-         max(maximum(sim.m1[2:end]), maximum(sim.m2[2:end])))
-    legend()
-
-    suptitle("M = $(sim.M), G = $(sim.G), \$\\phi_1 / \\phi_2\$ = $(sim.initial_ratio), \$H_0\$ = $(sim.H_start)")
+    suptitle("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H_start")
     tight_layout()
 end
 
@@ -148,6 +122,7 @@ function compute_p(M, G;
         push!(p_errs, p_err)
         if debug
             plot(log.(ts), log.(total))
+    title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
             axvline(x[1], color="black")
             plot(smooth_x, smooth_y)
             plot(smooth_x, model(smooth_x, fit_res.param))
@@ -189,7 +164,7 @@ function lya_convergence(; M=1.0, G=1e6, initial_ratio=1 + 1e-2, H0=1e3, nsteps=
     title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
 end
 
-function lya_G_dep(; M=1.0, initial_ratio=1 + 1e-2, H0=1e3, nsteps=50, G_range=10 .^ (-2:0.5:8), log_scale=true)
+function lya_G_dep(; M=1.0, initial_ratio=1 + 1e-2, H0=1e3, nsteps=3000, G_range=10 .^ (-2:0.05:7), log_scale=true)
     spectra = [lyapunovspectrum(coupled_fields(M, G, initial_ratio, H0), nsteps) for G in G_range]
     chaos_start_index = findfirst(x -> x > 0, [spectrum[1] for spectrum in spectra])
     figure()
@@ -207,4 +182,6 @@ function lya_G_dep(; M=1.0, initial_ratio=1 + 1e-2, H0=1e3, nsteps=50, G_range=1
     xlabel("G")
     ylabel(raw"Lyapunov spectrum $\lambda_i$")
     legend(ncol=2, framealpha=1)
+    title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
 end
+
