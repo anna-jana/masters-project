@@ -7,6 +7,7 @@ using Printf
 using OrdinaryDiffEq
 using DelimitedFiles
 using Random
+using Roots
 
 ################################ the model ##################################
 function coupled_fields_rhs(s, p, t)
@@ -26,16 +27,12 @@ function coupled_fields(M, G, initial_ratio, H_start)
     return ContinuousDynamicalSystem(coupled_fields_rhs, initial, [M, G])
 end
 
-calc_pot(phi1, phi2, G) = G*phi1^2*phi2^2
+calc_pot(M, G, phi1, phi2) = G*phi1^2*phi2^2 + 0.5*phi1^2 + 0.5*M*phi2^2
 
-function calc_energies(sys, orbit)
+function calc_energy(sys, orbit)
     M, G = sys.p
     H, phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-    rho1 = @. 0.5*(phi1_dot^2 + phi1^2)
-    rho2 = @. 0.5*M*(phi2_dot^2 + phi2^2)
-    pot  = @. calc_pot.(phi1, phi2, G)
-    total = @. rho1 + rho2 + pot
-    return rho1, rho2, pot, total
+    return @. 0.5*phi1_dot^2 + 0.5*M*phi2_dot^2 + calc_pot.(M, G, phi1, phi2)
 end
 
 function calc_eff_masses(sys, orbit)
@@ -45,13 +42,16 @@ end
 model(x, p) = @. p[1] * x + p[2]
 H_to_t(H, H_start) = 0.5*(1/H - 1/H_start)
 
+const alg = AutoTsit5(Rosenbrock23())
+const settings = (reltol=1e-6, abstol=1e-6)
+
 ######################## plot trajectories and phasespace projections ###################
 function plot_evolution(M, G, initial_ratio, H_start; nsteps=1000, H_end=M/3)
     tmax = H_to_t(H_end, H_start)
     t0 = H_to_t(H_start / 1.001, H_start)
     ts = [0.0; exp.(range(log(t0), log(tmax), length=nsteps - 1))]
     problem = ODEProblem(coupled_fields(M, G, initial_ratio, H_start) , (0, tmax))
-    sol = solve(problem, AutoTsit5(Rosenbrock23()), reltol=1e-6, abstol=1e-6, saveat=ts)
+    sol = solve(problem, alg; settings..., saveat=ts)
     H, phi1, phi1_dot, phi2, phi2_dot = sol[1,:], sol[2,:], sol[3,:], sol[4,:], sol[5,:]
     n = 100
     a = minimum(phi1)
@@ -62,7 +62,7 @@ function plot_evolution(M, G, initial_ratio, H_start; nsteps=1000, H_end=M/3)
     b = maximum(phi2)
     l = b - a
     phi2_range = range(a - l/10, b + l/10, length=n)
-    log10_V = [log10(calc_pot(a, b, G)) for b = phi2_range, a = phi1_range]
+    log10_V = [log10(calc_pot(M, G, a, b)) for b = phi2_range, a = phi1_range]
 
     figure()
     subplot(2,1,1)
@@ -108,8 +108,8 @@ function compute_p(M, G;
         problem = ODEProblem(sys, (0.0, tmax))
         sol = solve(problem, alg; saveat=ts, abstol=abstol, reltol=reltol)
         orbit = Dataset(collect(sol.u))
-        _, _, _, total = calc_energies(sys, orbit)
-        y = log.(@view(total[i:end]))
+        energy = calc_energy(sys, orbit)
+        y = log.(@view(energy[i:end]))
         smooth_y = [mean(y[k-window:k+window]) for k = 1 + window : length(x) - window]
         mask = isfinite.(smooth_y)
         smooth_x = _smooth_x[mask]
@@ -121,7 +121,7 @@ function compute_p(M, G;
         push!(ps, p)
         push!(p_errs, p_err)
         if debug
-            plot(log.(ts), log.(total))
+            plot(log.(ts), log.(energy))
     title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
             axvline(x[1], color="black")
             plot(smooth_x, smooth_y)
@@ -185,3 +185,63 @@ function lya_G_dep(; M=1.0, initial_ratio=1 + 1e-2, H0=1e3, nsteps=3000, G_range
     title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
 end
 
+
+############################## oscillation start (first zero crossing) ############################
+function _find_H_osc(M, G, initial_ratio, H0, Hmax, divisions)
+    @show G
+    tmax = H_to_t(Hmax, H0)
+    problem = ODEProblem(coupled_fields(M, G, initial_ratio, H0), (0, tmax))
+    print("solving...")
+    sol = solve(problem, alg; settings..., maxiters=10^10)
+    println(" done!")
+    root_fn1(t) = sol(t)[2]
+    root_fn2(t) = sol(t)[4]
+    dt = tmax / divisions
+    for i = 1:divisions
+        @show i
+        t_start = (i - 1)*dt
+        t_end = i*dt
+        # root of phi1
+        if sign(root_fn1(t_start)) != sign(root_fn1(t_end))
+            t_osc = find_zero(root_fn1, (t_start, t_end), Roots.A42())
+            H = sol(t_osc)[1]
+            return H
+        end
+        # root of phi2
+        if sign(root_fn2(t_start)) != sign(root_fn2(t_end))
+            t_osc = find_zero(root_fn2, (t_start, t_end), Roots.A42())
+            H = sol(t_osc)[1]
+            return H
+        end
+    end
+    return nothing
+end
+
+function find_H_osc(M, G, initial_ratio, H0_start, Hmax_start, nmaxtrys, divisions, check_factor)
+    Hmax = Hmax_start
+    H0 = H0_start
+    for i = 1:nmaxtrys
+        H_osc = _find_H_osc(M, G, initial_ratio, H0, Hmax, divisions)
+        if H_osc != nothing
+            H_osc_2 = _find_H_osc(M, G, initial_ratio, H0 * check_factor, Hmax, divisions)
+            return H_osc, H_osc_2
+        end
+        Hmax /= 10
+        H0 * 10
+    end
+    return NaN
+end
+
+function plot_H_oscs(; M=1.0, initial_ratio=1.0 + 1e-2,
+        H0_start=1e3*M, Hmax_start=M/1e3, nmaxtrys=100, divisions=1000,
+        G_range=10 .^ (-2:0.05:7), check_factor=10, plot_second=true)
+    H_osc_list = find_H_osc.(M, G_range, initial_ratio, H0_start, Hmax_start, nmaxtrys, divisions)
+    l = plot(G_range, [pair[1] for pair in H_osc_list], label=raw"first $H_\mathrm{osc}$")
+    plot(G_range, [pair[2] for pair in H_osc_list], color=l[1].get_color(), ls="--", label=raw"second $H_\mathrm{osc}$")
+    xscale("log")
+    yscale("log")
+    xlabel("G")
+    ylabel(raw"$H_\mathrm{osc}$")
+    legend()
+    return H_osc_list
+end
