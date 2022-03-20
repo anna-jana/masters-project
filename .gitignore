@@ -21,3 +21,4 @@ patras-workshop/
 *.bbl
 *.blg
 *.synctex.gz
+experiments/*.dat

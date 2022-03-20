@@ -1,355 +1,210 @@
 using DynamicalSystems
 using PyPlot
 using LinearAlgebra
-using StatsBase
-using OrdinaryDiffEq
 using LsqFit
 using Statistics
+using Printf
+using OrdinaryDiffEq
+using DelimitedFiles
+using Random
 
-hubble(t) = 1 / (2*t) # TODO: consider different epochs including reheating
-
+############################ the model #############################
 function coupled_fields_rhs(s, p, t)
-    H = hubble(t)
-    phi1, phi1_dot, phi2, phi2_dot = s
-    m1, m2, g = p
+    H, phi1, phi1_dot, phi2, phi2_dot = s
+    M, G = p
     return SVector(
+        -2*H^2,
         phi1_dot,
-        - 3*H*phi1_dot - g*phi1*phi2^2 - m1*phi1,
+        - 3*H*phi1_dot - G*phi1*phi2^2 - phi1,
         phi2_dot,
-        - 3*H*phi2_dot - g*phi2*phi1^2 - m2*phi2,
+        - 3*H*phi2_dot - G*phi2*phi1^2 - M*phi2,
     )
 end
 
-names = ["\$\\phi_1\$", "\$\\dot{\\phi}_1\$", "\$\\phi_2\$", "\$\\dot{\\phi}_2\$"]
-
-function sim(m1, m2, g;
-        t0 = 1e-3, tspan = 1e5, ttr = 0.0,
-        initial = [1.0, 0.0, 1.0, 0.0], dt = 1.0,
-        solver_options = (abstol = 1e-6, reltol = 1e-6,
-                          alg = AutoTsit5(Rosenbrock23())))
-    default_params = [m1, m2, g]
-    ds = ContinuousDynamicalSystem(coupled_fields_rhs,
-                                   initial, default_params, t0=t0)
-    ts = (t0 + ttr):dt:(t0 + ttr + tspan)
-    orbit = trajectory(ds, tspan, Δt=dt, t0=t0, Ttr=ttr; solver_options...)
-    return ts, orbit, ds
+function coupled_fields(M, G, initial_ratio, H_start)
+    initial = [H_start, 1.0, 0.0, initial_ratio, 0.0]
+    return ContinuousDynamicalSystem(coupled_fields_rhs, initial, [M, G])
 end
 
-function skip_transient(ts, orbit, ttr)
-    dt = ts[2] - ts[1]
-    start_index = Int(floor(ttr / dt)) + 1
-    return ts[start_index:end], orbit[start_index:end]
-end
-
-# TODO: figures file output
-
-# plot field evolutions
-function plot_field_evolution(ts, orbit)
-    figure()
-    plot(ts, orbit[:, 1], label=names[1])
-    plot(ts, orbit[:, 3], label=names[3])
-    # xscale("log")
-    xlabel("t")
-    legend()
-end
-
-# plot 2D projections of the trajectory in state space
-function plot_2d_traj_projections(ts, orbit)
-    fig, axes = subplots(3, 2)
-    k = 1
-    for (i, name1) in enumerate(names)
-        for (j, name2) in enumerate(names)
-            if j < i
-                axes[k].plot(orbit[:, i], orbit[:, j])
-                axes[k].set_xlabel(name1)
-                axes[k].set_ylabel(name2)
-                k += 1
-            end
-        end
-    end
-    tight_layout()
-end
-
-# plot 3D projects of the trajectory in state space
-function plot_3d_traj_projections(ts, orbit)
-    fig = figure()
-    n = 1
-    for (i, name1) in enumerate(names)
-        for (j, name2) in enumerate(names)
-            for (k, name3) in enumerate(names)
-                if i < j < k
-                    ax = fig.add_subplot(2, 2, n, projection="3d")
-                    ax.plot(orbit[:, i], orbit[:, j], orbit[:, k])
-                    ax.set_xlabel(name1)
-                    ax.set_ylabel(name2)
-                    ax.set_zlabel(name3)
-                    n += 1
-                end
-            end
-        end
-    end
-    tight_layout()
-end
-
-const crossing_val = 0.0
-
-# plot poincare sections for all state variables to equal 0
-# and plot for each psos two of the remaining coordinates
-function plot_poincare_section(ts, orbit)
-    # this doenst work for some reason
-    # psos = poincaresos(ds, (var_num, crossing_val), tfinal=1e7, Ttr=1e3)
-    fig, axes = subplots(3, 4)
-    for var_num = 1:4
-        psos = poincaresos(orbit, (var_num, crossing_val))
-        k = 1
-        for i = 1:4, j=1:4
-            if i < j && i != var_num && j != var_num
-                if k == 1
-                    axes[1, var_num].set_title(names[var_num] * " = 0")
-                end
-                axes[k, var_num].plot(psos[:, i], psos[:, j], ".", ms=0.1)
-                axes[k, var_num].set_xlabel(names[i])
-                axes[k, var_num].set_ylabel(names[j])
-                k += 1
-            end
-        end
-        suptitle("Poincare section")
-        tight_layout()
-    end
-end
-
-calc_pot(phi1, phi2, g) = @. g*phi1^2*phi2^2
-
-function calc_energies(orbit, ds)
-    m1, m2, g = ds.p
-    phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-    rho1 = (@. 0.5*phi1_dot^2 + 0.5*m1*phi1^2)
-    rho2 = (@. 0.5*phi2_dot^2 + 0.5*m2*phi2^2)
-    pot  = calc_pot(phi1, phi2, g)
-    total = rho1 + rho2 + pot
+function calc_energies(sys, orbit)
+    M, G = sys.p
+    H, phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
+    rho1 = @. 0.5*(phi1_dot^2 + phi1^2)
+    rho2 = @. 0.5*M*(phi2_dot^2 + phi2^2)
+    pot  = @. G*phi1^2*phi2^2
+    total = @. rho1 + rho2 + pot
     return rho1, rho2, pot, total
 end
 
-obs_names = ["\$\\rho_1\$", "\$\\rho_2\$", "\$\\rho_\\mathrm{pot}\$", "\$\\rho_\\mathrm{total}\$"]
-
-function plot_energy(ts, orbit, ds)
-    rho1, rho2, pot, total = calc_energies(orbit, ds)
-    # timeseries plot of the energy densities
-    fig, axes = subplots(2, 2)
-    for (k, ob) in enumerate([rho1, rho2, pot, total])
-        axes[k].plot(ts, ob, lw=0.5)
-        axes[k].set_xscale("log")
-        axes[k].set_yscale("log")
-        axes[k].set_xlabel("t")
-        axes[k].set_ylabel(obs_names[k])
-    end
-    tight_layout()
-
-    # plot all energy components against each other
-    figure()
-    obs = [rho1, rho2, pot]
-    k = 1
-    for i = 1:3
-        for j = 1:3
-            if i < j
-                subplot(2, 2, k)
-                plot(obs[i], obs[j], lw=0.3, color="black", label="trajectory")
-                xlabel(obs_names[i])
-                ylabel(obs_names[j])
-                # plot([obs[i][1]], [obs[j][1]], "o", label="start")
-                # plot([obs[i][end]], [obs[j][end]], "o", label="end")
-                # legend()
-                k += 1
-            end
-        end
-    end
-    subplot(2, 2, k)
-    plot(rho1 ./ total, rho2 ./ total, lw=0.3, color="black")
-    xlabel("\$\\rho_1 / (\\rho_1 + \\rho_2 + \\rho_\\mathrm{pot})\$")
-    ylabel("\$\\rho_2 / (\\rho_1 + \\rho_2 + \\rho_\\mathrm{pot})\$")
-    tight_layout()
-
-    # 3d plot of all energy components
-    # fig = figure()
-    # ax = fig.add_subplot(projection="3d")
-    # ax.plot(rho1, rho2, pot)
-    # ax.set_xlabel("free part of \$\\phi_1\$")
-    # ax.set_ylabel("free part of \$\\phi_2\$")
-    # ax.set_zlabel("shared potential energy")
-    # ax.plot([rho1[1]], [rho2[1]], [pot[1]], "o")
-    # ax.plot([rho1[end]], [rho2[end]], [pot[end]], "o")
+function calc_eff_masses(sys, orbit)
+    return @.(orbit[:,4]^2 + 1), @.(orbit[:,2]^2 + sys.p[1])
 end
 
+model(x, p) = @. p[1] * x + p[2]
+H_to_t(H, H_start) = 0.5*(1/H - 1/H_start)
 
-function plot_orbit_with_pot(ts, orbit, ds)
-    phi1, phi1_dot, phi2, phi2_dot = columns(orbit)
-    m1, m2, g = ds.p
-
-    num = 200
-    a = maximum(phi1)
-    b = minimum(phi1)
-    margin = (a - b)*1e-1
-    phi1_range = range(b - margin, a + margin, length=num)
-    a = maximum(phi2)
-    b = minimum(phi2)
-    margin = (a - b)*1e-1
-    phi2_range = range(b - margin, a + margin, length=num)
-    V = [calc_pot(phi1, phi2, g) for phi2 in phi2_range, phi1 in phi1_range]
-    pcolormesh(phi1_range, phi2_range, log.(V), shading="nearest")
-    colorbar(label="\$\\log(V = g \\phi_1^2 \\phi_2^2)\$")
-
-    plot(phi1, phi2, color="red")
-
-    xlabel(names[1])
-    ylabel(names[3])
+################################### basic analysis ##################################
+function simulate(M, G, initial_ratio, H_start; nsteps=1000, H_end=M/3, H_fit_start=M/2)
+    sys = coupled_fields(M, G, initial_ratio, H_start)
+    tmax = H_to_t(H_end, H_start)
+    dt = tmax / (nsteps - 1)
+    ts = 0.0:dt:tmax
+    orbit = trajectory(sys, tmax; Δt=dt, diffeq=(alg=AutoTsit5(Rosenbrock23())))
+    rho1, rho2, pot, total = calc_energies(sys, orbit)
+    t_fit_start = H_to_t(H_fit_start, H_start)
+    i = ceil(Int, t_fit_start / dt)
+    log_t = log.(ts)
+    fit_res = curve_fit(model, @view(log_t[i:end]), log.(@view(total[i:end])), [1.0, 0.0])
+    p = 2*fit_res.param[1] # power law rho ~ a^panalyse
+    m1, m2 = calc_eff_masses(sys, orbit)
+    return (sys=sys, ts=ts, H=orbit[:,1],
+            phi1=orbit[:,2], phi2=orbit[:,4], phi1_dot=orbit[:,3], phi2_dot=orbit[:,5],
+            rho1=rho1, rho2=rho2, pot=pot, total=total,
+            p=p, m1=m1, m2=m2, t_fit_start=t_fit_start, fit_res=fit_res,
+            M=M, G=G, initial_ratio=initial_ratio, H_start=H_start)
 end
 
-function sensitivity_on_initial_condition(t0, ttr, tspan, ds)
-    lambda1 = lyapunov(ds, tspan, t0=t0, Ttr=ttr)
-    println(lambda1)
-    pertubation = ones(length(ds.u0)) * 1e-5
-    ts = (t0 + ttr):dt:(t0 + ttr + tspan)
-    orbit1 = trajectory(ds, tspan, Δt=dt, t0=t0, Ttr=ttr)
-    orbit2 = trajectory(ds, tspan, ds.u0 + pertubation, Δt=dt, t0=t0, Ttr=ttr)
-    dist = [norm(a - b) for (a, b) in zip(orbit1, orbit2)]
+function plot_sim(sim)
+    shape = (2, 3)
     figure()
-    subplot(2,1,1)
-    semilogy(ts, dist, label="simulated")
-    plot(ts, @.(exp.(lambda1 * (ts - ts[1]) + log(dist[1]))), label="lyapunov")
-    ylabel("distance between neighboring trajectories")
+
+    subplot2grid(shape, (1, 1))
+    plot(sim.H, sim.phi1, label=raw"$\phi_1$")
+    plot(sim.H, sim.phi2, label=raw"$\phi_2$")
+    xscale("log")
+    xlabel("H")
+    ylabel("fields")
+    legend(ncol=2)
+
+    subplot2grid(shape, (1, 2))
+    plot(sim.phi1, sim.phi2)
+    xlabel(raw"$\phi_1$")
+    ylabel(raw"$\phi_2$")
+
+    subplot2grid(shape, (2, 1))
+    loglog(sim.ts, sim.total, label="simulation data")
+    loglog(sim.ts, exp.(model(log.(sim.ts), sim.fit_res.param)), label="power law fit")
+    axvline(sim.t_fit_start, color="black")
+    axvline(sim.ts[end], color="black")
     xlabel("t")
-    ylim(extrema(dist)...)
+    ylabel("total energy of the coupled fields")
     legend()
-    subplot(2,1,2)
-    plot(ts, orbit1[:, 1])
-    plot(ts, orbit2[:, 1])
-    xlabel("t")
-    ylabel(names[1])
-end
+    title(@sprintf("\$\\rho_\\mathrm{total} \\sim a^{%.2f}\$", sim.p))
 
-function calc_eos(orbit, ds)
-    rho1, rho2, pot, total = calc_energies(orbit, ds)
-    pressure = rho1 + rho2 - pot
-    eos = pressure ./ total
-    return eos
-end
+    subplot2grid(shape, (2, 2))
+    plot(sim.rho1 ./ sim.total, sim.rho2 ./ sim.total, lw=0.3)
+    xlabel(raw"$\rho_{\mathrm{kin}, 1} / \rho_\mathrm{total}$")
+    ylabel(raw"$\rho_{\mathrm{kin}, 2} / \rho_\mathrm{total}$")
 
-function plot_eos(ts, orbit, ds)
-    eos = calc_eos(orbit, ds)
-    mean_eos = mean(eos)
-    std_eos = std(eos)
-    bins = range(extrema(eos)..., length=30 + 1)
-    hist = normalize(fit(Histogram, eos, bins), mode=:pdf)
-
-    figure()
-    subplot(2,1,1)
-    plot(ts, eos, label="evolution")
-    axhline(mean_eos, label="mean", color="black", ls="-")
-    axhline(mean_eos - std_eos, label="error", color="black", ls="--")
-    axhline(mean_eos + std_eos, color="black", ls="--")
-    legend(framealpha=1.0)
-    xlabel("t")
-    ylabel("equation of state")
-    subplot(2,1,2)
-    step(hist.edges[1][1:end-1], hist.weights, label="histogram")
-    axvline(mean_eos, color="black", ls="-", label="mean")
-    axvline(mean_eos - std_eos, color="black", ls="--", label="error")
-    axvline(mean_eos + std_eos, color="black", ls="--")
-    xlabel("equation of state")
-    ylabel("frequency")
+    subplot2grid(shape, (3, 1))
+    plot(sim.H, sim.m1, label="m1")
+    plot(sim.H, sim.m2, label="m2")
+    xscale("log")
+    yscale("log")
+    ylim(min(minimum(sim.m1[2:end]), minimum(sim.m2[2:end])),
+         max(maximum(sim.m1[2:end]), maximum(sim.m2[2:end])))
     legend()
+
+    suptitle("M = $(sim.M), G = $(sim.G), \$\\phi_1 / \\phi_2\$ = $(sim.initial_ratio), \$H_0\$ = $(sim.H_start)")
+    tight_layout()
 end
 
-function fit_total_energy_power_law(ts, orbit, ds; plot_it=true)
-    rho1, rho2, pot, total = calc_energies(orbit, ds)
-    model(x, p) = @. p[1] * x + p[2]
-    log_ts = log.(ts)
-    fit_res = curve_fit(model, log_ts, log.(total), [1.0, 0.0])
-    p = 2*fit_res.param[1] # power law rho ~ a^p
-    # w_fit = -1/3*p - 1
-    if plot_it
-        figure()
-        loglog(ts, total, label="simulation")
-        loglog(ts, exp.(model(log_ts, fit_res.param)), label="fit")
-        xlabel("t")
-        ylabel(obs_names[4])
-        legend()
-    end
-    return p # , w_fit
-end
 
-# test code to see if the fitting of the energy power law works
-#function test_rhs(s, p, t)
-#    m, = p
-#    phi, phi_dot = s
-#    return SVector(phi_dot, -3*hubble(t)*phi_dot - m^2*phi)
-#end
-#m = 1.0
-#test_ds = ContinuousDynamicalSystem(test_rhs, [1.0, 0.0], [m], t0=t0)
-#test_tspan = 100.0
-#test_dt = 0.1
-#test_ts = t0:test_dt:(t0 + test_tspan)
-#phi, phi_dot = columns(trajectory(test_ds, test_tspan, t0=t0, Δt=test_dt))
-#energy = @. 0.5*phi_dot^2 + 0.5*m^2*phi^2
-#loglog(test_ts, energy)
-#start_idx = findfirst(test_ts .> 2)
-#model(x, p) = @. p[1] * x + p[2]
-#fit_res = curve_fit(model, log.(test_ts[start_idx:end]), log.(energy[start_idx:end]), [1.0, 0.0])
-#loglog(test_ts[start_idx:end], exp.(model(log.(test_ts[start_idx:end]), fit_res.param)))
-#@show fit_res.param[1]*2
-
-function chaos_test(ds; plot_it=true)
-    # GALI_k test
-    k = 2
-    threshold = 1e-12
-    tspan = 1e3
-    g, t = gali(ds, tspan, k, threshold=threshold)
-    if plot_it
-        figure()
-        loglog(t, g, label="GALI")
-        axhline(threshold, label="threshold")
-        xlabel("t")
-        ylabel("GALI_$k")
-        legend()
-    end
-    println("minimal gali reached:", minimum(g), "with threshold ", threshold, "stopped at ",
-            t[end], " tmax = ", tspan, "should not be under the threshold within tmax")
-
-    # expansion-entropy
-    sampler, restrainer = boxregion(.-ones(4), ones(4))
-    ee = expansionentropy(ds, sampler, restrainer)
-    println("expansionentropy (should be positive for chaos) = ", ee)
-end
-
-function sample_trajectories(; tspan = 1e4, num_bins = 30, num_samples = 50,
-        num_steps = 100.0, plot_traj = true, plot_hist = true)
-    samples = Float64[]
-    figure()
-    dt = plot_traj ? tspan/num_steps : tspan/3.0
-    ts = t0:dt:(t0 + tspan)
-    for i = 1:num_samples
-        u0 = [2*rand() - 1.0, 0.0, 2*rand() - 1.0, 0.0]
-        orbit = trajectory(ds, tspan, u0, Δt=dt,
-                           t0=t0; solver_options...)
-        if plot_traj
-            plot(ts, orbit[:, 1], lw=0.5, alpha=0.3, color="black")
+############################## analysis of the energy scaling ##########################
+function compute_p(M, G;
+        debug=false, nsamples=1, window=4, nsteps=200, initial_ratio=1 + 1e-2,
+        H_start=1e2*M, H_fit_start=1e-1*M, H_end=1e-2*M,
+        alg=SimpleATsit5(), reltol=1e-6, abstol=1e-6)
+    @show G
+    Random.seed!(42)
+    tmax = H_to_t(H_end, H_start)
+    t_fit_start = H_to_t(H_fit_start, H_start)
+    log_t_start = -5
+    log_ts = range(log_t_start, log(tmax), length=nsteps)
+    d_log_t = log_ts[2] - log_ts[1]
+    ts = exp.(log_ts)
+    i = ceil(Int, (log(t_fit_start) - log_t_start) / d_log_t + 1) # t = e^(log(t_start) + (i - 1) * d_log_t)
+    x = @view(log_ts[i:end])
+    _smooth_x = [mean(x[k-window:k+window]) for k = 1 + window : length(x) - window]
+    ps = Float64[]
+    p_errs = Float64[]
+    param_guess = [1.0, 1.0]
+    @time for k = 1:nsamples
+        sys = coupled_fields(M, G, initial_ratio, H_start)
+        problem = ODEProblem(sys, (0.0, tmax))
+        sol = solve(problem, alg; saveat=ts, abstol=abstol, reltol=reltol)
+        orbit = Dataset(collect(sol.u))
+        _, _, _, total = calc_energies(sys, orbit)
+        y = log.(@view(total[i:end]))
+        smooth_y = [mean(y[k-window:k+window]) for k = 1 + window : length(x) - window]
+        mask = isfinite.(smooth_y)
+        smooth_x = _smooth_x[mask]
+        smooth_y = smooth_y[mask]
+        fit_res = curve_fit(model, smooth_x, smooth_y, param_guess)
+        param_guess = fit_res.param
+        p = 2*fit_res.param[1]
+        p_err = 2*sqrt(estimate_covar(fit_res)[1, 1])
+        push!(ps, p)
+        push!(p_errs, p_err)
+        if debug
+            plot(log.(ts), log.(total))
+            axvline(x[1], color="black")
+            plot(smooth_x, smooth_y)
+            plot(smooth_x, model(smooth_x, fit_res.param))
         end
-        push!(samples, orbit[end, 1])
+        initial_ratio = 1 + 1e-1*(2*rand() - 1)
     end
-    if plot_traj
-        xlabel("t")
-        ylabel("\$\\phi_1\$")
-        axhline(0.0, color="red")
-    end
-    if plot_hist
-        a, b = extrema(samples)
-        bins = a:(b - a)/num_bins:b
-        hist = normalize(fit(Histogram, samples, bins), mode=:pdf)
-        figure()
-        step(hist.edges[1][1:end-1], hist.weights)
-        xlabel("\$\\phi\$ final")
-    end
-    return hist, samples
+    p_err = max(sqrt(sum(p_errs.^2))/length(p_errs), nsamples == 1 ? -1 : std(ps))
+    p = mean(ps)
+    println("p = $p +/- $p_err")
+    return p, p_err
 end
 
+function plot_p_fits(G_range, p_list)
+    errorbar(G_range, [p[1] for p in p_list], yerr=[p[2] for p in p_list], capsize=3.0, fmt="x")
+    xscale("log")
+    xlabel("G")
+    ylabel("p")
+end
 
+function save_p_fits(G_range, p_list; filename="p_fits.dat")
+    writedlm(filename, [G_range [p[1] for p in p_list] [p[2] for p in p_list]])
+end
+
+########################################## chaos tests ####################################
+function lya_convergence(; M=1.0, G=1e6, initial_ratio=1 + 1e-2, H0=1e3, nsteps=50)
+    sys = coupled_fields(M, G, initial_ratio, H0)
+    lyapunov_spectra_steps, time = ChaosTools.lyapunovspectrum_convergence(sys, nsteps)
+    lambda_max = ChaosTools.lyapunov(sys, time[end])
+
+    figure()
+    for i = 1:length(sys.u0)
+        plot(time, [step[i] for step in lyapunov_spectra_steps], marker="o", label="\$\\lambda_$i\$")
+    end
+    axhline(0, color="black", label="0")
+    axhline(lambda_max, color="tab:blue", ls="--", label=raw"$\lambda_\mathrm{max}$")
+    legend(ncol=4)
+    xlabel("time step")
+    ylabel(raw"Lyapunov exponent, $\lambda_i$")
+    title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
+end
+
+function lya_G_dep(; M=1.0, initial_ratio=1 + 1e-2, H0=1e3, nsteps=50, G_range=10 .^ (-2:0.5:8), log_scale=true)
+    spectra = [lyapunovspectrum(coupled_fields(M, G, initial_ratio, H0), nsteps) for G in G_range]
+    chaos_start_index = findfirst(x -> x > 0, [spectrum[1] for spectrum in spectra])
+    figure()
+    for i = 1:length(spectra[1])
+        plot(G_range, [spectrum[i] for spectrum in spectra], label="\$\\lambda_$i\$")
+    end
+    plot(G_range, sum.(spectra), label="sum of lyapunov exponents", ls="--", color="red")
+    if chaos_start_index != nothing
+        axvline(G_range[chaos_start_index], color="black", ls="--", label="chaos start")
+    end
+    if log_scale
+        xscale("log")
+    end
+    axhline(0, color="black")
+    xlabel("G")
+    ylabel(raw"Lyapunov spectrum $\lambda_i$")
+    legend(ncol=2, framealpha=1)
+end
