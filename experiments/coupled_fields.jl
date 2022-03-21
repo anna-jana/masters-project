@@ -89,7 +89,7 @@ function compute_p(M, G;
         debug=false, nsamples=1, window=4, nsteps=200, initial_ratio=1 + 1e-2,
         H_start=1e2*M, H_fit_start=1e-1*M, H_end=1e-2*M,
         alg=SimpleATsit5(), reltol=1e-6, abstol=1e-6)
-    @show G
+    @show (G, M, initial_ratio, H_start)
     Random.seed!(42)
     tmax = H_to_t(H_end, H_start)
     t_fit_start = H_to_t(H_fit_start, H_start)
@@ -188,60 +188,112 @@ end
 
 ############################## oscillation start (first zero crossing) ############################
 function _find_H_osc(M, G, initial_ratio, H0, Hmax, divisions)
-    @show G
+    @show (G, M, initial_ratio, H0, Hmax)
     tmax = H_to_t(Hmax, H0)
     problem = ODEProblem(coupled_fields(M, G, initial_ratio, H0), (0, tmax))
     print("solving...")
-    sol = solve(problem, alg; settings..., maxiters=10^10)
+    sol = solve(problem, alg; settings..., saveat=tmax/(10*divisions), maxiters=10^10)
     println(" done!")
     root_fn1(t) = sol(t)[2]
     root_fn2(t) = sol(t)[4]
     dt = tmax / divisions
     for i = 1:divisions
-        @show i
         t_start = (i - 1)*dt
         t_end = i*dt
+        found1 = false
+        found2 = false
         # root of phi1
         if sign(root_fn1(t_start)) != sign(root_fn1(t_end))
             t_osc = find_zero(root_fn1, (t_start, t_end), Roots.A42())
-            H = sol(t_osc)[1]
-            return H
+            H1 = sol(t_osc)[1]
+            found1 = true
         end
         # root of phi2
         if sign(root_fn2(t_start)) != sign(root_fn2(t_end))
             t_osc = find_zero(root_fn2, (t_start, t_end), Roots.A42())
-            H = sol(t_osc)[1]
-            return H
+            H2 = sol(t_osc)[1]
+            found2 = true
+        end
+        # return the earlier one if both are found
+        if found1 && found2
+            return max(H1, H2)
+        elseif found1
+            return H1
+        elseif found2
+            return H2
         end
     end
     return nothing
 end
 
-function find_H_osc(M, G, initial_ratio, H0_start, Hmax_start, nmaxtrys, divisions, check_factor)
+function find_H_osc(M, G, initial_ratio;
+        H0_start=1e2*M, Hmax_start=M/4, nmaxtrys=100, divisions=1000, inc_factor=5, check_factor=5, epsilon=1e-2)
     Hmax = Hmax_start
     H0 = H0_start
     for i = 1:nmaxtrys
         H_osc = _find_H_osc(M, G, initial_ratio, H0, Hmax, divisions)
         if H_osc != nothing
-            H_osc_2 = _find_H_osc(M, G, initial_ratio, H0 * check_factor, Hmax, divisions)
-            return H_osc, H_osc_2
+            for j = i:nmaxtrys
+                H0 *= check_factor
+                next_H_osc = _find_H_osc(M, G, initial_ratio, H0, Hmax, divisions)
+                if next_H_osc == nothing
+                    return -H_osc
+                end
+                rel_change = abs(H_osc - next_H_osc) / next_H_osc
+                @show (H_osc, next_H_osc, rel_change, epsilon)
+                if rel_change < epsilon
+                    return next_H_osc
+                end
+                H_osc = next_H_osc
+            end
+            return NaN
         end
-        Hmax /= 10
-        H0 * 10
+        H0 *= inc_factor
+        Hmax /= inc_factor
     end
     return NaN
 end
 
-function plot_H_oscs(; M=1.0, initial_ratio=1.0 + 1e-2,
-        H0_start=1e3*M, Hmax_start=M/1e3, nmaxtrys=100, divisions=1000,
-        G_range=10 .^ (-2:0.05:7), check_factor=10, plot_second=true)
-    H_osc_list = find_H_osc.(M, G_range, initial_ratio, H0_start, Hmax_start, nmaxtrys, divisions)
-    l = plot(G_range, [pair[1] for pair in H_osc_list], label=raw"first $H_\mathrm{osc}$")
-    plot(G_range, [pair[2] for pair in H_osc_list], color=l[1].get_color(), ls="--", label=raw"second $H_\mathrm{osc}$")
-    xscale("log")
-    yscale("log")
-    xlabel("G")
-    ylabel(raw"$H_\mathrm{osc}$")
-    legend()
-    return H_osc_list
+G_range = (10 .^ (-2:0.2:6))
+initial_ratio_range = [1, 1 + 1e-2, 10, 100]
+M_range = [1e-2, 1e-1, 1, 10, 100]
+H_osc_filename(M, initial_ratio) = "coupled_fields_H_osc_M=$(M)_initial_ratio=$(initial_ratio).dat"
+
+function compute_H_osc()
+    @time for initial_ratio in initial_ratio_range
+        for M in M_range
+            H_osc_list = find_H_osc.(M, G_range, initial_ratio)
+            writedlm(H_osc_filename(M, initial_ratio), [G_range H_osc_list])
+        end
+    end
+end
+
+function plot_H_osc()
+    for (i, initial_ratio) in enumerate(initial_ratio_range)
+        subplot(2, 2, i)
+        title(@sprintf("\$\\phi_1 / \\phi_2\$ = %.2f", initial_ratio))
+        for M in M_range
+            try
+                data = readdlm(H_osc_filename(M, initial_ratio))
+                G_range, H_osc_list = data[:, 1], data[:, 2]
+                l = plot(G_range, abs.(H_osc_list), label=@sprintf("M = %.2f", M))
+                # plot(G_range, H_osc_list2, color=l[1].get_color(), ls="--")
+                xscale("log")
+                yscale("log")
+                xlabel("G")
+                ylabel(raw"$H_\mathrm{osc}$")
+                legend()
+            catch
+            end
+        end
+    end
+    tight_layout()
+end
+
+
+######################################### run all the things #####################################
+function main()
+    # TODO: fix all parameters we want to show and
+    compute_H_osc()
+    plot_H_osc()
 end
