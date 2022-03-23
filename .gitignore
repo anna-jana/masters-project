@@ -21,4 +21,4 @@ patras-workshop/
 *.bbl
 *.blg
 *.synctex.gz
-experiments/*.dat
+two_fields/*.dat
