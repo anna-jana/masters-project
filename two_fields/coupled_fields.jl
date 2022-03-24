@@ -247,88 +247,95 @@ function plot_H_osc(;n=2)
 end
 
 ############################## analysis of the energy scaling ##########################
-function find_p(M, G; debug=false, nsamples=1, window=4, nsteps=200)
-    @show (G, M)
-    Random.seed!(42)
-    ps = Float64[]
-    p_errs = Float64[]
-    param_guess = [1.0, 1.0]
-    @time for k = 1:nsamples
-        # random initial condition setup
-        initial_ratio = 1 + 1e-1*(2*rand() - 1)
-        println("sample: $k, initial_ratio: $initial_ratio")
-        # hubble scales
-        H0 = calc_H_osc_analytical(M, G, initial_ratio, 1/10)
-        H_fit_start = H0 / 10
-        H_end =  H0 / 1000
-        # log spaced a's
-        a_range = exp.(range(log(H_to_a(H0, H0)), log(H_to_a(H_end, H0)), length=nsteps))
-        # time steps
-        ts = a_to_t.(a_range, H0)
-        # fitting range
-        t_fit_start = H_to_t(H_fit_start, H0)
-        fit_start_index = findfirst(t -> t >= t_fit_start, ts)
-        @assert fit_start_index != nothing
-        # solve for the evolution
-        sys = coupled_fields(M, G, initial_ratio, H0)
-        problem = ODEProblem(sys, (ts[1], ts[end]))
-        sol = solve(problem, alg; saveat=ts, settings...)
-        # energy to fit
-        energy = calc_energy(sys, sol)
-        # prepare fitting data
-        @views smooth_y = [mean(log.(energy[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-        @views smooth_x = [mean(log.(a_range[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-        # FIXME: skip checking for invalid data for now ---> seems to be okay
-        # do the fit
-        fit_res = curve_fit(model, smooth_x, smooth_y, param_guess)
-        param_guess = fit_res.param
-        p = fit_res.param[1]
-        p_err = 2*sqrt(estimate_covar(fit_res)[1, 1])
-        push!(ps, p)
-        push!(p_errs, p_err)
-        # make debug plot
-        if debug
-            plot(log.(a_range), log.(energy))
-            axvline(smooth_x[1], color="black")
-            plot(smooth_x, smooth_y)
-            plot(smooth_x, model(smooth_x, fit_res.param))
-        end
+function find_p(M, G, initial_ratio, param_guess, debug; end_factor=1e3, start_factor=1e1)
+    # hubble scales
+    H0 = calc_H_osc_analytical(M, G, initial_ratio, 1/10)
+    H_fit_start = H0 / start_factor
+    H_end =  H0 / end_factor
+    # log spaced a's
+    nsteps = 200
+    a_range = exp.(range(log(H_to_a(H0, H0)), log(H_to_a(H_end, H0)), length=nsteps))
+    # time steps
+    ts = a_to_t.(a_range, H0)
+    # fitting range
+    t_fit_start = H_to_t(H_fit_start, H0)
+    fit_start_index = findfirst(t -> t >= t_fit_start, ts)
+    @assert fit_start_index != nothing
+    # solve for the evolution
+    sys = coupled_fields(M, G, initial_ratio, H0)
+    problem = ODEProblem(sys, (ts[1], ts[end]))
+    sol = solve(problem, alg; saveat=ts, settings...)
+    # energy to fit
+    energy = calc_energy(sys, sol)
+    # prepare fitting data
+    window = 4
+    @views smooth_y = [mean(log.(energy[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+    @views smooth_x = [mean(log.(a_range[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+    # FIXME: skip checking for invalid data for now ---> seems to be okay
+    # do the fit
+    fit_res = curve_fit(model, smooth_x, smooth_y, param_guess)
+    p = fit_res.param[1]
+    p_err = sqrt(estimate_covar(fit_res)[1, 1])
+    # make debug plot
+    if debug
+        figure()
+        plot(log.(a_range), log.(energy))
+        axvline(smooth_x[1], color="black")
+        plot(smooth_x, smooth_y)
+        plot(smooth_x, model(smooth_x, fit_res.param))
+        xlabel("log(a)")
+        ylabel("log(rho)")
+        title("M = $M, G = $G, initial_ratio = $initial_ratio")
     end
-    p_err = max(sqrt(sum(p_errs.^2))/length(p_errs), nsamples == 1 ? -1 : std(ps))
-    p = mean(ps)
-    println("p = $p +/- $p_err")
     return p, p_err
 end
 
-p_filename(M) = "p_fits_M=$M.dat"
+G_list_p = 10.0 .^ [-2, 0, 3, 6]
+M_list_p = 10.0 .^ [-2, -1, 1, 2]
+initial_ratio_list_p = 10.0 .^ (-4:0.05:6)
+p_filename(M, G) = "p_fit_M=$(M)_G=$(G).dat"
 
-function compute_p()
-    @time for M in M_range
-        p_list = find_p.(M, G_range; nsamples=100)
-        writedlm(p_filename(M), [G_range [p[1] for p in p_list] [p[2] for p in p_list]])
+function compute_p_fits()
+    @time for G in G_list_p
+        for M in M_list_p
+            p_list = find_p.(M, G, initial_ratio_list_p, Ref([1., 1.]), false)
+            writedlm(p_filename(M, G), [initial_ratio_list_p [x[1] for x in p_list] [x[2] for x in p_list]])
+        end
     end
 end
 
-function plot_p_fits()
-    for M in M_range
-        data = readdlm(p_filename(M))
-        G_range, ps, p_errs = data[:,1], data[:,2], data[:,3]
-        errorbar(G_range, ps, yerr=p_errs, capsize=3.0, fmt="-x", label="M = $M")
+function plot_p_fits(; errors=false)
+    figure()
+    i = 1
+    for (k2, G) in enumerate(G_list_p)
+        subplot(2, 2, k2)
+        for (k1, M) in enumerate(M_list_p)
+            data = readdlm(p_filename(M, G))
+            @views r, p, p_err = data[:,1], data[:,2], data[:,3]
+            if errors
+                errorbar(r, p, p_err, capsize=3.0, fmt="-", label="M = $M")
+            else
+                plot(r, p, label="M = $M")
+            end
+            i += 1
+        end
+        axhline(-3, label=k2 != 1 ? nothing : "matter", color="black", ls="--")
+        axhline(-4, label=k2 != 1 ? nothing : "radiation", color="black", ls=":")
+        axhline(0,  label=k2 != 1 ? nothing : "dark energy", color="black", ls="-")
+        xlabel("initial ratio")
+        ylabel("p")
+        xscale("log")
+        title("G = $G")
+        legend(ncol=2)
     end
-    axhline(-3, label="matter", color="black", ls="--")
-    axhline(-4, label="radiation", color="black", ls=":")
-    xscale("log")
-    xlabel("G")
-    ylabel("p")
-    legend()
+    tight_layout()
 end
-
 
 ######################################### run all the things #####################################
 function main()
     lya_G_dep()
     compute_H_osc()
     plot_H_osc()
-    compute_p()
+    compute_p_fits()
     plot_p_fits()
 end
