@@ -10,22 +10,22 @@ using Random
 using Roots
 
 ############################### background cosmology #########################
-const p = 2
+const q = 2
 const t0 = 0.0
 const a0 = 1.0
 
-H_to_t(H, H0) = 1/p*(1/H - 1/H0) + t0
-t_to_a(t, H0) = a0 * (p*H0*(t - t0) + 1)^(1/p)
-a_to_t(a, H0) = 1/(p*H0)*((a/a0)^p - 1) + t0
-H_to_a(H, H0) = a0 * (H0 / H)^(1/p)
+H_to_t(H, H0) = 1/q*(1/H - 1/H0) + t0
+t_to_a(t, H0) = a0 * (q*H0*(t - t0) + 1)^(1/q)
+a_to_t(a, H0) = 1/(q*H0)*((a/a0)^q - 1) + t0
+H_to_a(H, H0) = a0 * (H0 / H)^(1/q)
+a_to_H(a, H0) = H0 * (a / a0)^(- q)
 
 ################################ the model ##################################
-
 function coupled_fields_rhs(s, params, t)
     H, phi1, phi1_dot, phi2, phi2_dot = s
     M, G = params
     return SVector(
-        -p*H^2,
+        -q*H^2,
         phi1_dot,
         - 3*H*phi1_dot - G*phi1*phi2^2 - phi1,
         phi2_dot,
@@ -33,15 +33,13 @@ function coupled_fields_rhs(s, params, t)
     )
 end
 
-function coupled_fields(M, G, initial_ratio, H0)
-    initial = [H0, 1.0, 0.0, initial_ratio, 0.0]
-    return ContinuousDynamicalSystem(coupled_fields_rhs, initial, [M, G], t0=t0)
-end
+coupled_fields_from_initial(M, G, initial) = ContinuousDynamicalSystem(coupled_fields_rhs, initial, [M, G], t0=t0)
+make_initial(initial_ratio, H0) = [H0, 1.0, 0.0, initial_ratio, 0.0]
+coupled_fields(M, G, initial_ratio, H0) = coupled_fields_from_initial(M, G, make_initial(initial_ratio, H0))
 
 calc_pot(M, G, phi1, phi2) = G*phi1^2*phi2^2 + 0.5*phi1^2 + 0.5*M*phi2^2
 
-function calc_energy(sys, sol)
-    M, G = sys.p
+function calc_energy(M, G, sol)
     @views H, phi1, phi1_dot, phi2, phi2_dot = sol[1,:], sol[2,:], sol[3,:], sol[4,:], sol[5,:]
     return @. 0.5*phi1_dot^2 + 0.5*M*phi2_dot^2 + calc_pot.(M, G, phi1, phi2)
 end
@@ -51,7 +49,7 @@ calc_eff_masses(sys, sol) = @.(sol[4,:]^2 + 1), @.(sol[2,:]^2 + sys.p[1])
 model(x, p) = @. p[1] * x + p[2]
 
 const alg = AutoTsit5(Rosenbrock23())
-const settings = (reltol=1e-6, abstol=1e-6)
+const settings = (reltol=1e-6, abstol=1e-6, maxiters=10^15)
 
 G_range = (10 .^ (-2:0.2:6))
 initial_ratio_range = [1, 1 + 1e-2, 10, 100]
@@ -247,52 +245,118 @@ function plot_H_osc(;n=2)
 end
 
 ############################## analysis of the energy scaling ##########################
-function find_p(M, G, initial_ratio, param_guess, debug; end_factor=1e3, start_factor=1e1)
+function find_p(M, G, initial_ratio, param_guess, debug;
+        window = 4, nsteps=200, end_factor=1e3, start_factor=1e1, nattempts=50, required_oscs=20)
+    # an "oscillation" is actually only half an oscillation!!! :)
+    @show (M, G, initial_ratio)
     # hubble scales
     H0 = calc_H_osc_analytical(M, G, initial_ratio, 1/10)
-    H_fit_start = H0 / start_factor
     H_end =  H0 / end_factor
-    # log spaced a's
-    nsteps = 200
-    a_range = exp.(range(log(H_to_a(H0, H0)), log(H_to_a(H_end, H0)), length=nsteps))
-    # time steps
-    ts = a_to_t.(a_range, H0)
-    # fitting range
-    t_fit_start = H_to_t(H_fit_start, H0)
-    fit_start_index = findfirst(t -> t >= t_fit_start, ts)
-    @assert fit_start_index != nothing
-    # solve for the evolution
-    sys = coupled_fields(M, G, initial_ratio, H0)
-    problem = ODEProblem(sys, (ts[1], ts[end]))
-    sol = solve(problem, alg; saveat=ts, settings...)
-    # energy to fit
-    energy = calc_energy(sys, sol)
-    # prepare fitting data
-    window = 4
-    @views smooth_y = [mean(log.(energy[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-    @views smooth_x = [mean(log.(a_range[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-    # FIXME: skip checking for invalid data for now ---> seems to be okay
-    # do the fit
-    fit_res = curve_fit(model, smooth_x, smooth_y, param_guess)
-    p = fit_res.param[1]
-    p_err = sqrt(estimate_covar(fit_res)[1, 1])
-    # make debug plot
-    if debug
-        figure()
-        plot(log.(a_range), log.(energy))
-        axvline(smooth_x[1], color="black")
-        plot(smooth_x, smooth_y)
-        plot(smooth_x, model(smooth_x, fit_res.param))
-        xlabel("log(a)")
-        ylabel("log(rho)")
-        title("M = $M, G = $G, initial_ratio = $initial_ratio")
+    initial = make_initial(initial_ratio, H0)
+
+    roots1 = Int[]
+    roots2 = Int[]
+    sizehint!(roots1, required_oscs)
+    sizehint!(roots2, required_oscs)
+    nroots = -1
+
+    @time for attempt = 1:nattempts
+        # @show (attempt, H0, H_end)
+        #print(attempt, " ")
+        # log spaced a's
+        a_range = exp.(range(log(H_to_a(H0, H0)), log(H_to_a(H_end, H0)), length=nsteps))
+        # time steps
+        ts = a_to_t.(a_range, H0)
+        # solve for the evolution
+        problem = ODEProblem(coupled_fields_from_initial(M, G, initial), (ts[1], ts[end]))
+        sol = solve(problem, alg; saveat=ts, settings...)
+
+        # check for validity of the result
+        # search for roots
+        empty!(roots1)
+        empty!(roots2)
+        for i = 2:length(sol)
+            if sign(sol[2, i]) != sign(sol[2, i - 1])
+                push!(roots1, i)
+            end
+            if sign(sol[4, i]) != sign(sol[4, i - 1])
+                push!(roots2, i)
+            end
+        end
+        nroots = min(length(roots1), length(roots2))
+        print(nroots, " ")
+
+        if nroots < required_oscs # enough oscillations
+            # if no oscillation were found, then we can continue from the last timestep
+            if length(roots1) == 0 || length(roots2) == 0 # TODO: || or && ?
+                initial = sol.u[end]
+                H0 = sol[1, end]
+            end
+            # estimate the required integration time from the oscillation if they are at least two roots
+            period1 = -1.0
+            period2 = -1.0
+            if length(roots1) >= 2
+                period1 = ts[roots1[end]] - ts[roots1[end-1]]
+            end
+            if length(roots2) >= 2
+                period2 = ts[roots2[end]] - ts[roots2[end-1]]
+            end
+            period = max(period1, period2)
+            # extend the time integration
+            if period > 0.0
+                required_timespan_guess = required_oscs * period
+                H_end = a_to_H(t_to_a(required_timespan_guess, H0), H0)
+            else
+                H_end /= 5
+            end
+            # retry
+            continue
+        end
+
+        # energy to fit
+        energy = calc_energy(M, G, sol)
+        # prepare fitting data
+        fit_start_index = max(roots1[1], roots2[1]) # both fields should oscillate
+
+        # smoothed data for fitting
+        #@views fit_y = [mean(log.(energy[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+        #@views fit_x = [mean(log.(a_range[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+
+        # not smoothed
+        @views fit_y = log.(energy[fit_start_index:end])
+        @views fit_x = log.(a_range[fit_start_index:end])
+
+        # do the fit
+        fit_res = curve_fit(model, fit_x, fit_y, param_guess)
+        p = fit_res.param[1]
+        p_err = sqrt(estimate_covar(fit_res)[1, 1])
+
+        # make debug plot
+        if debug
+            figure()
+            subplot(2,1,1)
+            plot(log.(a_range), log.(energy))
+            axvline(ooth_x[1], color="black")
+            plot(fit_x, fit_y)
+            plot(fit_x, model(fit_x, fit_res.param))
+            xlabel("log(a)")
+            ylabel("log(rho)")
+            subplot(2,1,2)
+            plot(log.(a_range), sol[2, :])
+            plot(log.(a_range), sol[4, :])
+            suptitle("M = $M, G = $G, initial_ratio = $initial_ratio")
+            tight_layout()
+        end
+        println("")
+        return p, p_err # all step were successfull -> stop
     end
-    return p, p_err
+    println("")
+    return NaN, Float64(nroots)
 end
 
 G_list_p = 10.0 .^ [-2, 0, 3, 6]
 M_list_p = 10.0 .^ [-2, -1, 1, 2]
-initial_ratio_list_p = 10.0 .^ (-4:0.05:6)
+initial_ratio_list_p = 10.0 .^ (-4:0.1:5.0)
 p_filename(M, G) = "p_fit_M=$(M)_G=$(G).dat"
 
 function compute_p_fits()
@@ -321,7 +385,7 @@ function plot_p_fits(; errors=false)
         end
         axhline(-3, label=k2 != 1 ? nothing : "matter", color="black", ls="--")
         axhline(-4, label=k2 != 1 ? nothing : "radiation", color="black", ls=":")
-        axhline(0,  label=k2 != 1 ? nothing : "dark energy", color="black", ls="-")
+        # axhline(0,  label=k2 != 1 ? nothing : "dark energy", color="black", ls="-")
         xlabel("initial ratio")
         ylabel("p")
         xscale("log")
