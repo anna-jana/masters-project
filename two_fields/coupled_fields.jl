@@ -48,7 +48,8 @@ calc_eff_masses(sys, sol) = @.(sol[4,:]^2 + 1), @.(sol[2,:]^2 + sys.p[1])
 
 model(x, p) = @. p[1] * x + p[2]
 
-const alg = AutoTsit5(Rosenbrock23())
+const alg = TRBDF2()
+# const alg = AutoTsit5(Rosenbrock23())
 const settings = (reltol=1e-6, abstol=1e-6, maxiters=10^15)
 
 G_range = (10 .^ (-2:0.2:6))
@@ -246,8 +247,8 @@ end
 
 ############################## analysis of the energy scaling ##########################
 function find_p(M, G, initial_ratio, param_guess, debug;
-        window = 4, nsteps=200, end_factor=1e3, start_factor=1e1, nattempts=50, required_oscs=20)
-    # an "oscillation" is actually only half an oscillation!!! :)
+        window=4, nsteps=200, end_factor=1e3, start_factor=1e1, nattempts=50, required_oscs=30, required_peaks=10, inc_factor=10)
+    # NOTE: an "oscillation" is actually only half an oscillation!!! :D
     @show (M, G, initial_ratio)
     # hubble scales
     H0 = calc_H_osc_analytical(M, G, initial_ratio, 1/10)
@@ -260,9 +261,15 @@ function find_p(M, G, initial_ratio, param_guess, debug;
     sizehint!(roots2, required_oscs)
     nroots = -1
 
+    energy_so_far = calc_energy(M, G, initial)
+    a_so_far = Float64[a0]
+    ts_so_far = Float64[t0]
+    phi1_so_far = Float64[initial[2]]
+    phi2_so_far = Float64[initial[4]]
+
+    ncollected = 0
+
     @time for attempt = 1:nattempts
-        # @show (attempt, H0, H_end)
-        #print(attempt, " ")
         # log spaced a's
         a_range = exp.(range(log(H_to_a(H0, H0)), log(H_to_a(H_end, H0)), length=nsteps))
         # time steps
@@ -271,87 +278,105 @@ function find_p(M, G, initial_ratio, param_guess, debug;
         problem = ODEProblem(coupled_fields_from_initial(M, G, initial), (ts[1], ts[end]))
         sol = solve(problem, alg; saveat=ts, settings...)
 
-        # check for validity of the result
         # search for roots
-        empty!(roots1)
-        empty!(roots2)
         for i = 2:length(sol)
             if sign(sol[2, i]) != sign(sol[2, i - 1])
-                push!(roots1, i)
+                push!(roots1, i + ncollected - 1)
             end
             if sign(sol[4, i]) != sign(sol[4, i - 1])
-                push!(roots2, i)
+                push!(roots2, i + ncollected - 1)
             end
         end
         nroots = min(length(roots1), length(roots2))
-        print(nroots, " ")
+        print((length(roots1), length(roots2)), " ")
 
-        if nroots < required_oscs # enough oscillations
+        # this should be done if nroots < required_oscs or not
+        if nroots > 0 # if nroots > 0 once then it will be for all succeding iterations
+            energy = calc_energy(M, G, sol)
+            @views append!(energy_so_far, energy[2:end])
+            @views append!(a_so_far, a_so_far[end] .* a_range[2:end])
+            @views append!(ts_so_far, ts_so_far[end] .+ ts[2:end])
+            @views append!(phi1_so_far, sol[2, 2:end])
+            @views append!(phi2_so_far, sol[4, 2:end])
+            ncollected += length(energy) - 1
+        end
+
+        if nroots >= required_oscs # successfull fit
+            # energy to fit
+            # prepare fitting data
+            fit_start_index = max(roots1[1], roots2[1]) # both fields should oscillate
+
+            # smoothed data for fitting
+            #@views fit_y = [mean(log.(energy_so_far[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+            #@views fit_x = [mean(log.(a_so_far[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+
+            # not smoothed
+            #@views fit_y = log.(energy_so_far[fit_start_index:end])
+            #@views fit_x = log.(a_so_far[fit_start_index:end])
+
+            @views y = log.(energy_so_far[fit_start_index:end])
+            @views x = log.(a_so_far[fit_start_index:end])
+            fit_y = [y[i] for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
+            fit_x = [x[i] for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
+            if length(fit_y) < required_peaks
+                fit_y = y
+                fit_x = x
+            end
+
+
+            # do the fit
+            p = 100.0
+            p_err = 0.0
+            fit_res = nothing
+            try
+                fit_res = curve_fit(model, fit_x, fit_y, param_guess)
+                p = fit_res.param[1]
+                p_err = sqrt(estimate_covar(fit_res)[1, 1])
+            catch
+                return NaN, NaN
+            end
+
+            # make debug plot
+            if debug
+                figure()
+                subplot(2,1,1)
+                log_a  = log.(a_so_far)
+                plot(log_a, log.(energy_so_far))
+                axvline(fit_x[1], color="black")
+                plot(fit_x, fit_y)
+                plot(fit_x, model(fit_x, fit_res.param))
+                xlabel("log(a)")
+                ylabel("log(rho)")
+                subplot(2,1,2)
+                plot(log_a, phi1_so_far)
+                plot(log_a, phi2_so_far)
+                suptitle("M = $M, G = $G, initial_ratio = $initial_ratio")
+                tight_layout()
+            end
+            println("")
+            return p, p_err # all step were successfull -> stop
+        elseif length(roots1) == 0 || length(roots2) == 0 # no oscillations at all -> continue
+            initial = sol.u[end]
+            H0 = sol[1, end]
+            H_end /= inc_factor
+        elseif length(roots1) >= 2 && length(roots2) >= 2 # some oscillations
             # if no oscillation were found, then we can continue from the last timestep
-            if length(roots1) == 0 || length(roots2) == 0 # TODO: || or && ?
-                initial = sol.u[end]
-                H0 = sol[1, end]
-            end
             # estimate the required integration time from the oscillation if they are at least two roots
-            period1 = -1.0
-            period2 = -1.0
-            if length(roots1) >= 2
-                period1 = ts[roots1[end]] - ts[roots1[end-1]]
-            end
-            if length(roots2) >= 2
-                period2 = ts[roots2[end]] - ts[roots2[end-1]]
-            end
-            period = max(period1, period2)
+            period1 = ts_so_far[roots1[end]] - ts_so_far[roots1[end-1]]
+            period2 = ts_so_far[roots2[end]] - ts_so_far[roots2[end-1]]
             # extend the time integration
-            if period > 0.0
-                required_timespan_guess = required_oscs * period
-                H_end = a_to_H(t_to_a(required_timespan_guess, H0), H0)
-            else
-                H_end /= 5
-            end
-            # retry
-            continue
+            period = max(period1, period2)
+            required_timespan_guess = required_oscs * period
+            H_end = a_to_H(t_to_a(required_timespan_guess, H0), H0)
+            H0 = sol[1, end]
+            initial = sol.u[end]
+        else # a single oscillation
+            H_end /= inc_factor
+            initial = sol.u[end]
         end
-
-        # energy to fit
-        energy = calc_energy(M, G, sol)
-        # prepare fitting data
-        fit_start_index = max(roots1[1], roots2[1]) # both fields should oscillate
-
-        # smoothed data for fitting
-        #@views fit_y = [mean(log.(energy[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-        #@views fit_x = [mean(log.(a_range[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-
-        # not smoothed
-        @views fit_y = log.(energy[fit_start_index:end])
-        @views fit_x = log.(a_range[fit_start_index:end])
-
-        # do the fit
-        fit_res = curve_fit(model, fit_x, fit_y, param_guess)
-        p = fit_res.param[1]
-        p_err = sqrt(estimate_covar(fit_res)[1, 1])
-
-        # make debug plot
-        if debug
-            figure()
-            subplot(2,1,1)
-            plot(log.(a_range), log.(energy))
-            axvline(ooth_x[1], color="black")
-            plot(fit_x, fit_y)
-            plot(fit_x, model(fit_x, fit_res.param))
-            xlabel("log(a)")
-            ylabel("log(rho)")
-            subplot(2,1,2)
-            plot(log.(a_range), sol[2, :])
-            plot(log.(a_range), sol[4, :])
-            suptitle("M = $M, G = $G, initial_ratio = $initial_ratio")
-            tight_layout()
-        end
-        println("")
-        return p, p_err # all step were successfull -> stop
     end
     println("")
-    return NaN, Float64(nroots)
+    return NaN, NaN
 end
 
 G_list_p = 10.0 .^ [-2, 0, 3, 6]
