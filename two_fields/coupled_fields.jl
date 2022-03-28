@@ -246,11 +246,11 @@ function plot_H_osc(;n=2)
 end
 
 ############################## analysis of the energy scaling ##########################
-function find_p(M, G, initial_ratio, param_guess, debug;
-        window=4, nsteps=200, end_factor=1e3, start_factor=1e1, nattempts=50, required_oscs=30, required_peaks=10, inc_factor=10)
+function find_p(M, G, initial_ratio;
+        window=4, nsteps=200, end_factor=1e2, start_factor=1e3, nattempts=50,
+        required_oscs=20, required_peaks=10, inc_factor=10, debug=false)
     # NOTE: an "oscillation" is actually only half an oscillation!!! :D
     @show (M, G, initial_ratio)
-    # hubble scales
     H0 = calc_H_osc_analytical(M, G, initial_ratio, 1/10)
     H_end =  H0 / end_factor
     initial = make_initial(initial_ratio, H0)
@@ -259,7 +259,6 @@ function find_p(M, G, initial_ratio, param_guess, debug;
     roots2 = Int[]
     sizehint!(roots1, required_oscs)
     sizehint!(roots2, required_oscs)
-    nroots = -1
 
     energy_so_far = calc_energy(M, G, initial)
     a_so_far = Float64[a0]
@@ -270,6 +269,7 @@ function find_p(M, G, initial_ratio, param_guess, debug;
     ncollected = 0
 
     @time for attempt = 1:nattempts
+        @assert H0 > H_end
         # log spaced a's
         a_range = exp.(range(log(H_to_a(H0, H0)), log(H_to_a(H_end, H0)), length=nsteps))
         # time steps
@@ -301,39 +301,54 @@ function find_p(M, G, initial_ratio, param_guess, debug;
             ncollected += length(energy) - 1
         end
 
-        if nroots >= required_oscs # successfull fit
-            # energy to fit
-            # prepare fitting data
-            fit_start_index = max(roots1[1], roots2[1]) # both fields should oscillate
+        if nroots >= required_oscs # we found enough oscillations
+            best_p = NaN
+            best_p_err = Inf
+            best_fit_res = nothing
+            best_skip_oscs = -1
 
-            # smoothed data for fitting
-            #@views fit_y = [mean(log.(energy_so_far[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-            #@views fit_x = [mean(log.(a_so_far[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
-
-            # not smoothed
-            #@views fit_y = log.(energy_so_far[fit_start_index:end])
-            #@views fit_x = log.(a_so_far[fit_start_index:end])
-
-            @views y = log.(energy_so_far[fit_start_index:end])
-            @views x = log.(a_so_far[fit_start_index:end])
-            fit_y = [y[i] for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
-            fit_x = [x[i] for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
-            if length(fit_y) < required_peaks
-                fit_y = y
-                fit_x = x
+            function prepare_fiting_data(skip_oscs)
+                fit_start_index = max(roots1[skip_oscs + 1], roots2[skip_oscs + 1]) # both fields should oscillate
+                # prepare fitting data
+                # smoothed data for fitting
+                #@views fit_x = [mean(log.(a_so_far[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+                #@views fit_y = [mean(log.(energy_so_far[k-window:k+window])) for k = fit_start_index + window : nsteps - window]
+                # not smoothed
+                #@views fit_x = log.(a_so_far[fit_start_index:end])
+                #@views fit_y = log.(energy_so_far[fit_start_index:end])
+                @views x = log.(a_so_far[fit_start_index:end])
+                @views y = log.(energy_so_far[fit_start_index:end])
+                fit_x = [x[i] for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
+                fit_y = [y[i] for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
+                if length(fit_y) < required_peaks
+                    fit_x = x
+                    fit_y = y
+                end
+                return fit_x, fit_y
             end
 
-
-            # do the fit
-            p = 100.0
-            p_err = 0.0
-            fit_res = nothing
-            try
-                fit_res = curve_fit(model, fit_x, fit_y, param_guess)
-                p = fit_res.param[1]
-                p_err = sqrt(estimate_covar(fit_res)[1, 1])
-            catch
-                return NaN, NaN
+            param_guess = [1., 1.]
+            for skip_oscs = 0:required_oscs - 1
+                fit_x, fit_y = prepare_fiting_data(skip_oscs)
+                # do the fit
+                fit_res = nothing
+                p = NaN
+                try
+                    fit_res = curve_fit(model, fit_x, fit_y, param_guess)
+                    p = fit_res.param[1]
+                    param_guess = fit_res.param
+                catch
+                end
+                try
+                    p_err = sqrt(estimate_covar(fit_res)[1, 1])
+                    if p_err < best_p_err
+                        best_p = p
+                        best_p_err = p_err
+                        best_fit_res = fit_res
+                        best_skip_oscs = skip_oscs
+                    end
+                catch
+                end
             end
 
             # make debug plot
@@ -342,9 +357,9 @@ function find_p(M, G, initial_ratio, param_guess, debug;
                 subplot(2,1,1)
                 log_a  = log.(a_so_far)
                 plot(log_a, log.(energy_so_far))
-                axvline(fit_x[1], color="black")
+                fit_x, fit_y = prepare_fiting_data(best_skip_oscs)
                 plot(fit_x, fit_y)
-                plot(fit_x, model(fit_x, fit_res.param))
+                plot(fit_x, model(fit_x, best_fit_res.param))
                 xlabel("log(a)")
                 ylabel("log(rho)")
                 subplot(2,1,2)
@@ -353,12 +368,15 @@ function find_p(M, G, initial_ratio, param_guess, debug;
                 suptitle("M = $M, G = $G, initial_ratio = $initial_ratio")
                 tight_layout()
             end
+
             println("")
-            return p, p_err # all step were successfull -> stop
+            return best_p, best_p_err # all step were successfull -> stop
+
         elseif length(roots1) == 0 || length(roots2) == 0 # no oscillations at all -> continue
-            initial = sol.u[end]
             H0 = sol[1, end]
             H_end /= inc_factor
+            initial = sol.u[end]
+
         elseif length(roots1) >= 2 && length(roots2) >= 2 # some oscillations
             # if no oscillation were found, then we can continue from the last timestep
             # estimate the required integration time from the oscillation if they are at least two roots
@@ -367,14 +385,16 @@ function find_p(M, G, initial_ratio, param_guess, debug;
             # extend the time integration
             period = max(period1, period2)
             required_timespan_guess = required_oscs * period
-            H_end = a_to_H(t_to_a(required_timespan_guess, H0), H0)
             H0 = sol[1, end]
+            H_end = a_to_H(t_to_a(required_timespan_guess, H0), H0)
             initial = sol.u[end]
-        else # a single oscillation
+
+        else # a single oscillation in one of the fields
             H_end /= inc_factor
             initial = sol.u[end]
         end
     end
+
     println("")
     return NaN, NaN
 end
@@ -384,10 +404,10 @@ M_list_p = 10.0 .^ [-2, -1, 1, 2]
 initial_ratio_list_p = 10.0 .^ (-4:0.1:5.0)
 p_filename(M, G) = "p_fit_M=$(M)_G=$(G).dat"
 
-function compute_p_fits()
+function compute_p_fits(;args...)
     @time for G in G_list_p
         for M in M_list_p
-            p_list = find_p.(M, G, initial_ratio_list_p, Ref([1., 1.]), false)
+            p_list = find_p.(M, G, initial_ratio_list_p; args...)
             writedlm(p_filename(M, G), [initial_ratio_list_p [x[1] for x in p_list] [x[2] for x in p_list]])
         end
     end
