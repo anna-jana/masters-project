@@ -3,6 +3,8 @@ include("coupled_fields.jl")
 find_local_peaks(y) = [i for i = 2:length(y)-1 if y[i-1] < y[i] > y[i+1]]
 
 ############################## analysis of the energy scaling ##########################
+model(x, p) = @. p[1] * x + p[2]
+
 function find_p(M, G, initial_ratio;
         window=4, nsteps=200, end_factor=1e2, start_factor=1e3, nattempts=50,
         required_oscs=20, required_peaks=10, inc_factor=10, debug=false)
@@ -87,7 +89,7 @@ function find_p(M, G, initial_ratio;
             end
 
             param_guess = [1., 1.]
-            for skip_oscs = 0:required_oscs - 1
+            for skip_oscs = 0:nroots - 4
                 fit_x, fit_y = prepare_fiting_data(skip_oscs)
                 # do the fit
                 fit_res = nothing
@@ -192,7 +194,6 @@ function plot_p_fits(; errors=false)
         end
         axhline(-3, label="matter", color="black", ls="--")
         axhline(-4, label="radiation", color="black", ls=":")
-        # axhline(0,  label=k2 != 1 ? nothing : "dark energy", color="black", ls="-")
         xlabel("initial ratio")
         ylabel("p")
         xscale("log")

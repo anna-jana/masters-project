@@ -90,6 +90,10 @@ end
 
 H_osc_filename(M, initial_ratio) = "coupled_fields_H_osc_M=$(M)_initial_ratio=$(initial_ratio).dat"
 
+G_range = (10 .^ (-2:0.2:6))
+initial_ratio_range = [1, 1 + 1e-2, 10, 100]
+M_range = [1e-2, 1e-1, 1, 10, 100]
+
 function compute_H_osc()
     @time for initial_ratio in initial_ratio_range
         for M in M_range
@@ -125,4 +129,31 @@ function plot_H_osc(;n=1/6)
     end
     tight_layout()
     savefig("H_osc_plots.pdf")
+end
+
+function plot_n()
+    figure(figsize=(10,5))
+    for (i, initial_ratio) in enumerate(initial_ratio_range)
+        subplot(2, 2, i)
+        title(@sprintf("\$\\phi_1 / \\phi_2\$ = %.2f", initial_ratio))
+        for (j, M) in enumerate(M_range)
+            try
+                data = readdlm(H_osc_filename(M, initial_ratio))
+                G_range, H_osc_list = data[:, 1], data[:, 2]
+                H_osc_analytical = calc_H_osc_analytical.(M, G_range, initial_ratio, 1)
+                n = H_osc_list ./ H_osc_analytical
+                plot(G_range, n, label=@sprintf("M = %.2f", M))
+            catch
+            end
+        end
+        xscale("log")
+        #yscale("log")
+        xlabel("G")
+        ylabel("n") # raw"$n = H_\mathrm{osc,numerical} / H_\mathrm{osc,analytical}$")
+        if i == 1
+            legend(ncol=2)
+        end
+    end
+    tight_layout()
+    savefig("n_H_osc_plots.pdf")
 end

@@ -46,15 +46,8 @@ end
 
 calc_eff_masses(sys, sol) = @.(sol[4,:]^2 + 1), @.(sol[2,:]^2 + sys.p[1])
 
-model(x, p) = @. p[1] * x + p[2]
-
 const alg = TRBDF2()
-# const alg = AutoTsit5(Rosenbrock23())
 const settings = (reltol=1e-6, abstol=1e-6, maxiters=10^15)
-
-G_range = (10 .^ (-2:0.2:6))
-initial_ratio_range = [1, 1 + 1e-2, 10, 100]
-M_range = [1e-2, 1e-1, 1, 10, 100]
 
 ######################## plot trajectories and phasespace projections ###################
 function plot_evolution(M, G, initial_ratio, H0; nsteps=1000, H_end=M/3)
