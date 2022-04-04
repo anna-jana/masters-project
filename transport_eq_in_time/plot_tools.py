@@ -37,11 +37,6 @@ def plot(ress, filename=None, m_a=None, H_inf=None, Gamma_phi=None, digits=1, ti
     ax_sec.set_ylabel(r"$\dot{\theta} / T \cdot " + latex_exponential_notation(source_scale, 2) + "$", fontsize=fs)
     ax_sec.set_xscale("log")
 
-    # legend for the main plot
-    lines = [l1, l3]
-    labels = [l.get_label() for l in lines]
-    ax1.legend(lines, labels, framealpha=1, fontsize=fs - 2) # loc="center left"
-
     # plot the temperature evolution in a second subfigure on the top
     for i, res in enumerate(ress):
         ax2.loglog(res.t, res.T_fn(res.t), color="tab:blue")
@@ -103,6 +98,11 @@ def plot(ress, filename=None, m_a=None, H_inf=None, Gamma_phi=None, digits=1, ti
             fig.suptitle(f"${title_string}$", fontsize=fs + 1, y=1.0002)
     else:
         plt.title(title)
+
+    # legend for the main plot
+    lines = [l1, l3]
+    labels = [l.get_label() for l in lines]
+    ax1.legend(lines, labels, framealpha=1, fontsize=fs - 2) # loc="center left"
 
     ax1.tick_params(labelsize=fs)
     ax2.tick_params(labelsize=fs)

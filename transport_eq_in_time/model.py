@@ -1,7 +1,6 @@
 from collections import namedtuple
-
+import time
 import numpy as np
-
 import axion_motion
 import transport_equation
 import axion_decay
@@ -21,6 +20,7 @@ AxionBaryogenesisModel = namedtuple("AxionBaryogenesisModel",
          "get_axion_source", # function to transform the field solution to the source term in the transport equation
          "axion_rhs", "calc_axion_mass", "axion_parameter", "axion_initial", # axion potential
          "Gamma_phi", "H_inf", # inflation model
+         "axion_in_log_space", # is the integration of the axion field eq. in log t or t? log t -> clockwork, t -> normal, two field
          ])
 
 # the state of the system at one point and the next time to integrate to
@@ -34,20 +34,28 @@ num_osc = 1
 num_osc_step = 20
 axion_solver = "RK45"
 
-def evolve(model, state):
+def evolve(model, state, debug=False):
     """
     Simulate the system with the model `model` from an initial state `state`.
     """
     # solve reheating
+    start_time = time.time()
     T_fn, H_fn, T_dot_fn, rh_final = \
             reheating.solve_reheating_eq(state.t_start, state.t_end, state.initial_reheating, model.Gamma_phi)
+    end_reheating = time.time()
     # solve axion
     axion_fn = axion_motion.solve_axion_motion(model.axion_rhs, state.initial_axion, state.t_start, state.t_end,
-            T_fn, H_fn, model.axion_parameter, rtol_axion, axion_solver)
+            T_fn, H_fn, model.axion_parameter, rtol_axion, axion_solver, model.axion_in_log_space)
     axion_source = model.get_axion_source(axion_fn, model.axion_parameter)
+    end_axion = time.time()
     # solve transport equation
     ts, red_chem_pots = transport_equation.solve_transport_eq(state.t_start, state.t_end, state.initial_transport_eq,
             rtol_transport_eq, T_fn, H_fn, T_dot_fn, axion_source, model.source_vector)
+    end_transport_eq = time.time()
+    if debug:
+        print("reheating time:", end_reheating - start_time)
+        print("axion time:",  end_axion - end_reheating)
+        print("transport eq time:", end_transport_eq - end_axion)
     # create result
     return Result(t=ts, red_chem_pots=red_chem_pots, T_fn=T_fn, rh_final=rh_final,
             red_chem_B_minus_L=transport_equation.calc_B_minus_L(red_chem_pots), axion_fn=axion_fn)
@@ -55,24 +63,27 @@ def evolve(model, state):
 # list of the equilibration temperatures
 T_eqs = [transport_equation.eqi_temp(alpha) for alpha in range(transport_equation.N_alpha)]
 
-def calc_t_end(calc_axion_mass, axion_parameter, t_end, Gamma_phi, H_inf):
+def calc_t_end(calc_axion_mass, axion_parameter, Gamma_phi, H_inf_in_GeV):
     """
-    calculate our guess for the end of the leptogenesis process. Return t_end is it is not None.
+    calculate our guess for the end of the leptogenesis process.
     """
-    if t_end is not None:
-        return t_end
-    T_RH = cosmology.calc_reheating_temperature(Gamma_phi)
-    T_end = min(T_RH, T_eqs[-1])
+    M_pl = constants.M_pl / H_inf_in_GeV
+    reheating_const = (45*M_pl**2/constants.g_star)**(1/4)
+    T_RH = reheating_const * np.sqrt(Gamma_phi)
+
+    T_eq_Weinberg = T_eqs[-1]
+
+    T_end = min(T_RH, T_eq_Weinberg)
     H_end = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T_end))
     t_end = 1 / H_end
     return t_end
 
-def start(model, t_end):
+def start(model, t_end, debug=False):
     """
     setup the intitial state of the simulation
     """
     t_start, rh_initial = reheating.calc_initial_reheating(model.H_inf)
-    t_end = calc_t_end(model.calc_axion_mass, model.axion_parameter, t_end, model.Gamma_phi, model.H_inf)
+    t_end = t_end if t_end is not None else calc_t_end(model.calc_axion_mass, model.axion_parameter, model.Gamma_phi, model.H_inf)
     transport_eq_initial = np.zeros(transport_equation.N)
     state = SimulationState(
         initial_reheating = rh_initial,
@@ -81,7 +92,7 @@ def start(model, t_end):
         t_start = t_start,
         t_end   = t_end,
     )
-    return evolve(model, state)
+    return evolve(model, state, debug=debug)
 
 def calc_next_t(calc_axion_mass, axion_parameter, t, T, number_of_oscillations):
     """
@@ -127,7 +138,7 @@ def solve(model, t_end=None, converge=True, debug=False, collect=False):
     """
     Solve the baryogenesis model
     """
-    result = start(model, t_end)
+    result = start(model, t_end, debug=debug)
     if collect:
         steps = []
     while not done(result, debug):
@@ -138,7 +149,7 @@ def solve(model, t_end=None, converge=True, debug=False, collect=False):
         state = restart(result, model.calc_axion_mass, model.axion_parameter)
         if debug:
             print("state:", state)
-        result = evolve(model, state)
+        result = evolve(model, state, debug=debug)
     if collect:
         steps.append(result)
         return steps
@@ -150,7 +161,7 @@ def solve(model, t_end=None, converge=True, debug=False, collect=False):
 
 def compute_final_asymmetry(model, red_chem_pot_B_minus_L, T, axion, axion_decay_rate, f_a):
     if axion_decay_rate != 0:
-        m_a = model.calc_axion_mass(T, *model.axion_parameter) # NOTE: this is not 100% correct
+        m_a = model.calc_axion_mass(T, *model.axion_parameter) # FIXME: this is not 100% correct
         theta, theta_dot = axion[:2]
         eta_B = axion_decay.compute_axion_decay(T, red_chem_pot_B_minus_L, theta, theta_dot, m_a, f_a, axion_decay_rate)
     else:

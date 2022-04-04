@@ -67,7 +67,7 @@ def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
         plt.loglog(t, T_fn(t))
         plt.ylabel("T / GeV")
         plt.subplot(2,1,2)
-        plt.loglog(t, H_fn(t), label="numerical")
+        plt.loglog(t, H_fn(t), label="rh. numerical")
         plt.loglog(t, 1.0 / (2*((t - t0) / decay_const) + 1/H_fn(t0)), label="rad. dom.")
         plt.ylabel("H / GeV")
         plt.xlabel(r"$t \cdot \Gamma$")
@@ -85,6 +85,7 @@ def find_dilution_factor(sol, T_fn, debug=False):
         plt.axhline(dilution_factor[0], color="black", ls="--")
         plt.axhline(dilution_factor[-1], color="black", ls="--")
         plt.loglog(t, dilution_factor)
+        print(dilution_factor)
         plt.xlabel(r"$t \cdot \Gamma$")
         plt.ylabel(r"dilution factor $(T(t_0) a(t_0) / T(t) a(t))^3$")
         return dilution_factor[-1]
@@ -95,9 +96,10 @@ def find_dilution_factor(sol, T_fn, debug=False):
         a_ad = np.exp(sol.sol(sol.t[-1])[0])
         return ((T_s * a_s) / (T_ad * a_ad))**3
 
+# find_dilution_factor(sol, T_fn, debug=True)
+
 def test(H0, Gamma_phi, time=10.0):
     rho0 = 3*M_pl**2*H0**2
     sol = solve_decay_eqs(time, 0.0, rho0, Gamma_phi, debug=True)
     T_fn, H_fn = to_temperature_and_hubble_fns(sol, rho0, Gamma_phi, debug=True)
-    # find_dilution_factor(sol, T_fn, debug=True)
     plt.show()
