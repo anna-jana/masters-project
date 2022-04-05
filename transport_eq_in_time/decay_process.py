@@ -17,8 +17,6 @@ def decay_rhs(log_t, u, C):
 def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=False):
     init_y = (init_rho_rad + init_rho_field) / init_rho_field
     C = np.sqrt(init_rho_field) / (np.sqrt(3) * M_pl * decay_const)
-    if debug:
-        print("C =", C)
     tspan = (np.log(t0), np.log(t0 + trange))
     sol = solve_ivp(decay_rhs, tspan, (0.0, np.log(init_y)), args=(C,), dense_output=True, method="BDF")
     assert sol.success
@@ -27,18 +25,20 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
         t_prime = np.exp(log_t)
         a, y = np.exp(sol.sol(log_t))
         x = np.exp(- (t_prime - t0))
-        rho_a_prime = a**(-3) * x
+        rho_phi_prime = a**(-3) * x
         rho_R_prime = a**(-4) * (y - x)
         plt.figure()
         plt.subplot(2,1,1)
         plt.axvline(t0 + 1.0, color="black", ls="--", label="decay time")
-        plt.loglog(t_prime, rho_a_prime, label=r"field")
+        plt.loglog(t_prime, rho_phi_prime, label=r"field")
         plt.loglog(t_prime, rho_R_prime, label=r"radiation")
         plt.xlabel(r"$t \cdot \Gamma_a$")
-        plt.ylabel(r"$\rho / \rho_a(t_0)$")
+        plt.ylabel(r"$\rho / \rho_phi(t_0)$")
+        plt.ylim(1e-15, 1e1)
         plt.legend(framealpha=1.0)
+
         plt.subplot(2,1,2)
-        plt.loglog(t_prime, a)
+        plt.loglog(t_prime, a, label="numerical rh")
         plt.xlabel(r"$t \cdot \Gamma_a$")
         plt.ylabel("a")
         plt.tight_layout()
@@ -46,33 +46,44 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
 
 def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
     T_const = (rho0 / np.pi**2 / 30 * g_star)**(1/4)
-    def T_fn(t_prime):
-        a, y = np.exp(sol.sol(np.log(t_prime)))
-        x = np.exp(- (t_prime - t0))
-        rho_R_prime = a**(-4) * (y - x)
-        return T_const * rho_R_prime**(1/4)
     H_const = np.sqrt(rho0) / (np.sqrt(3) * M_pl)
-    def H_fn(t_prime):
+
+    def _helper(t_prime):
         a, y = np.exp(sol.sol(np.log(t_prime)))
         x = np.exp(- (t_prime - t0))
-        rho_a_prime = a**(-3) * x
+        rho_phi_prime = a**(-3) * x
         rho_R_prime = a**(-4) * (y - x)
-        return H_const * np.sqrt(rho_R_prime + rho_a_prime)
+        T = T_const * rho_R_prime**(1/4)
+        H = H_const * np.sqrt(rho_R_prime + rho_phi_prime)
+        return rho_phi_prime, rho_R_prime, T, H
+
+    def T_and_H_fn(t_prime):
+        _, _, T, H = _helper(t_prime)
+        return T, H
+
+    def T_and_H_and_T_dot_fn(t_prime):
+        rho_phi_prime, rho_R_prime, T, H = _helper(t_prime)
+        T_dot = np.where(T == 0, np.inf,
+                rho0 * (decay_const * rho_phi_prime - 4*H*rho_R_prime) / (np.pi**2/30*g_star * 4 * T**3))
+        return T, H, T_dot
+
     if debug:
         t = np.exp(np.linspace(sol.t[0], sol.t[-1], 400))
         plt.figure()
         plt.subplot(2,1,1)
-        reheating_const = (45*M_pl**2/g_star)**(1/4)
-        T_RH = reheating_const * np.sqrt(decay_const)
-        plt.loglog(t, T_fn(t))
+        T_RH = (45*M_pl**2/g_star)**(1/4) * np.sqrt(decay_const)
+        T, H = T_and_H_fn(t)
+        plt.loglog(t, T)
         plt.ylabel("T / GeV")
         plt.subplot(2,1,2)
-        plt.loglog(t, H_fn(t), label="rh. numerical")
-        plt.loglog(t, 1.0 / (2*((t - t0) / decay_const) + 1/H_fn(t0)), label="rad. dom.")
+        plt.loglog(t, H, label="rh. numerical")
+        plt.loglog(t, 1.0 / (2*((t - t0) / decay_const) + 1/T_and_H_fn(t0)[1]), label="rad. dom.")
         plt.ylabel("H / GeV")
         plt.xlabel(r"$t \cdot \Gamma$")
+        plt.legend()
         plt.tight_layout()
-    return T_fn, H_fn
+
+    return T_and_H_fn, T_and_H_and_T_dot_fn
 
 def find_dilution_factor(sol, T_fn, debug=False):
     if debug:
@@ -97,9 +108,3 @@ def find_dilution_factor(sol, T_fn, debug=False):
         return ((T_s * a_s) / (T_ad * a_ad))**3
 
 # find_dilution_factor(sol, T_fn, debug=True)
-
-def test(H0, Gamma_phi, time=10.0):
-    rho0 = 3*M_pl**2*H0**2
-    sol = solve_decay_eqs(time, 0.0, rho0, Gamma_phi, debug=True)
-    T_fn, H_fn = to_temperature_and_hubble_fns(sol, rho0, Gamma_phi, debug=True)
-    plt.show()

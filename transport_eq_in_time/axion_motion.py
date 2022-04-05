@@ -1,14 +1,16 @@
+import importlib
 import numpy as np, matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from scipy.optimize import root
 import decay_process
+decay_process = importlib.reload(decay_process)
 
 # temperature is in GeV
 # axion time scale: 1 / m_a(T_osc)
 def make_single_field_rhs(calc_pot_deriv):
-    def rhs(t, y, H_fn, T_fn, m_a_osc, axion_parameter):
+    def rhs(t, y, T_and_H_fn, m_a_osc, axion_parameter):
         theta, theta_dot = y
-        H, T = H_fn(t), T_fn(t)
+        T, H = T_and_H_fn(t) #T_and_H_fn has been transformed to take axion time
         return (theta_dot, - 3*H/m_a_osc*theta_dot - calc_pot_deriv(theta, T, *axion_parameter) / m_a_osc**2)
     return rhs
 
@@ -30,11 +32,10 @@ def calc_axion_timescale(calc_axion_mass, axion_parameter, Gamma_phi):
     conv_factor = Gamma_phi / m_a_osc
     return m_a_osc, conv_factor
 
-def solve(rhs, axion_init, calc_axion_mass, axion_parameter, tmax_axion_time, H_fn, T_fn, Gamma_phi, debug=False):
+def solve(rhs, axion_init, calc_axion_mass, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_phi, debug=False):
     m_a_osc, conv_factor = calc_axion_timescale(calc_axion_mass, axion_parameter, Gamma_phi)
     sol = solve_ivp(rhs, (0.0, tmax_axion_time), axion_init,
-            args=(lambda t: H_fn(conv_factor * t + decay_process.t0), lambda t: T_fn(conv_factor * t + decay_process.t0),
-                m_a_osc, axion_parameter),
+            args=(lambda t: T_and_H_fn(conv_factor * t + decay_process.t0), m_a_osc, axion_parameter),
             dense_output=True, rtol=1e-6, method="BDF")
     assert sol.success
     if debug:
@@ -48,14 +49,8 @@ def solve(rhs, axion_init, calc_axion_mass, axion_parameter, tmax_axion_time, H_
         plt.ylabel(r"$\theta$")
     return sol
 
-def test(H_inf, Gamma_phi, m_a, tmax_axion_time=10.0):
-    axion_parameter = (m_a,)
-    calc_axion_mass = lambda T, m_a: m_a
-    rho0 = 3*decay_process.M_pl**2*H_inf**2
-    m_a_osc, conv_factor = calc_axion_timescale(calc_axion_mass, axion_parameter, Gamma_phi)
-    sol_rh = decay_process.solve_decay_eqs(tmax_axion_time * conv_factor, 0.0, rho0, Gamma_phi)
-    T_fn, H_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho0, Gamma_phi, debug=True)
-    sol_axion = solve(make_single_field_rhs(lambda theta, T, m_a: m_a**2*theta),
-            (1.0, 0.0), calc_axion_mass, axion_parameter, tmax_axion_time, H_fn, T_fn, Gamma_phi, debug=True)
-    plt.show()
-
+def get_axion_source_single_field(sol, conv_factor):
+    def source(t_inf):
+        theta, theta_dot = sol.sol((t_inf - decay_process.t0) / conv_factor)
+        return theta_dot / conv_factor
+    return source
