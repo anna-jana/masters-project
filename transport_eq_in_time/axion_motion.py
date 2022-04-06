@@ -36,7 +36,7 @@ def solve(rhs, axion_init, calc_axion_mass, axion_parameter, tmax_axion_time, T_
     m_a_osc, conv_factor = calc_axion_timescale(calc_axion_mass, axion_parameter, Gamma_phi)
     sol = solve_ivp(rhs, (0.0, tmax_axion_time), axion_init,
             args=(lambda t: T_and_H_fn(conv_factor * t + decay_process.t0), m_a_osc, axion_parameter),
-            dense_output=True, rtol=1e-6, method="BDF")
+            dense_output=True, rtol=1e-6, method="LSODA")
     assert sol.success
     if debug:
         plt.figure()

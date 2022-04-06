@@ -1,5 +1,7 @@
 import numpy as np, matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
+from scipy.optimize import root
+import sympy as sp
 
 t0 = 1.0
 M_pl = 2.435e18 # reduced Planck mass [GeV] from wikipedia (https://en.wikipedia.org/wiki/Planck_mass)
@@ -14,11 +16,32 @@ def decay_rhs(log_t, u, C):
     a_dot = C / a * np.sqrt(y + y_dot)
     return (t / a * a_dot, t / y * y_dot)
 
+def calc_decay_jac():
+    a, y, ln_a, ln_y, t, t0, C = sp.symbols("a, y, ln_a, ln_y, t, t0, C")
+    f1 = t / sp.exp(ln_y) * (sp.exp(ln_a) - 1)*sp.exp(-(t - t0))
+    f2 = t*C*sp.exp(-2*ln_a)*sp.sqrt(sp.exp(ln_y) + (sp.exp(ln_a) - 1)*sp.exp(-(t - t0)))
+    jac = [[sp.diff(f, var).subs(ln_a, sp.log(a)).subs(ln_y, sp.log(y)).simplify()
+        for var in [ln_a, ln_y]] for f in [f1, f2]]
+    sp.pprint_try_use_unicode()
+    sp.pprint(jac)
+    print(jac)
+
+def decay_jac(log_t, u, C):
+    a, y = np.exp(u)
+    t = np.exp(log_t)
+    x = exp(-t + t0)
+    A1 = t*x/y
+    A2 = C*t / (2*a**2*sqrt(y + (a - 1)*x))
+    return np.array((
+        (a*A1, -(a - 1)*A1),
+        ((a*x - 4*(y - (a - 1)*x))*A2, y*A2)
+    ))
+
 def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=False):
     init_y = (init_rho_rad + init_rho_field) / init_rho_field
     C = np.sqrt(init_rho_field) / (np.sqrt(3) * M_pl * decay_const)
     tspan = (np.log(t0), np.log(t0 + trange))
-    sol = solve_ivp(decay_rhs, tspan, (0.0, np.log(init_y)), args=(C,), dense_output=True, method="BDF")
+    sol = solve_ivp(decay_rhs, tspan, (0.0, np.log(init_y)), args=(C,), dense_output=True, rtol=1e-6, method="LSODA", jac=decay_jac)
     assert sol.success
     if debug:
         log_t = np.linspace(*tspan, 400)
@@ -42,6 +65,18 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
         plt.xlabel(r"$t \cdot \Gamma_a$")
         plt.ylabel("a")
         plt.tight_layout()
+
+        plt.figure()
+        plt.subplot(2,1,1)
+        plt.plot(log_t, np.log(a), ".-")
+        plt.xlabel("log(t * Gamma_inf)")
+        plt.ylabel("log(a)")
+        plt.subplot(2,1,2)
+        plt.plot(log_t, np.log(y), ".-")
+        plt.xlabel("log(t * Gamma_inf)")
+        plt.ylabel("log(y)")
+        plt.tight_layout()
+
     return sol
 
 def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
@@ -84,6 +119,11 @@ def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
         plt.tight_layout()
 
     return T_and_H_fn, T_and_H_and_T_dot_fn
+
+def T_to_t(T, T_fn, T_end):
+    goal_fn = lambda t: T_fn(t) / T - 1
+    sol = root(goal_fn, T_end)
+    return sol.x[0] if sol.success else np.nan
 
 def find_dilution_factor(sol, T_fn, debug=False):
     if debug:

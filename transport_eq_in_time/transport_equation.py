@@ -1,7 +1,7 @@
 # Based on https://arxiv.org/abs/2006.03148 for B - L (Lepto)genesis
 # Warning: for different epoch (e.g. electroweak phasetransition) change numbers!
 
-import sys, time, importlib
+import time, importlib
 import numpy as np, matplotlib.pyplot as plt
 from scipy.optimize import root_scalar
 from scipy.interpolate import interp1d
@@ -9,9 +9,6 @@ from scipy.integrate import solve_ivp
 import decay_process, axion_motion
 decay_process = importlib.reload(decay_process)
 axion_motion = importlib.reload(axion_motion)
-
-if ".." not in sys.path: sys.path.append("..")
-from common import cosmology
 
 ############# Rates for Different Processes ############
 
@@ -65,14 +62,15 @@ def calc_rate_vector(T, unit=1.0):
     return np.array((ws_rate, ss_rate, Y_tau_rate, Y_top_rate, Y_bottom_rate, W_12, W_3))
 
 ######### calc the equilibration (freezeout) temperatures of the processes #########
-def eqi_temp(alpha, low=1e10, high=1e16):
+def calc_eqi_temp(alpha, low=1e10, high=1e16):
+    H_const = np.pi/decay_process.M_pl*np.sqrt(decay_process.g_star)
     def goal_fn(T):
         gamma = calc_rate_vector(T)[alpha]
         expr = np.sum(charge_vector[alpha, :]**2 / dofs * gamma)
         # not FIXME: this is not right (we are not always in rad dom)
         # this is not too problematic as the important result do not depend on this
         # also otherwise this depends on the exact reheating process -> depends on H_inf, Gamma_inf
-        H = cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T))
+        H = H_const * T**2
         return expr / H - 1
     try:
         sol = root_scalar(goal_fn, bracket=(high, low), rtol=1e-10, xtol=1e-10)
@@ -180,7 +178,7 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
     ts_inf = np.geomspace(decay_process.t0, decay_process.t0 + t_inf_time, 100)
     theta_dot = axion_source(ts_inf[1:])
     T, _, _ = T_and_H_and_T_dot_fn(ts_inf) # T is in GeV
-    source = theta_dot / (T[1:] * conv_factor)
+    source = theta_dot / (T[1:] / Gamma_inf)
     b = M_inv @ np.hstack([source_vector, np.zeros(N_A)])
     red_chem_pots_eq = source[None, :] * b[:, None]
     units = np.max(red_chem_pots_eq, axis=1)
@@ -191,6 +189,7 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
             args=(T_and_H_and_T_dot_fn, axion_source, source_vector, unit, Gamma_inf))
     if debug:
         plt.figure()
+        t_W = decay_process.T_to_t(T_equis[-2], lambda t: T_and_H_and_T_dot_fn(t)[0], T[-1])
         red_chem_pots = sol.sol(np.log(ts_inf))
         for (i,  name) in enumerate(charge_names):
             plt.loglog(ts_inf, np.abs(unit * red_chem_pots[i, :]), label=name)
@@ -200,6 +199,8 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
         plt.legend(ncol=3)
     return sol
 
+############################################ test code ################################################
+T_equis = [calc_eqi_temp(alpha) for alpha in range(N_alpha)]
 
 def test(H_inf, Gamma_inf, m_a, tmax_axion_time=10.0):
     axion_parameter = (m_a,)
@@ -207,32 +208,27 @@ def test(H_inf, Gamma_inf, m_a, tmax_axion_time=10.0):
     rho0 = 3*decay_process.M_pl**2*H_inf**2
     m_a_osc, conv_factor = axion_motion.calc_axion_timescale(calc_axion_mass, axion_parameter, Gamma_inf)
     tmax_inf_time = tmax_axion_time * conv_factor
+
     start_time = time.time()
     sol_rh = decay_process.solve_decay_eqs(tmax_inf_time, 0.0, rho0, Gamma_inf, debug=True)
+    T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho0, Gamma_inf, debug=True)
     decay_time = time.time()
     print("decay done")
-    T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho0, Gamma_inf, debug=True)
+    print("took:", decay_time - start_time, "seconds")
+
     sol_axion = axion_motion.solve(axion_motion.make_single_field_rhs(lambda theta, T, m_a: m_a**2*theta),
             (1.0, 0.0), calc_axion_mass, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf, debug=True)
+    axion_source = axion_motion.get_axion_source_single_field(sol_axion, conv_factor)
     axion_time = time.time()
     print("axion done")
-    axion_source = axion_motion.get_axion_source_single_field(sol_axion, conv_factor)
+    print("took:", axion_time - decay_time, "seconds")
+
     sol_transp_eq = solve(tmax_inf_time, np.zeros(N), T_and_H_and_T_dot_fn,
             axion_source, source_vector_weak_sphaleron, Gamma_inf, conv_factor, debug=True)
     trans_time = time.time()
     print("trans done")
-    print("elapsed times in seconds:")
-    print("reheating:", decay_time - start_time)
-    print("axion", axion_time - decay_time)
-    print("transport eq:", trans_time - axion_time)
-    plt.figure()
-    ts_inf = np.geomspace(decay_process.t0, decay_process.t0 + tmax_inf_time, 400)
-    T, H, T_dot = T_and_H_and_T_dot_fn(ts_inf)
-    plt.loglog(ts_inf[1:-1], -(T[:-2] - T[2:]) / ((ts_inf[:-2] - ts_inf[2:]) / Gamma_inf), label="numerical")
-    plt.loglog(ts_inf,- T_dot, label="analytical")
-    plt.legend()
-    plt.xlabel("t * Gamma_phi")
-    plt.ylabel("T_dot")
+    print("took:", trans_time - axion_time, "seconds")
+
     plt.show()
 
 
