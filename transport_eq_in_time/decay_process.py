@@ -45,7 +45,7 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
     return sol
 
 def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
-    T_const = (rho0 / np.pi**2 / 30 * g_star)**(1/4)
+    T_const = (rho0)**(1/4) / (np.pi**2 / 30 * g_star)**(1/4)
     H_const = np.sqrt(rho0) / (np.sqrt(3) * M_pl)
 
     def _helper(t_prime):

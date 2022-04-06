@@ -51,8 +51,6 @@ Y_bottom_const = Y_bottom**2 * 6
 def calc_rate_vector(T, unit=1.0):
     if np.isclose(T, 0.0):
         return np.zeros(N_alpha)
-    if T * unit < 1e12:
-        return np.zeros(N_alpha)
     # sphalerons
     ws_rate = ws_const * T
     ss_rate = ss_const * T
@@ -189,12 +187,12 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
     unit = np.mean(units)
     # solve the transport eq.
     sol = solve_ivp(rhs, (np.log(decay_process.t0), np.log(decay_process.t0 + t_inf_time)),
-            initial_red_chem_pots / unit, dense_output=True, method="LSODA", rtol=1e-3, jac=jac,
+            initial_red_chem_pots / unit, dense_output=True, method="LSODA", rtol=1e-6, jac=jac,
             args=(T_and_H_and_T_dot_fn, axion_source, source_vector, unit, Gamma_inf))
     if debug:
         plt.figure()
         red_chem_pots = sol.sol(np.log(ts_inf))
-        for (i, name) in enumerate(charge_names):
+        for (i,  name) in enumerate(charge_names):
             plt.loglog(ts_inf, np.abs(unit * red_chem_pots[i, :]), label=name)
         plt.loglog(ts_inf, np.abs(calc_B_minus_L(unit * red_chem_pots)), label="B - L", color="black", lw=2)
         plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
@@ -230,9 +228,11 @@ def test(H_inf, Gamma_inf, m_a, tmax_axion_time=10.0):
     plt.figure()
     ts_inf = np.geomspace(decay_process.t0, decay_process.t0 + tmax_inf_time, 400)
     T, H, T_dot = T_and_H_and_T_dot_fn(ts_inf)
-    plt.loglog(ts_inf, -T_dot / Gamma_inf / (ts_inf**(-3/2)))
+    plt.loglog(ts_inf[1:-1], -(T[:-2] - T[2:]) / ((ts_inf[:-2] - ts_inf[2:]) / Gamma_inf), label="numerical")
+    plt.loglog(ts_inf,- T_dot, label="analytical")
+    plt.legend()
     plt.xlabel("t * Gamma_phi")
-    plt.ylabel("T_dot / t^(-3/2=)")
+    plt.ylabel("T_dot")
     plt.show()
 
 
