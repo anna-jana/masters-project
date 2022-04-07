@@ -6,9 +6,8 @@ import numpy as np, matplotlib.pyplot as plt
 from scipy.optimize import root_scalar
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
-import decay_process, axion_motion
+import decay_process
 decay_process = importlib.reload(decay_process)
-axion_motion = importlib.reload(axion_motion)
 
 ############# Rates for Different Processes ############
 
