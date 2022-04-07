@@ -54,3 +54,9 @@ def get_axion_source_single_field(sol, conv_factor):
         theta, theta_dot = sol.sol((t_inf - decay_process.t0) / conv_factor)
         return theta_dot / conv_factor
     return source
+
+def find_end_energy_single_field(sol, m_a, f_a, Gamma_phi):
+    theta, theta_dot = sol.y[:, -1]
+    # theta_dot has units of Gamma_phi
+    return 0.5 * f_a**2 * (theta_dot * Gamma_phi)**2 + 0.5 * m_a**2 * f_a**2 * theta**2
+

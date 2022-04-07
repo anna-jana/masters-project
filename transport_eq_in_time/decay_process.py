@@ -57,7 +57,7 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
         plt.loglog(t_prime, rho_R_prime, label=r"radiation")
         plt.xlabel(r"$t \cdot \Gamma_a$")
         plt.ylabel(r"$\rho / \rho_phi(t_0)$")
-        plt.ylim(1e-15, 1e1)
+        # plt.ylim(1e-15, 1e1)
         plt.legend(framealpha=1.0)
 
         plt.subplot(2,1,2)
@@ -78,6 +78,11 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
         plt.tight_layout()
 
     return sol
+
+def find_end_rad_energy(sol, rho0):
+    a, y = np.exp(sol.y[:, -1])
+    x = np.exp(- (sol.t[-1] - t0))
+    return rho0 * a**(-4) * (y - x)
 
 def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
     T_const = (rho0)**(1/4) / (np.pi**2 / 30 * g_star)**(1/4)
@@ -131,20 +136,18 @@ def find_dilution_factor(sol, T_fn, debug=False):
         a = np.exp(sol.sol(logt)[0, :])
         t = np.exp(logt)
         T = T_fn(t)
+        print("T(0) =", T[0])
+        print("a(0) =", a[0])
         dilution_factor = (T[0] * a[0] / (T * a))**3
         plt.figure()
         plt.axhline(dilution_factor[0], color="black", ls="--")
         plt.axhline(dilution_factor[-1], color="black", ls="--")
         plt.loglog(t, dilution_factor)
-        print(dilution_factor)
         plt.xlabel(r"$t \cdot \Gamma$")
         plt.ylabel(r"dilution factor $(T(t_0) a(t_0) / T(t) a(t))^3$")
-        return dilution_factor[-1]
-    else:
-        T_s = T_fn(np.exp(sol.t[0]))
-        a_s = np.exp(sol.sol(sol.t[0])[0])
-        T_ad = T_fn(np.exp(sol.t[-1]))
-        a_ad = np.exp(sol.sol(sol.t[-1])[0])
-        return ((T_s * a_s) / (T_ad * a_ad))**3
 
-# find_dilution_factor(sol, T_fn, debug=True)
+    T_s = T_fn(np.exp(sol.t[0]))
+    a_s = np.exp(sol.sol(sol.t[0])[0])
+    T_ad = T_fn(np.exp(sol.t[-1]))
+    a_ad = np.exp(sol.sol(sol.t[-1])[0])
+    return ((T_s * a_s) / (T_ad * a_ad))**3

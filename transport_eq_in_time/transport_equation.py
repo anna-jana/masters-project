@@ -199,36 +199,5 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
         plt.legend(ncol=3)
     return sol
 
-############################################ test code ################################################
 T_equis = [calc_eqi_temp(alpha) for alpha in range(N_alpha)]
-
-def test(H_inf, Gamma_inf, m_a, tmax_axion_time=10.0):
-    axion_parameter = (m_a,)
-    calc_axion_mass = lambda T, m_a: m_a
-    rho0 = 3*decay_process.M_pl**2*H_inf**2
-    m_a_osc, conv_factor = axion_motion.calc_axion_timescale(calc_axion_mass, axion_parameter, Gamma_inf)
-    tmax_inf_time = tmax_axion_time * conv_factor
-
-    start_time = time.time()
-    sol_rh = decay_process.solve_decay_eqs(tmax_inf_time, 0.0, rho0, Gamma_inf, debug=True)
-    T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho0, Gamma_inf, debug=True)
-    decay_time = time.time()
-    print("decay done")
-    print("took:", decay_time - start_time, "seconds")
-
-    sol_axion = axion_motion.solve(axion_motion.make_single_field_rhs(lambda theta, T, m_a: m_a**2*theta),
-            (1.0, 0.0), calc_axion_mass, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf, debug=True)
-    axion_source = axion_motion.get_axion_source_single_field(sol_axion, conv_factor)
-    axion_time = time.time()
-    print("axion done")
-    print("took:", axion_time - decay_time, "seconds")
-
-    sol_transp_eq = solve(tmax_inf_time, np.zeros(N), T_and_H_and_T_dot_fn,
-            axion_source, source_vector_weak_sphaleron, Gamma_inf, conv_factor, debug=True)
-    trans_time = time.time()
-    print("trans done")
-    print("took:", trans_time - axion_time, "seconds")
-
-    plt.show()
-
 
