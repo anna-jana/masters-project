@@ -66,16 +66,16 @@ def solve_decay_eqs(trange, init_rho_rad, init_rho_field, decay_const, debug=Fal
         plt.ylabel("a")
         plt.tight_layout()
 
-        plt.figure()
-        plt.subplot(2,1,1)
-        plt.plot(log_t, np.log(a), ".-")
-        plt.xlabel("log(t * Gamma_inf)")
-        plt.ylabel("log(a)")
-        plt.subplot(2,1,2)
-        plt.plot(log_t, np.log(y), ".-")
-        plt.xlabel("log(t * Gamma_inf)")
-        plt.ylabel("log(y)")
-        plt.tight_layout()
+        # plt.figure()
+        # plt.subplot(2,1,1)
+        # plt.plot(log_t, np.log(a), ".-")
+        # plt.xlabel("log(t * Gamma_inf)")
+        # plt.ylabel("log(a)")
+        # plt.subplot(2,1,2)
+        # plt.plot(log_t, np.log(y), ".-")
+        # plt.xlabel("log(t * Gamma_inf)")
+        # plt.ylabel("log(y)")
+        # plt.tight_layout()
 
     return sol
 
@@ -83,6 +83,11 @@ def find_end_rad_energy(sol, rho0):
     a, y = np.exp(sol.y[:, -1])
     x = np.exp(- (sol.t[-1] - t0))
     return rho0 * a**(-4) * (y - x)
+
+def find_end_inf_energy(sol, rho0):
+    a, y = np.exp(sol.y[:, -1])
+    x = np.exp(- (sol.t[-1] - t0))
+    return rho0 * a**(-3) * x
 
 def to_temperature_and_hubble_fns(sol, rho0, decay_const, debug=False):
     T_const = (rho0)**(1/4) / (np.pi**2 / 30 * g_star)**(1/4)
