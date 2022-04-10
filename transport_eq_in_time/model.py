@@ -28,11 +28,8 @@ SimulationState = namedtuple("SimulationState",
         ["initial_reheating", "initial_axion", "initial_transport_eq", "t_start", "t_end"])
 
 # convergence parameters
-rtol_axion = 1e-4
-rtol_transport_eq = 1e-4 # 1e-6
 num_osc = 1
 num_osc_step = 20
-axion_solver = "RK45"
 
 def evolve(model, state, debug=False):
     """

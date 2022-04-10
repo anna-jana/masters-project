@@ -22,7 +22,7 @@ def test(H_inf, Gamma_inf, m_a, f_a, tmax_axion_time=10.0, axion_decay_time=10.0
 
     # reheating process
     start_time = time.time()
-    sol_rh = decay_process.solve_decay_eqs(tmax_inf_time, 0.0, rho_inf_init, Gamma_inf, debug=debug)
+    sol_rh = decay_process.solve(tmax_inf_time, 0.0, rho_inf_init, Gamma_inf, debug=debug)
     T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho_inf_init, Gamma_inf, debug=debug)
     decay_time = time.time()
     print("decay done, took:", decay_time - start_time, "seconds")
@@ -43,7 +43,7 @@ def test(H_inf, Gamma_inf, m_a, f_a, tmax_axion_time=10.0, axion_decay_time=10.0
     rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], energy_scale, f_a, Gamma_inf)
     rho_end_rad = decay_process.find_end_rad_energy(sol_rh, rho_inf_init)
     Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter)
-    sol_axion_decay = decay_process.solve_decay_eqs(axion_decay_time, rho_end_rad, rho_end_axion, Gamma_axion, debug=debug)
+    sol_axion_decay = decay_process.solve(axion_decay_time, rho_end_rad, rho_end_axion, Gamma_axion, debug=debug)
     T_and_H_fn_axion, _ = decay_process.to_temperature_and_hubble_fns(sol_axion_decay, rho_end_axion, Gamma_axion, debug=debug)
     T_fn = lambda t: T_and_H_fn_axion(t)[0]
     f = decay_process.find_dilution_factor(sol_axion_decay, T_fn, debug=debug)
@@ -79,7 +79,7 @@ def compute_asymmetry(H_inf, Gamma_inf, m_a, f_a,
         if debug: print("step =", step)
         step += 1
         # reheating process
-        sol_rh = decay_process.solve_decay_eqs(tmax_inf_time, rho_R_init, rho_inf_init, Gamma_inf)
+        sol_rh = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, Gamma_inf)
         T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho_inf_init, Gamma_inf)
         if debug:
             background_sols.append(T_and_H_and_T_dot_fn)
@@ -170,6 +170,7 @@ def compute_asymmetry(H_inf, Gamma_inf, m_a, f_a,
         plt.show()
 
     if axion_model.does_decay:
+        return
         raise NotImplementedError()
         # dilution factor from axion decay
         while True:

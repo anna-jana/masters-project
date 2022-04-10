@@ -38,7 +38,6 @@ def decay_jac(log_t, u, C):
     ))
 
 def solve(tmax, init_rho_rad, init_rho_field, decay_const, debug=False):
-    print("old")
     init_y = (init_rho_rad + init_rho_field) / init_rho_field
     C = np.sqrt(init_rho_field) / (np.sqrt(3) * M_pl * decay_const)
     tspan = (np.log(t0), np.log(t0 + tmax))
