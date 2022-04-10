@@ -196,7 +196,7 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
         plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
         plt.ylabel(r"$|\mu_i / T|$")
         plt.legend(ncol=3)
-    return sol
+    return lambda log_t: sol.sol(log_t) * unit
 
 T_equis = [calc_eqi_temp(alpha) for alpha in range(N_alpha)]
 
