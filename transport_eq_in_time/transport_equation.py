@@ -3,7 +3,7 @@
 
 import time, importlib
 import numpy as np, matplotlib.pyplot as plt
-from scipy.optimize import root_scalar
+from scipy.optimize import root
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 import decay_process
@@ -61,7 +61,7 @@ def calc_rate_vector(T, unit=1.0):
     return np.array((ws_rate, ss_rate, Y_tau_rate, Y_top_rate, Y_bottom_rate, W_12, W_3))
 
 ######### calc the equilibration (freezeout) temperatures of the processes #########
-def calc_eqi_temp(alpha, low=1e10, high=1e16):
+def calc_eqi_temp(alpha, debug=False):
     H_const = np.pi/decay_process.M_pl*np.sqrt(decay_process.g_star)
     def goal_fn(T):
         gamma = calc_rate_vector(T)[alpha]
@@ -71,12 +71,17 @@ def calc_eqi_temp(alpha, low=1e10, high=1e16):
         # also otherwise this depends on the exact reheating process -> depends on H_inf, Gamma_inf
         H = H_const * T**2
         return expr / H - 1
-    try:
-        sol = root_scalar(goal_fn, bracket=(high, low), rtol=1e-10, xtol=1e-10)
-        if not sol.converged: return np.nan
-    except ValueError:
-        return np.nan
-    return sol.root
+    if debug:
+        plt.figure()
+
+    for initial in [1e8, 1e14]:
+        try:
+            sol = root(goal_fn, initial)
+            if sol.success:
+                return sol.x[0]
+        except ValueError:
+            pass
+    return np.nan
 
 ################################# Charge and Source Vectors #################################
 # namens for different things
@@ -188,7 +193,6 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
             args=(T_and_H_and_T_dot_fn, axion_source, source_vector, unit, Gamma_inf))
     if debug:
         plt.figure()
-        t_W = decay_process.T_to_t(T_equis[-2], lambda t: T_and_H_and_T_dot_fn(t)[0], T[-1])
         red_chem_pots = sol.sol(np.log(ts_inf))
         for (i,  name) in enumerate(charge_names):
             plt.loglog(ts_inf, np.abs(unit * red_chem_pots[i, :]), label=name)

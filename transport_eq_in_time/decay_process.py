@@ -56,9 +56,9 @@ def find_end_field_energy(sol, rho_field_init):
     rho_rad, a = sol.y[:, -1]
     return rho_field_init * a**(-3) * np.exp(- (np.exp(sol.t[-1]) - t0))
 
-def T_to_t(T, T_fn, T_end):
-    goal_fn = lambda t: T_fn(t) / T - 1
-    sol = root(goal_fn, T_end)
+def T_to_t(T, T_and_H_fn, t_end):
+    goal_fn = lambda t: T_and_H_fn(t)[0] / T - 1
+    sol = root(goal_fn, t_end)
     return sol.x[0] if sol.success else np.nan
 
 def to_temperature_and_hubble_fns(sol, rho_field_init, scale, Gamma, debug=False):

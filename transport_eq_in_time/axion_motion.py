@@ -20,11 +20,16 @@ class AxionField:
             plt.figure()
             plt.axvline(1.0, color="black", ls="--")
             plt.axhline(0.0, color="black", ls="-")
-            t = np.linspace(0.0, sol.t[-1], 400)
-            plt.plot(t, sol.sol(t)[0,:])
+            N = 400
+            ts = np.geomspace(sol.t[1], sol.t[-1], N)
+            plt.plot(ts, sol.sol(ts)[0,:])
             plt.xscale("log")
             plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
             plt.ylabel(r"$\theta$")
+            plt.figure()
+            plt.loglog(ts, [self.get_energy(sol.sol(t), 1.0, Gamma_inf, *axion_parameter) for t in ts])
+            plt.xlabel("t * m_a")
+            plt.ylabel("~ energy density")
         return sol
 
     def get_source(self, sol, conv_factor): raise NotImplementedError()
