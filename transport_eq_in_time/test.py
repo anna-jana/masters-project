@@ -1,5 +1,5 @@
 import time, importlib, itertools
-import numpy as np, matplotlib.pyplot as plt, matplotlib.colors as mcolors
+import numpy as np, matplotlib.pyplot as plt
 import decay_process, axion_motion, transport_equation
 from scipy.optimize import root
 decay_process = importlib.reload(decay_process)

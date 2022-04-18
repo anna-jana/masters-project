@@ -14,7 +14,7 @@ class AxionField:
         conv_factor = Gamma_inf / energy_scale
         sol = solve_ivp(self.rhs, (0.0, tmax_axion_time), axion_init,
                 args=(lambda t: T_and_H_fn(conv_factor * t + decay_process.t0), energy_scale, axion_parameter),
-                dense_output=True, rtol=1e-6, method="LSODA")
+                dense_output=True, rtol=1e-6, method="Radau")
         assert sol.success
         if debug:
             plt.figure()

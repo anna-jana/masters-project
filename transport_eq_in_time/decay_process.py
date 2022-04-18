@@ -18,12 +18,11 @@ def find_scale(Gamma):
     # what is the energy density at T_decay?
     return 3 / 2 * M_pl**2 * Gamma**2
 
-
 def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False):
     C = np.sqrt(scale) / (np.sqrt(3)*M_pl*Gamma)
     rho0 = rho_field_init / scale
     sol = solve_ivp(rhs, (np.log(t0), np.log(t0 + tmax)), (rho_rad_init / scale, 1.0),
-            args=(C, rho0), rtol=1e-6, method="LSODA", dense_output=True)
+            args=(C, rho0), rtol=1e-6, method="RK45", dense_output=True)
     assert sol.success
     if debug:
         log_t = np.linspace(sol.t[0], sol.t[-1], 400)

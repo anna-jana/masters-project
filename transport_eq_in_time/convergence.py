@@ -27,6 +27,7 @@ def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
 def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         axion_model=axion_motion.single_axion_field, axion_init=(1.0, 0.0),
         start_tmax_axion_time=10.0, step_tmax_axion_time=2*2*np.pi,
+        source_vector_axion=transport_equation.source_vector_weak_sphaleron,
         axion_decay_time=10.0, debug=False, convergence_rtol=1e-3, nsamples=100, calc_init_time=False):
     # this is a bit useless but I keep it to make it work like the general case
     energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
@@ -45,7 +46,6 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
     while True:
         tmax_inf_time = tmax_axion_time * conv_factor
         if debug: print("step =", step)
-
         # reheating process
         sol_rh = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, scale, Gamma_inf)
         T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.to_temperature_and_hubble_fns(sol_rh, rho_inf_init, scale, Gamma_inf)
@@ -87,7 +87,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
 
         # transport eq. for standard model charges
         sol_transp_eq = transport_equation.solve(tmax_inf_time, red_chem_pots_init, T_and_H_and_T_dot_fn,
-                axion_source, transport_equation.source_vector_weak_sphaleron, Gamma_inf, conv_factor)
+                axion_source, source_vector_axion, Gamma_inf, conv_factor)
         if debug:
             red_chem_pot_sols.append(sol_transp_eq)
 
@@ -122,8 +122,8 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         axion_init = sol_axion.y[:, -1] # (1, energy_scale_axion (independent of initial condition and starting time))
         red_chem_pots_init = red_chem_pots[:, -1] # 1 (unit has been removed)
         tmax_axion_time = step_tmax_axion_time # continue to integrate with the step time
-    else:
-        raise ValueError("too many iterations")
+
+        step += 1
 
     if debug:
         # background cosmology
@@ -131,7 +131,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         tend = 0
         for i, (axion_sol, T_and_H_and_T_dot_fn) in enumerate(zip(axion_sols, background_sols)):
             t_inf_max = conv_factor * axion_sol.t[-1]
-            ts_inf = np.linspace(decay_process.t0, decay_process.t0 + t_inf_max, 500)
+            ts_inf = np.geomspace(decay_process.t0, decay_process.t0 + t_inf_max, 500)
             T, H, T_dot = T_and_H_and_T_dot_fn(ts_inf)
             plt.loglog(tend + ts_inf, H, label="numerical solution for reheating" if i == 0 else None)
             tend += conv_factor * axion_sol.t[-1]
@@ -180,11 +180,11 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         # dilution factor from axion decay
         # we don't do converence check for this part right now
         Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter)
+        axion_scale = decay_process.find_scale(Gamma_axion)
 
         rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, Gamma_inf, *axion_parameter)
         rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale)
 
-        axion_scale = decay_process.find_scale(Gamma_axion)
         sol_axion_decay = decay_process.solve(axion_decay_time, rho_end_rad, rho_end_axion, axion_scale, Gamma_axion)
         T_and_H_fn_axion, _ = decay_process.to_temperature_and_hubble_fns(sol_axion_decay, rho_end_axion, axion_scale, Gamma_axion)
 
@@ -193,12 +193,11 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
 
         if debug:
             plt.figure()
-            ts = np.exp(np.linspace(decay_process.t0, decay_process.t0 + axion_decay_time, 100)) # ts is in axion decay units
+            ts = np.geomspace(decay_process.t0, decay_process.t0 + axion_decay_time, 100) # ts is in axion decay units
             fs = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, ts)
             plt.axhline(fs[0], ls="--", color="black", label="initial")
             plt.axhline(fs[-1], ls="-", color="black", label="final")
-            for i, (ts, fs) in enumerate(axion_decay_sols):
-                plt.plot(ts, fs, label="evolution" if i == 0 else 0)
+            plt.loglog(ts, fs, label="evolution")
             plt.xlabel(r"$\Gamma_a \cdot t$")
             plt.ylabel(r"dilution factor $f = (T(t_0) a(t_0) / T(t) a(t))^3$")
             plt.legend()
