@@ -62,10 +62,10 @@ class SingleAxionField(AxionField):
             return theta_dot / conv_factor
         return source
 
-    def get_energy(self, y, f_a, Gamma_inf, m_a):
+    def get_energy(self, y, f_a, m_a):
         theta, theta_dot = y
-        # theta_dot has units of Gamma_inf
-        return 0.5 * f_a**2 * (theta_dot * Gamma_inf)**2 + 0.5 * m_a**2 * f_a**2 * theta**2
+        energy_scale = self.find_dynamical_scale(m_a)
+        return 0.5 * f_a**2 * (theta_dot * energy_scale)**2 + 0.5 * m_a**2 * f_a**2 * theta**2
 
     does_decay = True
     has_relic_density = False

@@ -38,7 +38,7 @@ def compute_axion_decay(T_start, red_chem_B_minus_L, theta, theta_dot, m_a, f_a,
     t_end = 10 / axion_decay_rate
     start = np.log(t_start)
     end = np.log(t_end)
-    
+        
     # calc eta_B
     def calc_eta(rho_R, R):
         T = (rho_R / (np.pi**2 / 30 * g_star))**(1/4)

@@ -156,6 +156,16 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         plt.xscale("log")
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"$\theta$")
+        plt.figure()
+        tend = 0
+        for axion_sol in axion_sols:
+            ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
+            ts = tend + ts_ax
+            tend += axion_sol.t[-1]
+            plt.loglog(ts, [axion_model.get_energy(y, f_a, Gamma_inf, *axion_parameter) for y in axion_sol.sol(ts_ax).T])
+        plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
+        plt.ylabel(r"~ energy density")
+        
 
         # transport eq. plot
         plt.figure()
@@ -179,11 +189,11 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
     if axion_model.does_decay:
         # dilution factor from axion decay
         # we don't do converence check for this part right now
-        Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter)
-        axion_scale = decay_process.find_scale(Gamma_axion)
+        Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter) # [GeV]
+        axion_scale = decay_process.find_scale(Gamma_axion) # GeV
 
-        rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, Gamma_inf, *axion_parameter)
-        rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale)
+        rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
+        rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
 
         sol_axion_decay = decay_process.solve(axion_decay_time, rho_end_rad, rho_end_axion, axion_scale, Gamma_axion)
         T_and_H_fn_axion, _ = decay_process.to_temperature_and_hubble_fns(sol_axion_decay, rho_end_axion, axion_scale, Gamma_axion)
@@ -192,6 +202,9 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
 
         if debug:
+            rho_end_inf = decay_process.find_end_field_energy(sol_rh, rho_inf_init)
+            print("axion, rad, inf:", rho_end_axion, rho_end_rad, rho_end_inf)
+                
             plt.figure()
             ts = np.geomspace(decay_process.t0, decay_process.t0 + axion_decay_time, 100) # ts is in axion decay units
             fs = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, ts)
