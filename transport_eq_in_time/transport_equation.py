@@ -185,12 +185,13 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
     source = theta_dot / (T[1:] / Gamma_inf)
     b = M_inv @ np.hstack([source_vector, np.zeros(N_A)])
     red_chem_pots_eq = source[None, :] * b[:, None]
-    units = np.max(red_chem_pots_eq, axis=1)
+    units = np.max(np.abs(red_chem_pots_eq), axis=1)
     unit = np.mean(units)
     # solve the transport eq.
     sol = solve_ivp(rhs, (np.log(decay_process.t0), np.log(decay_process.t0 + t_inf_time)),
-            initial_red_chem_pots / unit, dense_output=True, method="LSODA", rtol=1e-6, jac=jac,
+            initial_red_chem_pots / unit, dense_output=True, method="BDF", rtol=1e-10, jac=jac,
             args=(T_and_H_and_T_dot_fn, axion_source, source_vector, unit, Gamma_inf))
+    assert sol.success
     if debug:
         plt.figure()
         red_chem_pots = sol.sol(np.log(ts_inf))

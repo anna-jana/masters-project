@@ -1,12 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as plt
+import importlib
+import numpy as np, matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
 from scipy.constants import hbar, electron_volt
-import model
-import transport_equation
-from common import constants, cosmology
+import axion_motion
+axion_motion = importlib.reload(axion_motion)
 
 ############################## helper functions #########################
 def sc(x, y):
@@ -63,20 +62,6 @@ def calc_d2V_eff_dphi2(phi_over_f, eps, M):
     B = u**3 * X2
     return 4*M**2 * (d2u_f2 / B + du_f**2 * (4*X - 3*u**2*X2) / B**2)
 
-##################################### define the rhs ####################################
-def rhs(t, y, eps, M, H_fn):
-    phi_over_f, phi_dot_over_f = y
-    H = H_fn(t)
-    phi_dot_dot_over_f = - 3 * H * phi_dot_over_f - calc_dV_eff_dphi_over_f(phi_over_f, eps, M)
-    return phi_dot_over_f, phi_dot_dot_over_f
-
-def rhs_log_t(log_t, y, _T_fn, H_fn, p):
-    eps, M = p
-    t = np.exp(log_t)
-    phi_dot_over_f, phi_dot_dot_over_f = rhs(t, y, eps, M, H_fn)
-    return phi_dot_over_f * t, phi_dot_dot_over_f * t
-
-#################### caclulate theta for coupling to the (weak) shaleron #################
 def calc_theta_dot(phi_over_f, phi_dot_over_f, eps, M):
     MM = 2*M**2
     A = calc_V_eff_over_f_sq(phi_over_f, eps, M) / MM
@@ -84,14 +69,32 @@ def calc_theta_dot(phi_over_f, phi_dot_over_f, eps, M):
         1 / MM * np.abs(calc_dV_eff_dphi_over_f(phi_over_f, eps, M)) * phi_dot_over_f
         / ((1 - A)*A)**0.5
     )
+########################## define the field class ##############################
+class ClockworkAxionField(axion_motion.SingleAxionField):
+    does_decay = False
+    has_relic_density = True
 
-def get_axion_source_clockwork(field_fn, p):
-    eps, M = p
-    def source_fn(log_t):
-        phi_over_f, phi_dot_over_f = field_fn(log_t)
+    def calc_pot_deriv(self, phi_over_f, __T, eps, M):
+        return calc_dV_eff_dphi_over_f(phi_over_f, eps, M)
+
+    def calc_pot(self, phi_over_f, __T, eps, M):
+        return calc_V_eff_over_f_sq(phi_over_f, eps, M)
+
+    def find_dynamical_scale(self, eps, M):
+        return M
+
+    def calc_source(self, y, conv_factor, eps, M):
+        phi_over_f, phi_dot_over_f = y
+        phi_dot_over_f /= conv_factor
         return calc_theta_dot(phi_over_f, phi_dot_over_f, eps, M)
-    return source_fn
+    
+    def get_energy(self, y, f_a, Gamma_inf, eps, M):
+        phi_over_f, phi_dot_over_f = y
+        energy_scale = self.find_dynamical_scale(eps, M)
+        return f_a**2 * (0.5 * (phi_dot_over_f * energy_scale)**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))
 
+clockwork_axion_field = ClockworkAxionField()
+    
 ############################### relic density computation ################################
 def calc_abundance(phi_over_f, phi_dot_over_f, T, eps, mR, f, M):
     rho = f**2 * (0.5 * phi_dot_over_f**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))
@@ -204,36 +207,10 @@ def get_min_mR(m_phi, f_eff):
     else:
         return np.nan
 
-###################################### compute all observables ####################################
-def compute_observables(m_phi, mR, f_eff, Gamma_phi, H_inf, theta_i=1.0, sbg_kwargs={}, relic_kwargs={}):
-    try:
-        eps = calc_eps(mR)
-        f = calc_f(f_eff, eps)
-        M = calc_mass_scale(m_phi, eps)
-        m = model.AxionBaryogenesisModel(
-            source_vector=transport_equation.source_vector_weak_sphaleron,
-            get_axion_source=get_axion_source_clockwork,
-            axion_rhs=rhs_log_t,
-            calc_axion_mass=calc_mass,
-            axion_parameter=(eps, M),
-            axion_initial=(theta_to_phi_over_f(theta_i, eps), 0),
-            Gamma_phi=Gamma_phi,
-            H_inf=H_inf,
-        )
-        red_chem_pot_B_minus_L, T_final, axion_final = model.solve(m, **sbg_kwargs)
-        t_final = cosmology.switch_hubble_and_time_rad_dom(cosmology.calc_hubble_parameter(cosmology.calc_radiation_energy_density(T_final)))
-        eta_B = cosmology.calc_eta_B_final(red_chem_pot_B_minus_L, T_final)
-        Omega_a_h_sq = compute_relic_density(axion_final, T_final, t_final, f, mR, M, **relic_kwargs)
-        return eta_B, Omega_a_h_sq
-    except Exception as e:
-        print(e)
-        return np.nan, np.nan
+################################ detection ##############################
+#e_sq = (constants.g_1 * constants.g_2)**2 / (constants.g_1**2 + constants.g_2**2)
 
-
-################################
-e_sq = (constants.g_1 * constants.g_2)**2 / (constants.g_1**2 + constants.g_2**2)
-
-def calc_axion_photon_coupling(mR, f_eff):
-    eps = calc_eps(mR)
-    f = calc_f(f_eff, eps)
-    return e_sq * eps / (16*np.pi**2 * f)
+#def calc_axion_photon_coupling(mR, f_eff):
+#    eps = calc_eps(mR)
+#    f = calc_f(f_eff, eps)
+#    return e_sq * eps / (16*np.pi**2 * f)
