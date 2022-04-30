@@ -69,6 +69,7 @@ def calc_theta_dot(phi_over_f, phi_dot_over_f, eps, M):
         1 / MM * np.abs(calc_dV_eff_dphi_over_f(phi_over_f, eps, M)) * phi_dot_over_f
         / ((1 - A)*A)**0.5
     )
+
 ########################## define the field class ##############################
 class ClockworkAxionField(axion_motion.SingleAxionField):
     does_decay = False
@@ -87,14 +88,14 @@ class ClockworkAxionField(axion_motion.SingleAxionField):
         phi_over_f, phi_dot_over_f = y
         phi_dot_over_f /= conv_factor
         return calc_theta_dot(phi_over_f, phi_dot_over_f, eps, M)
-    
+
     def get_energy(self, y, f_a, Gamma_inf, eps, M):
         phi_over_f, phi_dot_over_f = y
         energy_scale = self.find_dynamical_scale(eps, M)
         return f_a**2 * (0.5 * (phi_dot_over_f * energy_scale)**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))
 
 clockwork_axion_field = ClockworkAxionField()
-    
+
 ############################### relic density computation ################################
 def calc_abundance(phi_over_f, phi_dot_over_f, T, eps, mR, f, M):
     rho = f**2 * (0.5 * phi_dot_over_f**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))

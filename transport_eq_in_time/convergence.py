@@ -31,6 +31,10 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         axion_decay_time=10.0, debug=False, convergence_rtol=1e-3, nsamples=100, calc_init_time=False):
     # this is a bit useless but I keep it to make it work like the general case
     energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
+    if energy_scale > H_inf:
+        return np.nan # oscillation starts before the end of inflation
+        #(invalidates assumtion that the axion dosnt iterfere with inflation)
+
     conv_factor = Gamma_inf / energy_scale
     rho_R_init = 0.0
     rho_inf_init = 3 * decay_process.M_pl**2 * H_inf**2
@@ -67,7 +71,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
                 t_eq = np.exp(sol.x[0] if sol.success else np.nan) # [1/Gamma_inf]
             t_axion = 1.0 + 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
             t_RH = 1.0 + decay_process.t0 # we want to reach reheating [1/Gamma_inf]
-            
+
             tmax_inf_time = max(t_eq, t_RH)
             tmax_axion_time = tmax_inf_time / conv_factor
             sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, 0.0, rho_inf_init, scale, Gamma_inf)
@@ -148,7 +152,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         plt.legend()
         plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
         plt.ylabel(r"H / \Gamma_\mathrm{inf}$")
-        
+
         plt.figure()
         tend = 0
         for i, (axion_sol, T_and_H_and_T_dot_fn) in enumerate(zip(axion_sols, background_sols)):
@@ -175,7 +179,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         plt.xscale("log")
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"$\varphi / f_a$")
-        
+
         plt.figure()
         tend = 0
         for axion_sol in axion_sols:
@@ -185,7 +189,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
             plt.loglog(ts, [axion_model.get_energy(y, f_a, Gamma_inf, *axion_parameter) for y in axion_sol.sol(ts_ax).T])
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"~ energy density")
-            
+
         plt.figure()
         tend = 0
         for axion_sol in axion_sols:
@@ -235,7 +239,8 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
 
         t = np.exp(sol_axion_decay.t[-1])
         f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
-        
+        Omega = 0.0
+
         if debug:
             end_decay = time.time()
             print("axion decay took:", end_decay - start_decay, "seconds")
@@ -248,8 +253,22 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
             plt.xlabel(r"$\Gamma_a \cdot t$")
             plt.ylabel(r"dilution factor $f = (T(t_0) a(t_0) / T(t) a(t))^3$")
             plt.legend()
+
+    elif axion_model.has_relic_density:
+        f = 1.0
+        axion_init = axion_sol.y[:, -1]
+        H0 = T_and_H_fn(t_end)
+        H_osc = axion_model.find_H_osc(*axion_parameter) # [GeV]
+        t_osc = 1 / 2 * (1/H_osc + 1/H0) + t0
+        n_relic_oscs = 10
+        period = axion_model.find_osc_period(*axion_parameter)
+        tmax = t_osc + n_relic_oscs * period
+        axion_model.solve()
+
     else:
+        Omega = 1.0
         f = 1.0
 
-    return f * red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots_final))
+
+    return red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots_final)), f, Omega
 

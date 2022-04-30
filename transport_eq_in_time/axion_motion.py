@@ -6,8 +6,10 @@ import decay_process
 class AxionField:
     def rhs(self, t, y, T_and_H_fn, energy_scale, axion_parameter): raise NotImplementedError()
     def find_dynamical_scale(self, *axion_parameter): raise NotImplementedError()
+    def find_H_osc(self, *axion_parameter): raise NotImplementedError()
+    def find_osc_period(self, *axion_parameter): raise NotImplementedError()
 
-    def solve(self, axion_init, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf, 
+    def solve(self, axion_init, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf,
               debug=False, rtol=1e-10, method="Radau"):
         energy_scale = self.find_dynamical_scale(*axion_parameter)
         conv_factor = Gamma_inf / energy_scale
