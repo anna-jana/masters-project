@@ -19,14 +19,13 @@ def calc_entropy_density(T, g_star):
 g_star_0 = 43/11 # from paper
 T_CMB = 2.348654180597668e-13 # GeV
 s_today = calc_entropy_density(T_CMB, g_star_0)
-Omega_DM_h_sq = 0.11933
 h = 0.673
 rho_c = 3.667106289005098e-11 # [eV^4]
 
 def abundance_to_relic_density(Y, m):
     n = s_today * Y
     rho = m * n
-    Omega_h_sq = rho / 1e9**2 / rho_c * h**2
+    Omega_h_sq = rho * 1e9**4 / rho_c * h**2
     return Omega_h_sq
 
 def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
@@ -51,7 +50,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
     # this is a bit useless but I keep it to make it work like the general case
     energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
     if energy_scale > H_inf:
-        return np.nan # oscillation starts before the end of inflation
+        return np.nan, np.nan, np.nan # oscillation starts before the end of inflation
         #(invalidates assumtion that the axion dosnt iterfere with inflation)
 
     conv_factor = Gamma_inf / energy_scale
@@ -157,6 +156,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
     if debug:
         # background cosmology
         plt.figure()
+        plt.subplot(2,1,1)
         tend = 0
         for i, (axion_sol, T_and_H_and_T_dot_fn) in enumerate(zip(axion_sols, background_sols)):
             t_inf_max = conv_factor * axion_sol.t[-1]
@@ -170,9 +170,8 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
                 label="analytical radiation domination", color="black", ls="--")
         plt.legend()
         plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
-        plt.ylabel(r"H / \Gamma_\mathrm{inf}$")
-
-        plt.figure()
+        plt.ylabel(r"$H / \Gamma_\mathrm{inf}$")
+        plt.subplot(2,1,2)
         tend = 0
         for i, (axion_sol, T_and_H_and_T_dot_fn) in enumerate(zip(axion_sols, background_sols)):
             t_inf_max = conv_factor * axion_sol.t[-1]
@@ -180,7 +179,6 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
             T, H, T_dot = T_and_H_and_T_dot_fn(ts_inf)
             plt.loglog(tend + ts_inf, T)
             tend += conv_factor * axion_sol.t[-1]
-        plt.legend()
         plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
         plt.ylabel(r"T / GeV")
 
@@ -198,7 +196,6 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         plt.xscale("log")
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"$\varphi / f_a$")
-
         plt.figure()
         plt.subplot(2,1,1)
         tend = 0
@@ -209,7 +206,6 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
             plt.loglog(ts, [axion_model.get_energy(y, f_a, Gamma_inf, *axion_parameter) for y in axion_sol.sol(ts_ax).T])
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"~ energy density")
-        
         plt.subplot(2,1,2)
         tend = 0
         for axion_sol in axion_sols:

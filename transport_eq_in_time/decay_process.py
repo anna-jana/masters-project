@@ -60,10 +60,17 @@ def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False, force_n
     def T_and_H_fn(t_prime):
         _, _, T, H = _helper(t_prime)
         return T, H
-
+    
+    @np.vectorize
     def T_and_H_and_T_dot_fn(t_prime):
         rho_field, rho_rad, T, H = _helper(t_prime)
-        T_dot = np.where(T == 0, np.inf, T_dot_const * (Gamma * rho_field - 4*H*rho_rad) / T**3)
+        #if isinstance(t_prime, np.ndarray):
+        #    T_dot = np.where(T == 0, np.inf, T_dot_const * (Gamma * rho_field - 4*H*rho_rad) / T**3)
+        #else:
+        if T <= 0.0:
+            T_dot = np.inf
+        else:
+            T_dot = T_dot_const * (Gamma * rho_field - 4*H*rho_rad) / T**3
         return T, H, T_dot
 
     if debug:
