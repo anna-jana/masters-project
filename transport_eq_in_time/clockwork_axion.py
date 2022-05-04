@@ -94,88 +94,10 @@ class ClockworkAxionField(axion_motion.SingleAxionField):
         energy_scale = self.find_dynamical_scale(eps, M)
         return f_a**2 * (0.5 * (phi_dot_over_f * energy_scale)**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))
 
+    def find_H_osc(self, eps, M): return eps / 3
+    def find_mass(self, T, eps, M): return eps / 2
+
 clockwork_axion_field = ClockworkAxionField()
-
-############################### relic density computation ################################
-def calc_abundance(phi_over_f, phi_dot_over_f, T, eps, mR, f, M):
-    rho = f**2 * (0.5 * phi_dot_over_f**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))
-    m_phi = calc_m_phi(mR, M)
-    n = rho / m_phi
-    s = cosmology.calc_entropy_density(T)
-    return n / s
-
-def evolve(t_start, t_end, initial, args, steps=None):
-    sol = solve_ivp(rhs, (t_start, t_end), initial, t_eval=steps, method="RK45", rtol=1e-8, args=args)
-    assert sol.success
-    return sol
-
-def compute_relic_density(field_initial_over_f, T_initial, t_initial, f, mR, M,
-                          num_osc_per_step=5, convergence_epsilon=1e-2, debug=False, max_steps=50):
-    # integrate unitl t_osc ~ about the start of oscillations
-    T_fn_rad_dom, H_fn_rad_dom = cosmology.make_rad_dom_H_fn(t_initial, T_initial)
-    m_phi = calc_m_phi(mR, M)
-    t_osc = cosmology.switch_hubble_and_time_rad_dom(m_phi)
-    Delta_t = 2*np.pi / m_phi * num_osc_per_step
-    eps = calc_eps(mR)
-    args = (eps, M, H_fn_rad_dom)
-    sol = evolve(t_initial, t_osc, field_initial_over_f, args)
-    step = 0
-    last = -1
-    if debug:
-        plt.subplot(2,1,1)
-        plt.semilogx(sol.t, sol.y[0])
-        plt.subplot(2,1,2)
-        plt.loglog(sol.t, calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M))
-    # main converence loop
-    while True:
-        # now integrate num_osc_per_step oscillations at the time
-        t_start = sol.t[-1]
-        t_end = t_start + Delta_t
-        t_steps = np.linspace(t_start, t_end, num_osc_per_step * 10)
-        t_steps[0] = t_start; t_steps[-1] = t_end
-        sol = evolve(t_start, t_end, sol.y[:, -1], args, steps=t_steps)
-        if debug:
-            plt.subplot(2,1,1)
-            plt.semilogx(sol.t, sol.y[0])
-            plt.subplot(2,1,2)
-            plt.loglog(sol.t, calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M))
-        # get n/s
-        Y = calc_abundance(*sol.y, T_fn_rad_dom(sol.t), eps, mR, f, M)
-        # find the local minima and maxima in the solution
-        is_max = np.where((Y[:-2] < Y[1:-1]) & (Y[2:] < Y[1:-1]))[0]
-        is_min = np.where((Y[:-2] > Y[1:-1]) & (Y[2:] > Y[1:-1]))[0]
-        if len(is_max) > 0 and len(is_min) > 0:
-            Y_min, Y_max = Y[is_min[-1] + 1], Y[is_max[-1] + 1]
-        else:
-            # if no local extrema are found then the hasn't started oscillating yet.
-            # We skip the convergence check and continue with the next integration interval.
-            if debug:
-                print("no oscillations:", "Y =", Y[-1], "t_end =", t_end)
-            step += 1
-            if max_steps is not None and step > max_steps:
-                break
-            else:
-                continue
-        # check if the relative change of the mean value of Y between this and the last interval
-        # is below our threshold.
-        Y_mean = (Y_max + Y_min) / 2
-        if last is not None:
-            change = np.abs(Y_mean - last) / Y_mean
-            if debug:
-                print("change:", change, "Y:", Y_mean, "convergence_eps:", convergence_epsilon)
-            if change < convergence_epsilon:
-                break
-            else:
-                last = Y_mean
-        step += 1
-        if max_steps is not None and step > max_steps:
-            raise RuntimeError(f"iteration for relic density took too long. last change:") #  {change}")
-    # once we are converged redshift the abundance to today and compute the relic density as
-    # the density parameter
-    n_today = Y_mean * cosmology.calc_entropy_density(constants.T_CMB, constants.g_star_0)
-    rho_today = m_phi * n_today
-    Omega_h_sq = rho_today * (1e9)**4 / constants.rho_c * constants.h**2 # includes conversion between eV and GeV since rho_c is in eV
-    return Omega_h_sq
 
 ############################## checking if the axion field interferce with inflation ###########################
 def is_pot_curvature_too_large(mR, m_phi, H_inf, theta_i):

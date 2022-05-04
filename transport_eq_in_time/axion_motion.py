@@ -7,7 +7,7 @@ class AxionField:
     def rhs(self, t, y, T_and_H_fn, energy_scale, axion_parameter): raise NotImplementedError()
     def find_dynamical_scale(self, *axion_parameter): raise NotImplementedError()
     def find_H_osc(self, *axion_parameter): raise NotImplementedError()
-    def find_osc_period(self, *axion_parameter): raise NotImplementedError()
+    def find_mass(self, T, *axion_parameter): raise NotImplementedError()
 
     def solve(self, axion_init, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf,
               debug=False, rtol=1e-10, method="Radau"):
@@ -45,7 +45,6 @@ class AxionField:
     does_decay = NotImplemented
     has_relic_density = NotImplemented
     def get_decay_constant(self): raise NotImplementedError()
-    def find_relic_density(self): raise NotImplementedError()
 
 class SingleAxionField(AxionField):
     def calc_pot_deriv(self, theta, T, m_a): raise NotImplementedError()
@@ -73,6 +72,8 @@ class RealignmentAxionField(SingleAxionField):
     Gamma_a_const = alpha**2 / (64 * np.pi**3)
     # from paper a to SU(2) gauge bosons
     def get_decay_constant(self, f_a, m_a): return self.Gamma_a_const * m_a**3 / f_a**2
+    def find_H_osc(self, m_a): return 1 / 3
+    def find_mass(self, T, m_a): return 1.0
 
 realignment_axion_field = RealignmentAxionField()
 

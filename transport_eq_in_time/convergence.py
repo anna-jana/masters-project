@@ -13,6 +13,22 @@ eta_B_observed = 6e-10 # from paper
 g_star_0 = 43/11 # from paper
 asym_const = - g_star_0 * C_sph * np.pi**2 / (6 * decay_process.g_star * zeta3 * g_photon)
 
+def calc_entropy_density(T, g_star):
+    return 2*np.pi**2 / 45 * g_star * T**3
+
+g_star_0 = 43/11 # from paper
+T_CMB = 2.348654180597668e-13 # GeV
+s_today = calc_entropy_density(T_CMB, g_star_0)
+Omega_DM_h_sq = 0.11933
+h = 0.673
+rho_c = 3.667106289005098e-11 # [eV^4]
+
+def abundance_to_relic_density(Y, m):
+    n = s_today * Y
+    rho = m * n
+    Omega_h_sq = rho / 1e9**2 / rho_c * h**2
+    return Omega_h_sq
+
 def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
     #n_B_minus_L = T**3 / 6 * red_chem_pot_B_minus_L
     #n_B = - C_sph * n_B_minus_L
@@ -28,7 +44,10 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         axion_model=axion_motion.realignment_axion_field, axion_init=(1.0, 0.0),
         start_tmax_axion_time=10.0, step_tmax_axion_time=2*2*np.pi,
         source_vector_axion=transport_equation.source_vector_weak_sphaleron,
-        axion_decay_time=10.0, debug=False, convergence_rtol=1e-3, nsamples=100, calc_init_time=False):
+        axion_decay_time=10.0, debug=False,
+        nosc_per_step=5, nsamples_per_osc=20,
+        convergence_rtol=1e-3, convergence_eps_relic_density=1e-3,
+        nsamples=100, calc_init_time=False):
     # this is a bit useless but I keep it to make it work like the general case
     energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
     if energy_scale > H_inf:
@@ -181,6 +200,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         plt.ylabel(r"$\varphi / f_a$")
 
         plt.figure()
+        plt.subplot(2,1,1)
         tend = 0
         for axion_sol in axion_sols:
             ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
@@ -189,8 +209,8 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
             plt.loglog(ts, [axion_model.get_energy(y, f_a, Gamma_inf, *axion_parameter) for y in axion_sol.sol(ts_ax).T])
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"~ energy density")
-
-        plt.figure()
+        
+        plt.subplot(2,1,2)
         tend = 0
         for axion_sol in axion_sols:
             ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
@@ -224,6 +244,8 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
         plt.ylabel(r"$|\mu_i / T|$")
         plt.legend(ncol=3, framealpha=1)
 
+    eta_B = red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots_final))
+
     if axion_model.does_decay:
         if debug:
             start_decay = time.time()
@@ -239,7 +261,7 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
 
         t = np.exp(sol_axion_decay.t[-1])
         f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
-        Omega = 0.0
+        Omega_h_sq = 0.0
 
         if debug:
             end_decay = time.time()
@@ -256,19 +278,100 @@ def compute_asymmetry(H_inf, Gamma_inf, axion_parameter, f_a,
 
     elif axion_model.has_relic_density:
         f = 1.0
-        axion_init = axion_sol.y[:, -1]
-        H0 = T_and_H_fn(t_end)
-        H_osc = axion_model.find_H_osc(*axion_parameter) # [GeV]
-        t_osc = 1 / 2 * (1/H_osc + 1/H0) + t0
-        n_relic_oscs = 10
-        period = axion_model.find_osc_period(*axion_parameter)
-        tmax = t_osc + n_relic_oscs * period
-        axion_model.solve()
+        if debug:
+            relic_density_start = time.time()
 
+        # initial
+        H_osc = axion_model.find_H_osc(*axion_parameter)
+        _, H = T_and_H_fn(np.exp(sol_rh.t[-1]))
+
+        def H_to_t(H):
+            return 1 / 2 * (1/H + 1/(H_inf / energy_scale))
+
+        # evolve to oscillation start, if nessesary
+        if H > H_osc:
+            t = H_to_t(H)
+            t_osc = H_to_t(H_osc)
+            t_advance_axion = t_osc - t
+            t_advance_inf = t_advance_axion * conv_factor
+
+            rho_R_init = decay_process.find_end_rad_energy(sol_rh, scale)
+            rho_inf_init = decay_process.find_end_field_energy(sol_rh, rho_inf_init)
+            
+            if debug:
+                print("advancing to oscillation")
+                print("t_advance =", t_advance_axion)
+                print(f"H = {H}, H_osc = {H_osc}")
+
+            sol_rh, T_and_H_fn, _ = decay_process.solve(t_advance_inf, rho_R_init, rho_inf_init, scale, Gamma_inf)
+            sol_axion = axion_model.solve(sol_axion.y[:, -1], axion_parameter, t_advance_axion, T_and_H_fn, Gamma_inf)
+            
+            if debug:
+                plt.figure()
+                ts_inf = np.geomspace(decay_process.t0, decay_process.t0 + t_advance_inf, 400)
+                ts_ax = (ts_inf - decay_process.t0) / conv_factor
+                plt.semilogx(ts_ax, sol_axion.sol(ts_ax)[0, :])
+                plt.xlabel("t * M")
+                plt.ylabel("axion field")
+                plt.title("advancing to oscillation")
+
+        # convergence of axion abundance
+        if debug:
+            plt.figure()
+            tend = 0
+        last_Y_estimate = np.nan
+        while True:
+            current_T, _ = T_and_H_fn(np.exp(sol_rh.t[-1]))
+            freq = axion_model.find_mass(current_T, *axion_parameter)
+
+            step_time_axion = nosc_per_step * 2*np.pi / freq
+            step_time_inf = step_time_axion * conv_factor
+
+            rho_R_init = decay_process.find_end_rad_energy(sol_rh, scale)
+            rho_inf_init = decay_process.find_end_field_energy(sol_rh, rho_inf_init)
+
+            scale = rho_R_init
+            sol_rh, T_and_H_fn, _ = decay_process.solve(step_time_inf, rho_R_init, rho_inf_init, scale, Gamma_inf)
+            sol_axion = axion_model.solve(sol_axion.y[:, -1], axion_parameter, step_time_axion, T_and_H_fn, Gamma_inf)
+
+            ts_ax = np.linspace(0, step_time_axion, nsamples_per_osc * nosc_per_step)
+            ts_inf = conv_factor * ts_ax + decay_process.t0
+
+            T, H = T_and_H_fn(ts_inf)
+            s = calc_entropy_density(T, decay_process.g_star) # [GeV^3]
+            ys = sol_axion.sol(ts_ax)
+            rho_over_f_sq = np.array([axion_model.get_energy(y, 1.0, Gamma_inf, *axion_parameter) for y in ys.T])
+            m = axion_model.find_mass(T, *axion_parameter)
+            n_over_f_sq = rho_over_f_sq / m # [GeV]
+            Y = n_over_f_sq / s # [GeV^-2] bc its n/s/f^2
+            is_min = (Y[2:] > Y[1:-1]) & (Y[:-2] > Y[1:-1])
+            is_max = (Y[2:] < Y[1:-1]) & (Y[:-2] < Y[1:-1])
+            Y_estimate = (np.sum(Y[1:-1][is_min]) + np.sum(Y[1:-1][is_max])) / (np.sum(is_min) + np.sum(is_max))
+            delta = np.abs(Y_estimate - last_Y_estimate) / Y_estimate
+
+            if debug:
+                ls = plt.plot(ts_ax + tend, Y)
+                plt.plot(ts_ax[1:-1][is_min] + tend, Y[1:-1][is_min], "ob")
+                plt.plot(ts_ax[1:-1][is_max] + tend, Y[1:-1][is_max], "or")
+                plt.plot([ts_ax[0] + tend, ts_ax[-1] + tend], [Y_estimate, Y_estimate], color=ls[0].get_color())
+                tend += step_time_axion
+                print(f"delta = {delta} vs {convergence_eps_relic_density}")
+
+            if delta < convergence_eps_relic_density:
+                break
+            last_Y_estimate = Y_estimate
+
+        m_today = axion_model.find_mass(T_CMB, *axion_parameter)
+        Omega_h_sq = abundance_to_relic_density(Y_estimate, m_today) * f_a**2
+
+        if debug:
+            relic_density_end = time.time()
+            print("relic density took:", relic_density_end - relic_density_start, "seconds")
+            plt.xlabel("t*M")
+            plt.ylabel("n/s")
     else:
-        Omega = 1.0
+        Omega_h_sq = 0.0
         f = 1.0
 
-
-    return red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots_final)), f, Omega
+    return eta_B, f, Omega_h_sq
 

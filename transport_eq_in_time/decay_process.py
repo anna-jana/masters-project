@@ -1,6 +1,7 @@
 import numpy as np, matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from scipy.optimize import root
+from collections import namedtuple
 t0 = 1.0
 M_pl = 2.435e18 # reduced Planck mass [GeV] from wikipedia (https://en.wikipedia.org/wiki/Planck_mass)
 g_star = 427/4 # during reheating from paper
@@ -9,7 +10,7 @@ def rhs(log_t, u, C, rho0):
     t = np.exp(log_t)
     rho_rad, a = u
     rho_field = rho0 * a**(-3) * np.exp(-(t - t0))
-    H = np.sqrt(rho_field + rho_rad) * C
+    H = np.sqrt(rho_field + rho_rad) * C # NOTE: sometimes with is evalulated at weird arguments -> warnings
     rho_rad_dot = - 4 * H * rho_rad + rho_field
     a_dot = a * H
     return t * rho_rad_dot, t * a_dot
@@ -18,14 +19,33 @@ def find_scale(Gamma):
     # what is the energy density at T_decay?
     return 3 / 2 * M_pl**2 * Gamma**2
 
-def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False):
+AnalyticSolution = namedtuple("AnalyticSolution", ["sol", "t", "y"])
+
+def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False, force_numeric=False):
     C = np.sqrt(scale) / (np.sqrt(3)*M_pl*Gamma)
     rho0 = rho_field_init / scale
-    
-    sol = solve_ivp(rhs, (np.log(t0), np.log(t0 + tmax)), (rho_rad_init / scale, 1.0),
-            args=(C, rho0), rtol=1e-6, method="RK45", dense_output=True)
-    assert sol.success
-    
+    tspan = (np.log(t0), np.log(t0 + tmax))
+
+    H0 = np.sqrt(rho_field_init + rho_rad_init) / (np.sqrt(3)*M_pl)
+    if not force_numeric and rho_rad_init != 0.0 and rho_field_init / rho_rad_init < 1e-5 and H0 / Gamma < 1e-2:
+        # we are radiation dominated and the field is decayed
+        A = rho_rad_init / scale
+        def analytic_rad_dom(log_t):
+            t = np.exp(log_t)
+            rho0_rad = rho_rad_init / scale
+            t_tilda = 2*C*np.sqrt(rho0_rad)*(t - t0) + 1
+            a = t_tilda**0.5
+            rho_rad = rho0_rad*t_tilda**(-2)
+            if isinstance(log_t, np.ndarray):
+                return np.vstack([rho_rad, a])
+            else:
+                return rho_rad, a
+        sol = AnalyticSolution(sol=analytic_rad_dom, t=tspan, y=np.array([[A, 1.0], analytic_rad_dom(tspan[-1])]).T)
+    else:
+        sol = solve_ivp(rhs, tspan, (rho_rad_init / scale, 1.0),
+                args=(C, rho0), rtol=1e-6, method="RK45", dense_output=True)
+        assert sol.success
+
     T_const = (scale)**(1/4) / (np.pi**2 / 30 * g_star)**(1/4)
     H_const = np.sqrt(scale) / (np.sqrt(3) * M_pl)
     T_dot_const = scale / (np.pi**2/30*g_star * 4)
@@ -54,7 +74,7 @@ def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False):
         H0 = T_and_H_fn(t0)[1]
         rho_rad, a = sol.sol(log_t)
         rho_field = rho0 * a**(-3) * np.exp(-(t - t0))
-        
+
         plt.figure()
         plt.subplot(2,1,1)
         plt.loglog(t, T)
@@ -66,7 +86,7 @@ def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False):
         plt.xlabel(r"$t \cdot \Gamma$")
         plt.legend()
         plt.tight_layout()
-        
+
         plt.figure()
         plt.subplot(2,1,1)
         plt.axvline(t0 + 1.0, color="black", ls="--", label="decay time")
@@ -81,7 +101,7 @@ def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False):
         plt.xlabel(r"$t \cdot \Gamma$")
         plt.ylabel("a")
         plt.tight_layout()
-        
+
     return sol, T_and_H_fn, T_and_H_and_T_dot_fn
 
 def find_end_rad_energy(sol, scale):
