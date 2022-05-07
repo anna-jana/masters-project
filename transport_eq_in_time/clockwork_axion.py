@@ -89,7 +89,7 @@ class ClockworkAxionField(axion_motion.SingleAxionField):
         phi_dot_over_f /= conv_factor
         return calc_theta_dot(phi_over_f, phi_dot_over_f, eps, M)
 
-    def get_energy(self, y, f_a, Gamma_inf, eps, M):
+    def get_energy(self, y, f_a, eps, M):
         phi_over_f, phi_dot_over_f = y
         energy_scale = self.find_dynamical_scale(eps, M)
         return f_a**2 * (0.5 * (phi_dot_over_f * energy_scale)**2 + calc_V_eff_over_f_sq(phi_over_f, eps, M))
