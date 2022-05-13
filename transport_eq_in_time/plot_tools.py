@@ -5,7 +5,6 @@ decay_process = importlib.reload(decay_process)
 transport_equation = importlib.reload(transport_equation)
 
 def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, background_sols, axion_sols, red_chem_pot_sols):
-    print(axion_model, axion_parameter)
     # background cosmology
     plt.figure()
     plt.subplot(2,1,1)
@@ -57,7 +56,7 @@ def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_par
         tend += axion_sol.t[-1]
         plt.loglog(ts, [axion_model.get_energy(y, f_a, *axion_parameter) for y in axion_sol.sol(ts_ax).T])
     plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-    plt.ylabel(r"~ energy density")
+    plt.ylabel(r"energy density / f_a^2")
     plt.subplot(2,1,2)
     tend = 0
     for axion_sol in axion_sols:
