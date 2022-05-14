@@ -48,7 +48,7 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         axion_decay_time=10.0, debug=False,
         nosc_per_step=5, nsamples_per_osc=20,
         rtol_asym=1e-3, rtol_relic=1e-3,
-        nsamples=100, calc_init_time=False):
+        nsamples=100, calc_init_time=False, isocurvature_check=False):
     ############################## check parameter consistency ####################
     status = Status.OK
     energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
@@ -58,11 +58,13 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         #(invalidates the assumtion that the axion doesn't iterfere with inflation)
     if Gamma_inf > H_inf:
         return np.nan, np.nan, np.nan, Status.INFLATON_DECAYS_DURING_INFLATION.value    
-    if H_inf/(2*np.pi)/f_a < 1e-5: # eq. 1 in 1412.2043
+    if isocurvature_check and H_inf/(2*np.pi)/f_a < 1e-5: # eq. 1 in 1412.2043
         return np.nan, np.nan, np.nan, Status.ISOCURVATURE_BOUNDS.value
 
     ############################### setup for asymmetry computation ########################
     conv_factor = Gamma_inf / energy_scale
+    if debug:
+        print("conv factor:", conv_factor)
     rho_R_init = 0.0
     rho_inf_init = 3 * decay_process.M_pl**2 * H_inf**2
     red_chem_pots_init = np.zeros(transport_equation.N)
@@ -90,6 +92,8 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
                 0.8 * decay_process.g_star**(-1/4) * rho_inf_init**(1/8)
                 * (Gamma_inf * decay_process.M_pl / (8*np.pi))**(1/4)
             ) # [GeV]
+            if debug:
+                print(f"T_max = {Tmax:e}")
             if T_and_H_fn(tmax_inf_time)[0] > T_eq_general:
                 H_in_GeV = np.sqrt(np.pi**2 / 30 * decay_process.g_star / (3*decay_process.M_pl**2)) * T_eq_general**2
                 H = H_in_GeV / Gamma_inf
@@ -100,11 +104,13 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
                 goal_fn = lambda log_t: np.log(T_and_H_fn(np.exp(log_t))[0] / T_eq_general)
                 sol = root(goal_fn, np.log(decay_process.t0 + tmax_inf_time  / 2), method="lm")
                 t_eq = np.exp(sol.x[0] if sol.success else np.nan) # [1/Gamma_inf]
-            t_axion = 1.0 + 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
-            t_RH = 1.0 + decay_process.t0 # we want to reach reheating [1/Gamma_inf]
-
-            tmax_inf_time = max(t_eq, t_RH)
+            t_axion = 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
+            t_RH = decay_process.t0 # we want to reach reheating [1/Gamma_inf]
+            tmax_inf_time = max(t_RH, t_eq) # DANGER: max is NOT commutativ if nan is involved, t_eq has to be in the second place!
             tmax_axion_time = tmax_inf_time / conv_factor
+            if debug:
+                print(f"t_eq = {t_eq}")
+                print(f"tmax_inf_time = {tmax_inf_time}, tmax_axion_time = {tmax_axion_time}")
             sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, 0.0, rho_inf_init, scale, Gamma_inf)
             if debug:
                 print("calculcated initial integration time:")
@@ -179,7 +185,7 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         t = np.exp(sol_axion_decay.t[-1])
         f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
         Omega_h_sq = 0.0
-
+    
         if debug:
             end_decay = time.time()
             print("axion decay took:", end_decay - start_decay, "seconds")

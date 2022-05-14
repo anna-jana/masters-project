@@ -8,7 +8,7 @@ import axion_motion, observables, clockwork_axion
 ############################ general code ##########################
 def run_task(task):
     n, xs, args, kwargs, f, nsteps = task
-    logging.info("starting step %i of %i", n, nsteps)
+    logging.info(f"starting step %i of %i {xs}", n, nsteps)
     start = time.time()
     try:
         x = f(*xs, *args, **kwargs)
@@ -17,20 +17,21 @@ def run_task(task):
         x = [np.nan]*nres
         logging.error(f"step {n} raised an exception: {e}")
     end = time.time()
-    logging.info("%i took %f seconds", n, end - start)
-    logging.info(f"{n}th result: {x}")
+    logging.info(f"{n}th result: {x} (took {end - start} seconds)")
     return x
 
 def run(name, f, xss, args, kwargs):
+    start_time = time.time()
     i = 1
     while True:
-        logfile = f"{name}_run{i}.log"
+        logfile = f"{name}{i}.log"
         if not os.path.exists(logfile):
             break
         i += 1
-    outputfile = f"{name}_data{i}.hdf5"
+    outputfile = f"{name}{i}.hdf5"
 
     logging.basicConfig(filename=logfile, level=logging.DEBUG)
+    logging.getLogger().addHandler(logging.StreamHandler()) # make the log messages appear both in the file and on stderr
 
     shape = tuple(map(len, xss))
     nsteps = functools.reduce(operator.mul, shape)
@@ -59,40 +60,43 @@ def run(name, f, xss, args, kwargs):
         Omega_h_sq[...] = data[..., 2]
         status[...] = data[..., 3].astype("int")
     logging.info("storing output data done")
-
+    
+    end_time = time.time()
+    logging.info(f"total time elapsed: {end_time - start_time}")
     logging.info("Terminating program.")
 
 ######################### realignment ########################
-def f_realignment(H_inf, Gamma_inf, m_a, f_a):
-    return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,  axion_motion.realignment_axion_field,  (1.0, 0.0), calc_init_time=True)
+def f_realignment(Gamma_inf, m_a, f_a):
+    H_inf_max = f_a*2*np.pi*1e-5
+    return observables.compute_observables(H_inf_max, Gamma_inf, (m_a,), f_a,  
+                                           axion_motion.realignment_axion_field, (1.0, 0.0), calc_init_time=True)
 
-def run_realignment(N=20):
-    f_a_list = 4 * 10**np.arange(10, 15 + 1)
-    H_inf_max = f_a_list[-1]*2*np.pi*1e-5
-    H_inf_list = 10**np.arange(-6., 2, 2) * H_inf_max
+def run_realignment(N=15):
+    f_a_list = 4 * 10**np.linspace(10, 15, 4)
     Gamma_inf_list = np.geomspace(1e6, 1e10, N)
     m_a_list = np.geomspace(1e6, 1e10, N + 1)
-    run("realignment", f_realignment, [H_inf_list, Gamma_inf_list, m_a_list, f_a_list], [], dict())
+    run("realignment", f_realignment, [Gamma_inf_list, m_a_list, f_a_list], [], dict())
+
 
 ############################ clockwork ##########################
-def f_clockwork(H_inf, Gamma_inf, mR, m_phi, f_eff):
+def f_clockwork(Gamma_inf, mR, m_phi):
+    H_inf = Gamma_inf # as in the paper
     eps = clockwork_axion.calc_eps(mR)
+    f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
     f = clockwork_axion.calc_f(f_eff, eps)
     M = m_phi / eps
-    theta_i = 3*np.pi/4
+    theta_i = 3*np.pi/4 # as in the paper = sqrt(average value of theta^^2 over 0..2pi)
     ax0 = (clockwork_axion.theta_to_phi_over_f(theta_i, eps), 0.0)
-    return observables.compute_observables(H_inf, Gamma_inf, (eps, M), f, clockwork_axion.clockwork_axion_field, ax0, calc_init_time=True)
+    return observables.compute_observables(H_inf, Gamma_inf, (eps, M), f, 
+                                           clockwork_axion.clockwork_axion_field, ax0, 
+                                           calc_init_time=True, isocurvature_check=False)
 
 def run_clockwork(N=20):
     m_phi_list = np.geomspace(1e-6, 1e6, N + 1) * 1e-9 # [GeV]
-    mR_list = np.linspace(0, 15, N)
-    f_eff_list = 4 * 10**np.arange(10, 15 + 1)
-    H_inf_max = f_eff_list[-1]*2*np.pi*1e-5
-    H_inf_list = 10**np.arange(-6., 2, 2) * H_inf_max
-    Gamma_inf_list = np.geomspace(1e6, 1e10, N)
-
-    run("clockwork", f_clockwork, [H_inf_list, Gamma_inf_list, mR_list, m_phi_list, f_eff_list], [], dict())
+    mR_list = np.linspace(1, 15, N)
+    Gamma_inf_list = np.geomspace(1e6, 1e10, N - 1)
+    run("clockwork", f_clockwork, [Gamma_inf_list, mR_list, m_phi_list], [], dict())
 
 if __name__ == "__main__":
-    run_realignment()
+    #run_realignment()
     run_clockwork()
