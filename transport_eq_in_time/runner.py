@@ -84,8 +84,8 @@ def run_realignment(N=15):
 
 
 ############################ clockwork ##########################
-def f_clockwork(Gamma_inf, mR, m_phi):
-    H_inf = Gamma_inf # TODO: this needs to be changed
+def f_clockwork(H_inf_over_Gamma_inf, Gamma_inf, mR, m_phi):
+    H_inf = Gamma_inf * H_inf_over_Gamma_inf
     eps = clockwork_axion.calc_eps(mR)
     f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
     f = clockwork_axion.calc_f(f_eff, eps)
@@ -100,7 +100,8 @@ def run_clockwork(N=20):
     m_phi_list = np.geomspace(1e-6, 1e6, N + 1) * 1e-9 # [GeV]
     mR_list = np.linspace(1, 15, N)
     Gamma_inf_list = np.geomspace(1e6, 1e10, N - 1)
-    run("clockwork", f_clockwork, ["Gamma_inf", "mR", "m_phi"], [Gamma_inf_list, mR_list, m_phi_list], [], dict())
+    H_inf_over_Gamma_inf_list = np.geomspace(1, 1e4, 2)
+    run("clockwork", f_clockwork, ["H_inf_over_Gamma_inf", "Gamma_inf", "mR", "m_phi"], [H_inf_over_Gamma_inf_list, Gamma_inf_list, mR_list, m_phi_list], [], dict())
 
 ###################################### loading data ########################################
 def load_data(name, version):
