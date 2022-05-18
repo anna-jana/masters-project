@@ -4,6 +4,26 @@ import decay_process, transport_equation
 decay_process = importlib.reload(decay_process)
 transport_equation = importlib.reload(transport_equation)
 
+def latex_exponential_notation(value, digits=1):
+    exponent = int(np.floor(np.log10(np.abs(value))))
+    prefix = value / 10**exponent
+    rounded_prefix = np.round(np.abs(prefix) * 10**digits) / 10.0**digits
+    format_string_prefix = r"%." + str(digits) + "f"
+    rounded_prefix_string = format_string_prefix % rounded_prefix
+    while rounded_prefix_string and rounded_prefix_string[-1] == "0":
+        rounded_prefix_string = rounded_prefix_string[:-1]
+    if rounded_prefix_string and rounded_prefix_string[-1] == ".":
+        rounded_prefix_string = rounded_prefix_string[:-1]
+        if rounded_prefix_string and rounded_prefix_string[-1] == "1":
+            rounded_prefix_string = ""
+    if rounded_prefix_string:
+        latex_string = rounded_prefix_string + r"\cdot 10^{%i}" % exponent
+    else:
+        latex_string = "10^{%i}" % exponent
+    if value < 0:
+        latex_string = "-" + latex_string
+    return latex_string
+
 def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, background_sols, axion_sols, red_chem_pot_sols):
     # background cosmology
     plt.figure()
@@ -125,5 +145,15 @@ def plot_relic_density_time_evolution(conv_factor, t_advance_inf, advance_sol_ax
         tend += ts_ax[-1]
     plt.xlabel("t*M")
     plt.ylabel("n/s")
+
+def make_contour_plot(xrange, yrange, vals, nlines, padding, label, cmap, ls, fts):
+    contour = plt.contour(xrange, yrange, vals, levels=nlines, cmap=cmap, linestyles=ls)
+    cbar = plt.colorbar(pad=padding)
+    cbar.set_label(label, fontsize=fts)
+
+def double_contour_plot(xrange, yrange, A, B, Alabel, Blabel, num_lines_A=10, num_line_B=10, fts=15):
+    make_contour_plot(xrange, yrange, A, num_lines_A, 0.08, Alabel, "viridis", "-", fts)
+    make_contour_plot(xrange, yrange, B, num_line_B, None, Blabel, "plasma", "--", fts)
+    
 
     

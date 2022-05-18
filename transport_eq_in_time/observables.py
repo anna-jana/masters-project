@@ -31,15 +31,29 @@ def abundance_to_relic_density(Y, m):
     return Omega_h_sq
 
 def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
-    #n_B_minus_L = T**3 / 6 * red_chem_pot_B_minus_L
-    #n_B = - C_sph * n_B_minus_L
-    #n_B_today = g_star_0 / g_star * n_B
-    #n_gamma = zeta3 / np.pi**2 * g_photon * T**3 # K&T (3.52)
-    #eta_B = n_B_today / n_gamma
-    #eta_B = g_star_0 / g_star * (- C_sph) * T**3 / 6 * red_chem_pot_B_minus_L / (zeta3 / np.pi**2 * g_photon * T**3)
-    #= g_star_0 / g_star * (- C_sph) * 1 / 6 * red_chem_pot_B_minus_L / (zeta3 / np.pi**2 * g_photon) * red_chem_pot_B_minus_L
-    # = - g_star_0 * C_sph * np.pi**2 / (6 * g_star * zeta3 * g_photon) * red_chem_pot_B_minus_L
     return asym_const * red_chem_pot_B_minus_L
+
+def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion, axion_parameter, f_a, axion_model, debug):
+    if debug:
+        start_decay = time.time()
+    # dilution factor from axion decay
+    # we don't do converence check for this part right now
+
+    Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter) # [GeV]
+    axion_scale = decay_process.find_scale(Gamma_axion) # GeV
+        
+    sol_axion_decay, T_and_H_fn_axion, _ = decay_process.solve(axion_decay_time, rho_end_rad, 
+                                                                   rho_end_axion, axion_scale, Gamma_axion)
+
+    t = np.exp(sol_axion_decay.t[-1])
+    f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
+    
+    if debug:
+        end_decay = time.time()
+        print("axion decay took:", end_decay - start_decay, "seconds")
+        plot_tools.plot_dilution_factor_time_evolution(sol_axion_decay, T_and_H_fn_axion)
+        
+    return f
 
 def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axion_init,
         source_vector_axion=transport_equation.source_vector_weak_sphaleron,
@@ -54,12 +68,12 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
     energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
     
     if energy_scale > H_inf:
-        return np.nan, np.nan, np.nan, Status.AXION_OSCILLATES_BEFORE_INFLATION.value
+        return np.nan, np.nan, np.nan, np.nan, np.nan, Status.AXION_OSCILLATES_BEFORE_INFLATION.value
         #(invalidates the assumtion that the axion doesn't iterfere with inflation)
     if Gamma_inf > H_inf:
-        return np.nan, np.nan, np.nan, Status.INFLATON_DECAYS_DURING_INFLATION.value    
+        return np.nan, np.nan, np.nan, np.nan, np.nan, Status.INFLATON_DECAYS_DURING_INFLATION.value    
     if isocurvature_check and H_inf/(2*np.pi)/f_a < 1e-5: # eq. 1 in 1412.2043
-        return np.nan, np.nan, np.nan, Status.ISOCURVATURE_BOUNDS.value
+        return np.nan, np.nan, np.nan, np.nan, np.nan, Status.ISOCURVATURE_BOUNDS.value
 
     ############################### setup for asymmetry computation ########################
     conv_factor = Gamma_inf / energy_scale
@@ -163,33 +177,20 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
     
     ###################################### finish asymmetry #########################################
     if debug:
-        plot_tools.plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, background_sols, axion_sols, red_chem_pot_sols)
+        plot_tools.plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, 
+                                                 background_sols, axion_sols, red_chem_pot_sols)
     
     # use the last value of the reduced chemical potentials 
     eta_B = red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots[:, -1]))
     
+    rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
+    rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
+
     ############################ entropy dilution from axion decay ################################
     if axion_model.does_decay:
-        if debug:
-            start_decay = time.time()
-        # dilution factor from axion decay
-        # we don't do converence check for this part right now
-        Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter) # [GeV]
-        axion_scale = decay_process.find_scale(Gamma_axion) # GeV
-        rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
-        rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
-
-        sol_axion_decay, T_and_H_fn_axion, _ = decay_process.solve(axion_decay_time, rho_end_rad, 
-                                                                   rho_end_axion, axion_scale, Gamma_axion)
-
-        t = np.exp(sol_axion_decay.t[-1])
-        f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
+        f = compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion, 
+                                                     axion_parameter, f_a, axion_model, debug)
         Omega_h_sq = 0.0
-    
-        if debug:
-            end_decay = time.time()
-            print("axion decay took:", end_decay - start_decay, "seconds")
-            plot_tools.plot_dilution_factor_time_evolution(sol_axion_decay, T_and_H_fn_axion)
     
     ################################## axion relic density ######################################
     elif axion_model.has_relic_density:
@@ -282,4 +283,4 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         Omega_h_sq = 0.0
         f = 1.0
     ###################################### final results ######################################
-    return eta_B, f, Omega_h_sq, float(status.value)
+    return eta_B, f, rho_end_rad, rho_end_axion, Omega_h_sq, float(status.value)
