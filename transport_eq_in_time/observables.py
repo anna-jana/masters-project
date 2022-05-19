@@ -36,6 +36,7 @@ def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
 def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion, axion_parameter, f_a, axion_model, debug):
     if debug:
         start_decay = time.time()
+        print("initial (rad, axion):", rho_end_rad, rho_end_axion)
     # dilution factor from axion decay
     # we don't do converence check for this part right now
 
@@ -183,8 +184,9 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
     # use the last value of the reduced chemical potentials 
     eta_B = red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots[:, -1]))
     
-    rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
     rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
+    rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
+
 
     ############################ entropy dilution from axion decay ################################
     if axion_model.does_decay:

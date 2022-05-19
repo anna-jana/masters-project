@@ -5,8 +5,6 @@ import numpy as np
 import h5py
 import axion_motion, observables, clockwork_axion
 
-logging.getLogger().addHandler(logging.StreamHandler()) # make the log messages appear both in the file and on stderr
-
 ############################ general code ##########################
 nres = 6
 
@@ -23,6 +21,8 @@ def run_task(task):
     logging.info(f"{n}th result: {x} (took {end - start} seconds)")
     return x
 
+added_stderr_logger = False
+
 def run(name, f, argnames, xss):
     start_time = time.time()
     i = 1
@@ -34,6 +34,11 @@ def run(name, f, argnames, xss):
     outputfile = f"{name}{i}.hdf5"
 
     logging.basicConfig(filename=logfile, level=logging.DEBUG)
+    # make the log messages appear both in the file and on stderr but only once!
+    global added_stderr_logger
+    if not added_stderr_logger:
+        logging.getLogger().addHandler(logging.StreamHandler()) 
+        added_stderr_logger = False
 
     shape = tuple(map(len, xss))
     nsteps = functools.reduce(operator.mul, shape)
@@ -46,17 +51,17 @@ def run(name, f, argnames, xss):
     with ProcessPoolExecutor() as pool:
         data_list = list(pool.map(run_task, tasks))
     logging.info("... computations done")
-
+    
     data = np.reshape(data_list, shape + (nres,))
-
+    
     logging.info("storing data in hdf5 file %s", outputfile)
     with h5py.File(outputfile, "w") as fh:
         # save output
-        eta = fh.create_dataset("eta", shape, dtype="f")
-        dilution = fh.create_dataset("dilution", shape, dtype="f")
-        rho_end_rad = fh.create_dataset("rho_end_rad", shape, dtype="f")
-        rho_end_axion = fh.create_dataset("rho_end_axion", shape, dtype="f")
-        Omega_h_sq = fh.create_dataset("Omega_h_sq", shape, dtype="f")
+        eta = fh.create_dataset("eta", shape, dtype="d")
+        dilution = fh.create_dataset("dilution", shape, dtype="d")
+        rho_end_rad = fh.create_dataset("rho_end_rad", shape, dtype="d")
+        rho_end_axion = fh.create_dataset("rho_end_axion", shape, dtype="d")
+        Omega_h_sq = fh.create_dataset("Omega_h_sq", shape, dtype="d")
         status = fh.create_dataset("status", shape, dtype="i")
         eta[...] = data[..., 0]
         dilution[...] = data[..., 1]
@@ -64,6 +69,7 @@ def run(name, f, argnames, xss):
         rho_end_axion[...] = data[..., 3]
         Omega_h_sq[...] = data[..., 4]
         status[...] = data[..., 5].astype("int")
+                
         # save input
         for argname, xs in zip(argnames, xss):
             ds = fh.create_dataset(argname, (len(xs),), dtype="f")
@@ -85,7 +91,7 @@ def run_realignment():
     H_inf_max = f_a*2*np.pi*1e-5
     Gamma_inf_list = np.geomspace(1e6, 1e10, N)
     m_a_list = np.geomspace(1e6, 1e10, N + 1)
-    run("realignment", f_realignment, ["H_inf_max", "Gamma_inf", "m_a", "f_a"],
+    run("realignment", f_realignment, ["H_inf", "Gamma_inf", "m_a", "f_a"],
         [[H_inf_max], Gamma_inf_list, m_a_list, [f_a]])
 
 
