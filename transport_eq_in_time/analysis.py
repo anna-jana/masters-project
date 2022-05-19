@@ -1,3 +1,4 @@
+import numpy as np
 from scipy.interpolate import interp1d
 from scipy.optimize import root
 from skimage.measure import find_contours
@@ -14,7 +15,7 @@ def find_level(xrange, yrange, fvals, level=0.0):
         ys = mR_interp(rows)
         yield xs, ys
 
-def find_level_intersection(xs1, ys1, xs2, ys2):
+def find_curve_intersection(xs1, ys1, xs2, ys2):
     assert len(xs1) == len(ys1)
     assert len(xs2) == len(ys2)
     xs1_interp = make_interp(xs1)

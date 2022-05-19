@@ -87,10 +87,10 @@ def f_realignment(H_inf, Gamma_inf, m_a, f_a):
 
 def run_realignment():
     f_a = 4 * 1e15
-    N = 15
+    N = 30
     H_inf_max = f_a*2*np.pi*1e-5
-    Gamma_inf_list = np.geomspace(1e6, 1e10, N)
-    m_a_list = np.geomspace(1e6, 1e10, N + 1)
+    Gamma_inf_list = np.geomspace(1e6, H_inf_max, N)
+    m_a_list = np.geomspace(1e6, H_inf_max, N)
     run("realignment", f_realignment, ["H_inf", "Gamma_inf", "m_a", "f_a"],
         [[H_inf_max], Gamma_inf_list, m_a_list, [f_a]])
 
