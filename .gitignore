@@ -22,4 +22,4 @@ patras-workshop/
 *.blg
 *.synctex.gz
 two_fields/*.dat
-transport_eq_in_time/transp/*
+ma-venv/*

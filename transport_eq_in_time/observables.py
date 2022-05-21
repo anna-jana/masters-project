@@ -65,34 +65,34 @@ def solve_system(rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
     
     sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, scale, Gamma_inf)
     if calc_init_time:
-            T_eq_general = 1e12 # [GeV]
-            Tmax = (
-                0.8 * decay_process.g_star**(-1/4) * rho_inf_init**(1/8)
-                * (Gamma_inf * decay_process.M_pl / (8*np.pi))**(1/4)
-            ) # [GeV]
-            if debug:
-                print(f"T_max = {Tmax:e}")
-            if T_and_H_fn(tmax_inf_time)[0] > T_eq_general:
-                H_in_GeV = np.sqrt(np.pi**2 / 30 * decay_process.g_star / (3*decay_process.M_pl**2)) * T_eq_general**2
-                H = H_in_GeV / Gamma_inf
-                t_eq = (1/H - 1/(H_inf / Gamma_inf)) / 2 + decay_process.t0 # [1/Gamma_inf]
-            elif Tmax < T_eq_general:
-                t_eq = np.nan
-            else:
-                goal_fn = lambda log_t: np.log(T_and_H_fn(np.exp(log_t))[0] / T_eq_general)
-                sol = root(goal_fn, np.log(decay_process.t0 + tmax_inf_time  / 2), method="lm")
-                t_eq = np.exp(sol.x[0] if sol.success else np.nan) # [1/Gamma_inf]
-            t_axion = 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
-            t_RH = decay_process.t0 # we want to reach reheating [1/Gamma_inf]
-            tmax_inf_time = max(t_RH, t_eq) # DANGER: max is NOT commutativ if nan is involved, t_eq has to be in the second place!
-            tmax_axion_time = tmax_inf_time / conv_factor
-            if debug:
-                print(f"t_eq = {t_eq}")
-                print(f"tmax_inf_time = {tmax_inf_time}, tmax_axion_time = {tmax_axion_time}")
-            sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, 0.0, rho_inf_init, scale, Gamma_inf)
-            if debug:
-                print("calculcated initial integration time:")
-                print("tmax_inf_time =", tmax_inf_time, "tmax_axion_time =", tmax_axion_time)
+        T_eq_general = 1e12 # [GeV]
+        Tmax = (
+            0.8 * decay_process.g_star**(-1/4) * rho_inf_init**(1/8)
+            * (Gamma_inf * decay_process.M_pl / (8*np.pi))**(1/4)
+        ) # [GeV]
+        if debug:
+            print(f"T_max = {Tmax:e}")
+        if T_and_H_fn(tmax_inf_time)[0] > T_eq_general:
+            H_in_GeV = np.sqrt(np.pi**2 / 30 * decay_process.g_star / (3*decay_process.M_pl**2)) * T_eq_general**2
+            H = H_in_GeV / Gamma_inf
+            t_eq = (1/H - 1/(H_inf / Gamma_inf)) / 2 + decay_process.t0 # [1/Gamma_inf]
+        elif Tmax < T_eq_general:
+            t_eq = np.nan
+        else:
+            goal_fn = lambda log_t: np.log(T_and_H_fn(np.exp(log_t))[0] / T_eq_general)
+            sol = root(goal_fn, np.log(decay_process.t0 + tmax_inf_time  / 2), method="lm")
+            t_eq = np.exp(sol.x[0] if sol.success else np.nan) # [1/Gamma_inf]
+        t_axion = 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
+        t_RH = decay_process.t0 # we want to reach reheating [1/Gamma_inf]
+        tmax_inf_time = max(t_RH, t_eq) # DANGER: max is NOT commutativ if nan is involved, t_eq has to be in the second place!
+        tmax_axion_time = tmax_inf_time / conv_factor
+        if debug:
+            print(f"t_eq = {t_eq}")
+            print(f"tmax_inf_time = {tmax_inf_time}, tmax_axion_time = {tmax_axion_time}")
+        sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, scale, Gamma_inf)
+        if debug:
+            print("calculcated initial integration time:")
+            print("tmax_inf_time =", tmax_inf_time, "tmax_axion_time =", tmax_axion_time)
     if debug:
         rh_end = time.time()
         print("rh:", rh_end - rh_start)
