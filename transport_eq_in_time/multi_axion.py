@@ -9,7 +9,7 @@ class MultiAxionField(axion_motion.AxionField):
         N = y.size // 2
         thetas, theta_dots = y[:N], y[N:]
         force = (Lambda * np.sin(Q @ thetas)) @ Q
-        theta_dotdots = - 3 * H * theta_dots - force
+        theta_dotdots = - 3 * H / energy_scale * theta_dots - force / energy_scale**2
         return np.hstack([theta_dots, theta_dotdots])
 
     def find_dynamical_scale(self, Q, Lambda):
@@ -24,7 +24,7 @@ class MultiAxionField(axion_motion.AxionField):
 
     def calc_source(self, y, conv_factor, Q, Lambda):
         N = len(Lambda)
-        return y[N] / conv_factor
+        return y[N] / conv_factor # the first axion is coupled to the standard model
 
     def calc_V(self, thetas, Q, Lambda):
         return np.dot(Lambda, 1 - np.cos(Q @ thetas))
@@ -33,7 +33,11 @@ class MultiAxionField(axion_motion.AxionField):
         N = len(Lambda)
         thetas, theta_dots = y[:N], y[N:]
         energy_scale = self.find_dynamical_scale(Q, Lambda)
-        return f_a**2 * (0.5 * energy_scale**2 * np.sum(theta_dots**2) + calc_V(thetas, Q, Lambda))
+        return f_a**2 * (0.5 * energy_scale**2 * np.sum(theta_dots**2) + self.calc_V(thetas, Q, Lambda))
+    
+    def calc_mass_state(self, u, Q, Lambda):
+        N = len(Lambda)
+        return np.vstack([Q @ u[:N, :], Q @ u[N:, :]])
 
     does_decay = True
     has_relic_density = True

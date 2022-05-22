@@ -131,9 +131,22 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         nosc_per_step=5, nsamples_per_osc=20,
         rtol_asym=1e-3, rtol_relic=1e-3,
         nsamples=100, calc_init_time=False, isocurvature_check=False):
-    ############################## check parameter consistency ####################
-    status = Status.OK
     
+    ############################### setup for asymmetry computation ########################
+    status = Status.OK
+
+    step = 1
+    axion_sols = []
+    red_chem_pot_sols = []
+    background_sols = []
+    
+    tmax_axion_time = start_tmax_axion_time # initial time to integrate    
+    energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init = \
+        init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time)
+    if debug:
+        print("conv factor:", conv_factor)
+        
+    ############################## check parameter consistency ####################
     if energy_scale > H_inf:
         return np.nan, np.nan, np.nan, np.nan, np.nan, Status.AXION_OSCILLATES_BEFORE_INFLATION.value
         #(invalidates the assumtion that the axion doesn't iterfere with inflation)
@@ -141,18 +154,6 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         return np.nan, np.nan, np.nan, np.nan, np.nan, Status.INFLATON_DECAYS_DURING_INFLATION.value    
     if isocurvature_check and H_inf/(2*np.pi)/f_a < 1e-5: # eq. 1 in 1412.2043
         return np.nan, np.nan, np.nan, np.nan, np.nan, Status.ISOCURVATURE_BOUNDS.value
-
-    ############################### setup for asymmetry computation ########################
-    step = 1
-    tmax_axion_time = start_tmax_axion_time # initial time to integrate
-    if debug:
-        print("conv factor:", conv_factor)
-    energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init = \
-        init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time)
-    
-    axion_sols = []
-    red_chem_pot_sols = []
-    background_sols = []
 
     ################################## asymmmetry convergence loop ########################
     while True:

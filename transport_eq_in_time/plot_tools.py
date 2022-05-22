@@ -24,11 +24,8 @@ def latex_exponential_notation(value, digits=1):
         latex_string = "-" + latex_string
     return latex_string
 
-def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, background_sols, axion_sols, red_chem_pot_sols,
-                                 show_steps=True):  
+def plot_background_cosmology(conv_factor, Gamma_inf, background_sols, axion_sols, show_steps=True):
     color = None if show_steps else "tab:blue"
-    
-    # background cosmology
     fig = plt.figure()
     fig.subplots_adjust(hspace=0)
     plt.subplot(2,1,1)
@@ -57,7 +54,8 @@ def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_par
     plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
     plt.ylabel(r"T / GeV")
 
-    # axion plot
+def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, show_steps=True):
+    color = None if show_steps else "tab:blue"
     fig = plt.figure()
 
     plt.subplot(3,1,1)
@@ -104,7 +102,8 @@ def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_par
     plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
     plt.ylabel(r"$\rho / f_a^2$")
 
-    # transport eq. plot
+def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True):
+    color = None if show_steps else "tab:blue"
     plt.figure()
     tend = 0
     for j, (axion_sol, red_chem_pot_sol, ls) in enumerate(zip(axion_sols, red_chem_pot_sols, itertools.cycle(("-", "--")))):
@@ -123,6 +122,11 @@ def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_par
     plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
     plt.ylabel(r"$|\mu_i / T|$")
     plt.legend(ncol=3, framealpha=1)
+
+def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, background_sols, axion_sols, red_chem_pot_sols, show_steps=True):
+    plot_background_cosmology(conv_factor, Gamma_inf, background_sols, axion_sols, show_steps=True)
+    plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, show_steps=True)
+    plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True)
         
 def plot_dilution_factor_time_evolution(sol_axion_decay, T_and_H_fn_axion):
     axion_decay_time = sol_axion_decay.t[-1] - sol_axion_decay.t[0]
