@@ -21,7 +21,7 @@ def find_scale(Gamma):
 
 AnalyticSolution = namedtuple("AnalyticSolution", ["sol", "t", "y"])
 
-def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False, force_numeric=False):
+def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, force_numeric=False):
     C = np.sqrt(scale) / (np.sqrt(3)*M_pl*Gamma)
     rho0 = rho_field_init / scale
     tspan = (np.log(t0), np.log(t0 + tmax))
@@ -60,7 +60,7 @@ def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False, force_n
     def T_and_H_fn(t_prime):
         _, _, T, H = _helper(t_prime)
         return T, H
-    
+
     @np.vectorize
     def T_and_H_and_T_dot_fn(t_prime):
         rho_field, rho_rad, T, H = _helper(t_prime)
@@ -72,42 +72,6 @@ def solve(tmax, rho_rad_init, rho_field_init, scale, Gamma, debug=False, force_n
         else:
             T_dot = T_dot_const * (Gamma * rho_field - 4*H*rho_rad) / T**3
         return T, H, T_dot
-
-    if debug:
-        log_t = np.linspace(sol.t[0], sol.t[-1], 400)
-        t = np.exp(log_t)
-        T_RH = (45*M_pl**2/g_star)**(1/4) * np.sqrt(Gamma)
-        T, H = T_and_H_fn(t)
-        H0 = T_and_H_fn(t0)[1]
-        rho_rad, a = sol.sol(log_t)
-        rho_field = rho0 * a**(-3) * np.exp(-(t - t0))
-
-        plt.figure()
-        plt.subplot(2,1,1)
-        plt.loglog(t, T)
-        plt.ylabel("T / GeV")
-        plt.subplot(2,1,2)
-        plt.loglog(t, H, label="reheating, numerical")
-        plt.loglog(t, 1.0 / (2*((t - t0) / Gamma) + 1/H0), label="radiation domination, analytical")
-        plt.ylabel("H / GeV")
-        plt.xlabel(r"$t \cdot \Gamma$")
-        plt.legend()
-        plt.tight_layout()
-
-        plt.figure()
-        plt.subplot(2,1,1)
-        plt.axvline(t0 + 1.0, color="black", ls="--", label="decay time")
-        plt.loglog(t, rho_field, label=r"field")
-        plt.loglog(t, rho_rad, label=r"radiation")
-        plt.xlabel(r"$t \cdot \Gamma$")
-        plt.ylabel(r"$\rho / \rho_phi(t_0)$")
-        plt.ylim(1e-15, plt.ylim()[1])
-        plt.legend(framealpha=1.0)
-        plt.subplot(2,1,2)
-        plt.loglog(t, a, label="numerical rh")
-        plt.xlabel(r"$t \cdot \Gamma$")
-        plt.ylabel("a")
-        plt.tight_layout()
 
     return sol, T_and_H_fn, T_and_H_and_T_dot_fn
 

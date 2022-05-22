@@ -112,8 +112,16 @@ def solve_system(rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
         print("transport eq.:", trans_end - ax_end)
         
     return sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn, sol_axion, axion_source, sol_transp_eq, tmax_axion_time
-    
-    
+
+def init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time):
+    energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
+    conv_factor = Gamma_inf / energy_scale
+    rho_R_init = 0.0
+    rho_inf_init = 3 * decay_process.M_pl**2 * H_inf**2
+    scale = decay_process.find_scale(Gamma_inf)
+    tmax_inf_time = tmax_axion_time * conv_factor
+    red_chem_pots_init = np.zeros(transport_equation.N)
+    return energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init  
 
 def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axion_init,
         source_vector_axion=transport_equation.source_vector_weak_sphaleron,
@@ -125,7 +133,6 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         nsamples=100, calc_init_time=False, isocurvature_check=False):
     ############################## check parameter consistency ####################
     status = Status.OK
-    energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
     
     if energy_scale > H_inf:
         return np.nan, np.nan, np.nan, np.nan, np.nan, Status.AXION_OSCILLATES_BEFORE_INFLATION.value
@@ -136,16 +143,13 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         return np.nan, np.nan, np.nan, np.nan, np.nan, Status.ISOCURVATURE_BOUNDS.value
 
     ############################### setup for asymmetry computation ########################
-    conv_factor = Gamma_inf / energy_scale
+    step = 1
+    tmax_axion_time = start_tmax_axion_time # initial time to integrate
     if debug:
         print("conv factor:", conv_factor)
-    rho_R_init = 0.0
-    rho_inf_init = 3 * decay_process.M_pl**2 * H_inf**2
-    red_chem_pots_init = np.zeros(transport_equation.N)
-    tmax_axion_time = start_tmax_axion_time # initial time to integrate
-    step = 1
-    scale = decay_process.find_scale(Gamma_inf)
-
+    energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init = \
+        init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time)
+    
     axion_sols = []
     red_chem_pot_sols = []
     background_sols = []

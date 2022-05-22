@@ -177,7 +177,7 @@ def jac(log_t, red_chem_pots, T_and_H_and_T_dot_fn, axion_source, source_vector,
     return (- sum(jac_mats[alpha] * R[alpha] for alpha in range(N_alpha)) - 3 * (T_dot / T + H) * I) * t
 
 M_inv = np.linalg.inv(np.vstack([charge_vector, dofs * conserved]))
-def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source, source_vector, Gamma_inf, conv_factor, debug=False):
+def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source, source_vector, Gamma_inf, conv_factor):
     # determine the equilibrium solution in order to set the scale of the solution
     ts_inf = np.geomspace(decay_process.t0, decay_process.t0 + t_inf_time, 100)
     theta_dot = axion_source(ts_inf[1:])
@@ -192,15 +192,6 @@ def solve(t_inf_time, initial_red_chem_pots, T_and_H_and_T_dot_fn, axion_source,
             initial_red_chem_pots / unit, dense_output=True, method="BDF", rtol=1e-10, jac=jac,
             args=(T_and_H_and_T_dot_fn, axion_source, source_vector, unit, Gamma_inf))
     assert sol.success
-    if debug:
-        plt.figure()
-        red_chem_pots = sol.sol(np.log(ts_inf))
-        for (i,  name) in enumerate(charge_names):
-            plt.loglog(ts_inf, np.abs(unit * red_chem_pots[i, :]), label=name)
-        plt.loglog(ts_inf, np.abs(calc_B_minus_L(unit * red_chem_pots)), label="B - L", color="black", lw=2)
-        plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
-        plt.ylabel(r"$|\mu_i / T|$")
-        plt.legend(ncol=3)
     return lambda log_t: sol.sol(log_t) * unit
 
 T_equis = [calc_eqi_temp(alpha) for alpha in range(N_alpha)]

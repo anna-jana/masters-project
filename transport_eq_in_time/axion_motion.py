@@ -10,27 +10,13 @@ class AxionField:
     def find_mass(self, T, *axion_parameter): raise NotImplementedError()
 
     def solve(self, axion_init, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf,
-              debug=False, rtol=1e-10, method="Radau"):
+              rtol=1e-10, method="Radau"):
         energy_scale = self.find_dynamical_scale(*axion_parameter)
         conv_factor = Gamma_inf / energy_scale
         sol = solve_ivp(self.rhs, (0.0, tmax_axion_time), axion_init,
                 args=(lambda t: T_and_H_fn(conv_factor * t + decay_process.t0), energy_scale, axion_parameter),
                 dense_output=True, rtol=rtol, method=method)
         assert sol.success
-        if debug:
-            plt.figure()
-            plt.axvline(1.0, color="black", ls="--")
-            plt.axhline(0.0, color="black", ls="-")
-            N = 400
-            ts = np.geomspace(sol.t[1], sol.t[-1], N)
-            plt.plot(ts, sol.sol(ts)[0,:])
-            plt.xscale("log")
-            plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-            plt.ylabel(r"$\theta$")
-            plt.figure()
-            plt.loglog(ts, [self.get_energy(sol.sol(t), 1.0, Gamma_inf, *axion_parameter) for t in ts])
-            plt.xlabel("t * m_a")
-            plt.ylabel("~ energy density")
         return sol
 
     def calc_source(self, y, conv_factor, *axion_parameter): raise NotImplementedError()
@@ -40,11 +26,11 @@ class AxionField:
             return self.calc_source(y, conv_factor, *axion_parameter)
         return source
 
-    def get_energy(self, y, f_a, Gamma_inf, *axion_parameter): raise NotImplementedError()
+    def get_energy(self, y, f_a, *axion_parameter): raise NotImplementedError()
 
     does_decay = NotImplemented
     has_relic_density = NotImplemented
-    def get_decay_constant(self): raise NotImplementedError()
+    def get_decay_constant(self, f_a, *axion_parameter): raise NotImplementedError()
 
 class SingleAxionField(AxionField):
     def calc_pot_deriv(self, theta, T, m_a): raise NotImplementedError()
