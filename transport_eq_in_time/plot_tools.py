@@ -68,13 +68,17 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, sh
         ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
         ts = tend + ts_ax
         tend += axion_sol.t[-1]
-        plt.plot(ts, axion_sol.sol(ts_ax)[0, :], color=color)
+        ys = axion_sol.sol(ts_ax)
+        N = ys.shape[0] // 2
+        for i, (c, ax) in enumerate(zip(mcolors.TABLEAU_COLORS, ys[:N, :])):
+            plt.plot(ts, ax, color=None if show_steps else c, label=f"axion {i + 1}")
     if tend > 1.0:
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
     plt.xscale("log")
     #plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
     plt.ylabel(r"$\varphi / f_a$")
+    plt.legend()     
     
     plt.subplot(3,1,2)
     tend = 0
@@ -82,13 +86,16 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, sh
         ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
         ts = tend + ts_ax
         tend += axion_sol.t[-1]
-        plt.plot(ts, axion_sol.sol(ts_ax)[1, :], color=color)
+        ys = axion_sol.sol(ts_ax)
+        N = ys.shape[0] // 2
+        for c, ax in zip(mcolors.TABLEAU_COLORS, ys[N:, :]):
+            plt.plot(ts, ax, color=None if show_steps else c)
     if tend > 1.0:
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
     plt.xscale("log")
     #plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-    plt.ylabel(r"$\dot{\varphi} / f_a$")
+    plt.ylabel(r"$\dot{\varphi} / f_a / m_a(T_\mathrm{osc})$")
     
     plt.subplot(3,1,3)
     tend = 0
@@ -100,7 +107,7 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, sh
     if tend > 1.0:
         plt.axvline(1.0, color="black", ls="--")
     plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-    plt.ylabel(r"$\rho / f_a^2$")
+    plt.ylabel(r"$\rho / f_a^2 / \mathrm{GeV}^2$")
 
 def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True):
     color = None if show_steps else "tab:blue"
