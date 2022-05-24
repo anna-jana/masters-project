@@ -72,7 +72,7 @@ def run(name, f, argnames, xss):
                 
         # save input
         for argname, xs in zip(argnames, xss):
-            ds = fh.create_dataset(argname, (len(xs),), dtype="f")
+            ds = fh.create_dataset(argname, (len(xs),), dtype="d")
             ds[...] = xs
     logging.info("storing output data done")
 
@@ -116,8 +116,8 @@ def run_cw_mR_vs_mphi():
         [[H_inf], [Gamma_inf], mR_list, m_phi_list])
 
 def run_cw_Gammainf_vs_mphi():
-    H_inf = 1e8
-    mR_list = [1, 8]
+    H_inf = 1e10
+    mR_list = [1, 8, 12]
     N = 20
     m_phi_list = np.geomspace(1e-6, 1e6, N + 1) * 1e-9 # [GeV]
     Gamma_inf_list = np.geomspace(1e-6 * H_inf, H_inf, N)

@@ -173,13 +173,21 @@ def plot_relic_density_time_evolution(conv_factor, t_advance_inf, advance_sol_ax
     plt.xlabel("t*M")
     plt.ylabel("n/s")
 
-def make_contour_plot(xrange, yrange, vals, nlines, padding, label, cmap, ls, fts):
-    contour = plt.contour(xrange, yrange, vals, levels=nlines, cmap=cmap, linestyles=ls)
-    cbar = plt.colorbar(pad=padding)
-    cbar.set_label(label, fontsize=fts)
+def plot_config_space_2d(ts, var1, var2, name1, name2, name, V_fn, parameter,
+                        skip_percent=0.0, interval=np.pi / 8):
+    skip = (ts[-1] - ts[0]) * skip_percent
+    s = skip_steps = int(np.ceil(skip / (ts[1] - ts[0])))
 
-def double_contour_plot(xrange, yrange, A, B, Alabel, Blabel, num_lines_A=10, num_line_B=10, fts=15):
-    make_contour_plot(xrange, yrange, A, num_lines_A, 0.08, Alabel, "viridis", "-", fts)
-    make_contour_plot(xrange, yrange, B, num_line_B, None, Blabel, "plasma", "--", fts)
+    def calc_range(x):
+        return np.linspace(np.floor(np.min(x) / interval) * interval, np.ceil(np.max(x) / interval) * interval, 100)
     
-
+    plt.figure(figsize=(6,5))
+    range1, range2 = calc_range(var1[skip_steps:]), calc_range(var2[skip_steps:])
+    V = np.array([[V_fn([t1, t2], *parameter) for t1 in range1] for t2 in range2])
+    plt.contour(range1, range2, V, levels=15, cmap="OrRd")
+    plt.plot(var1[skip_steps:], var2[skip_steps:], color="black")
+    plt.plot([var1[skip_steps]], [var2[skip_steps]], "ro")
+    plt.xlabel(name1)
+    plt.ylabel(name2)
+    plt.colorbar(label=f"$V({name1}, {name2})$")
+    plt.title(name)

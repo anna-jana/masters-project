@@ -47,3 +47,5 @@ class MultiAxionField(axion_motion.AxionField):
 
 multi_axion_field = MultiAxionField()
 
+canonical_names = [r"$\theta_1$", r"$\theta_2$", r"$\dot{\theta}_1$", r"$\dot{\theta}_2$"]
+mass_states_names = [r"$\phi_1$", r"$\phi_2$", r"$\dot{\phi}_1$", r"$\dot{\phi}_2$"]
