@@ -53,61 +53,64 @@ def plot_background_cosmology(conv_factor, Gamma_inf, background_sols, axion_sol
         tend += conv_factor * axion_sol.t[-1]
     plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
     plt.ylabel(r"T / GeV")
+    
+def get_samples(axsol, tend):
+    if hasattr(axsol, "sol"):
+        ts = np.linspace(0.0, axsol.t[-1], 500)
+        ys = axsol.sol(ts)
+    else:
+        ts, ys = axsol
+    return tend + ts, ys, tend + ts[-1]
 
-def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, show_steps=True):
+def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, 
+                               show_steps=True, field_name="\\varphi", show_energy=True, logtime=True):
     color = None if show_steps else "tab:blue"
     fig = plt.figure()
+    n = 3 if show_energy else 2
 
-    plt.subplot(3,1,1)
+    plt.subplot(n,1,1)
     fig.subplots_adjust(hspace=0)
     
     zero_lw = 0.5
 
     tend = 0
     for axion_sol in axion_sols:
-        ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
-        ts = tend + ts_ax
-        tend += axion_sol.t[-1]
-        ys = axion_sol.sol(ts_ax)
+        ts, ys, tend = get_samples(axion_sol, tend)
         N = ys.shape[0] // 2
         for i, (c, ax) in enumerate(zip(mcolors.TABLEAU_COLORS, ys[:N, :])):
             plt.plot(ts, ax, color=None if show_steps else c, label=f"axion {i + 1}")
     if tend > 1.0:
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
-    plt.xscale("log")
+    plt.xscale("log" if logtime else "linear")
     #plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-    plt.ylabel(r"$\varphi / f_a$")
+    plt.ylabel(f"${field_name} / f_a$")
     plt.legend()     
     
-    plt.subplot(3,1,2)
+    plt.subplot(n,1,2)
     tend = 0
     for axion_sol in axion_sols:
-        ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
-        ts = tend + ts_ax
-        tend += axion_sol.t[-1]
-        ys = axion_sol.sol(ts_ax)
+        ts, ys, tend = get_samples(axion_sol, tend)
         N = ys.shape[0] // 2
         for c, ax in zip(mcolors.TABLEAU_COLORS, ys[N:, :]):
             plt.plot(ts, ax, color=None if show_steps else c)
     if tend > 1.0:
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
-    plt.xscale("log")
+    plt.xscale("log" if logtime else "linear")
     #plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-    plt.ylabel(r"$\dot{\varphi} / f_a / m_a(T_\mathrm{osc})$")
+    plt.ylabel(r"$\dot{" + field_name + r"} / f_a / m_a(T_\mathrm{osc})$")
     
-    plt.subplot(3,1,3)
-    tend = 0
-    for axion_sol in axion_sols:
-        ts_ax = np.linspace(0.0, axion_sol.t[-1], 500)
-        ts = tend + ts_ax
-        tend += axion_sol.t[-1]
-        plt.loglog(ts, [axion_model.get_energy(y, f_a, *axion_parameter) for y in axion_sol.sol(ts_ax).T], color=color)
-    if tend > 1.0:
-        plt.axvline(1.0, color="black", ls="--")
-    plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
-    plt.ylabel(r"$\rho / f_a^2 / \mathrm{GeV}^2$")
+    if show_energy:
+        plt.subplot(n,1,3)
+        tend = 0
+        for axion_sol in axion_sols:
+            ts, ys, tend = get_samples(axion_sol, tend)
+            plt.loglog(ts, [axion_model.get_energy(y, f_a, *axion_parameter) for y in ys.T], color=color)
+        if tend > 1.0:
+            plt.axvline(1.0, color="black", ls="--")
+        plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
+        plt.ylabel(r"$\rho / f_a^2 / \mathrm{GeV}^2$")
 
 def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True):
     color = None if show_steps else "tab:blue"
