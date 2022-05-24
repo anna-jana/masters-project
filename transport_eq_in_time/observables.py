@@ -56,7 +56,7 @@ def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_
         
     return f
 
-def solve_system(rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
+def solve_system(H_inf, rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
                  tmax_axion_time, conv_factor, Gamma_inf, scale, 
                  axion_parameter, axion_model, source_vector_axion,
                  calc_init_time, debug):
@@ -161,7 +161,7 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         
         ################################ advance system ###################################
         sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn, sol_axion, axion_source, sol_transp_eq, tmax_axion_time = solve_system(
-                 rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
+                 H_inf, rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
                  tmax_axion_time, conv_factor, Gamma_inf, scale, axion_parameter, axion_model, source_vector_axion,
                  calc_init_time and step == 1, debug)
         tmax_inf_time = tmax_axion_time * conv_factor
