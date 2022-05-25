@@ -13,7 +13,7 @@ def find_level(xrange, yrange, fvals, level=0.0):
     for c in find_contours(fvals, level):
         rows, cols = c.T
         xs = xs_interp(cols)
-        ys = mR_interp(rows)
+        ys = ys_interp(rows)
         yield xs, ys
 
 def find_curve_intersection(xs1, ys1, xs2, ys2):
