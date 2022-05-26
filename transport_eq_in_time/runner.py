@@ -117,7 +117,7 @@ def run_cw_mR_vs_mphi():
 
 def run_cw_Gammainf_vs_mphi():
     H_inf = 1e10
-    mR_list = [10]
+    mR_list = [12]
     N = 30
     m_phi_list = np.geomspace(1e-6, 1e2, N) * 1e-9 # [GeV]
     Gamma_inf_list = np.geomspace(1e-5 * H_inf, H_inf, N)
