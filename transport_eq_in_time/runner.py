@@ -117,10 +117,10 @@ def run_cw_mR_vs_mphi():
 
 def run_cw_Gammainf_vs_mphi():
     H_inf = 1e10
-    mR_list = [1, 8, 12]
-    N = 20
-    m_phi_list = np.geomspace(1e-6, 1e6, N + 1) * 1e-9 # [GeV]
-    Gamma_inf_list = np.geomspace(1e-6 * H_inf, H_inf, N)
+    mR_list = [10]
+    N = 30
+    m_phi_list = np.geomspace(1e-6, 1e2, N) * 1e-9 # [GeV]
+    Gamma_inf_list = np.geomspace(1e-5 * H_inf, H_inf, N)
     run("clockwork_Gammainf_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi"],
         [[H_inf], Gamma_inf_list, mR_list, m_phi_list])
 
