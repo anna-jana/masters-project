@@ -78,7 +78,7 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
         ts, ys, tend = get_samples(axion_sol, tend)
         N = ys.shape[0] // 2
         for i, (c, ax) in enumerate(zip(mcolors.TABLEAU_COLORS, ys[:N, :])):
-            plt.plot(ts, ax, color=None if show_steps else c, label=f"axion {i + 1}")
+            plt.plot(ts, ax, color=None if show_steps else c, label=f"axion {i + 1}" if not show_steps else None)
     if tend > 1.0:
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")

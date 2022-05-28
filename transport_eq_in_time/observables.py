@@ -34,6 +34,8 @@ def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
     return asym_const * red_chem_pot_B_minus_L
 
 def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion, axion_parameter, f_a, axion_model, debug):
+    if not (np.isfinite(rho_end_rad) and np.isfinite(rho_end_axion)):
+        return np.nan
     if debug:
         start_decay = time.time()
         print("initial (rad, axion):", rho_end_rad, rho_end_axion)

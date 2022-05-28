@@ -5,11 +5,6 @@ __pycache__
 *~
 *.hi
 *.o
-notes
-plots
-output_data
-invisibles-school/
-patras-workshop/
 *.swp
 *.hdf5
 *.aux
@@ -21,5 +16,5 @@ patras-workshop/
 *.bbl
 *.blg
 *.synctex.gz
-two_fields/*.dat
 ma-venv/*
+transport_eq_in_time/data
