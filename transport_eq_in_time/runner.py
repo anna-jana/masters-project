@@ -8,6 +8,8 @@ import axion_motion, observables, clockwork_axion
 ############################ general code ##########################
 nres = 6
 
+datadir = "data"
+
 def run_task(task):
     n, xs, f, nsteps = task
     logging.info(f"starting step %i of %i {xs}", n, nsteps)
@@ -25,13 +27,16 @@ added_stderr_logger = False
 
 def run(name, f, argnames, xss):
     start_time = time.time()
+    if not os.path.exists(datadir):
+        os.mkdir(datadir)
     i = 1
     while True:
         logfile = f"{name}{i}.log"
         if not os.path.exists(logfile):
             break
         i += 1
-    outputfile = f"{name}{i}.hdf5"
+    outputfile = os.path.join(datadir, f"{name}{i}.hdf5")
+    logfile = os.path.join(datadir, logfile)
 
     logging.basicConfig(filename=logfile, level=logging.DEBUG)
     # make the log messages appear both in the file and on stderr but only once!
@@ -81,17 +86,17 @@ def run(name, f, argnames, xss):
     logging.info("Terminating program.")
 
 ######################### realignment ########################
-def f_realignment(H_inf, Gamma_inf, m_a, f_a):
+def f_generic_alp(H_inf, Gamma_inf, m_a, f_a):
     return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,
                 axion_motion.realignment_axion_field, (1.0, 0.0), calc_init_time=True)
 
-def run_realignment():
+def run_generic_alp():
     f_a = 4 * 1e15
     N = 30
-    H_inf_max = f_a*2*np.pi*1e-5
+    H_inf_max = f_a*2*np.pi*1e-5 / 10
     Gamma_inf_list = np.geomspace(1e6, H_inf_max, N)
     m_a_list = np.geomspace(1e6, H_inf_max, N)
-    run("realignment", f_realignment, ["H_inf", "Gamma_inf", "m_a", "f_a"],
+    run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a"],
         [[H_inf_max], Gamma_inf_list, m_a_list, [f_a]])
 
 
@@ -127,7 +132,7 @@ def run_cw_Gammainf_vs_mphi():
 
 ###################################### loading data ########################################
 def load_data(name, version):
-    filename = f"{name}{version}.hdf5"
+    filename = os.path.join(datadir, f"{name}{version}.hdf5")
     with h5py.File(filename, "r") as fh:
         data = {key : fh[key][...] for key in fh}
     return data
