@@ -42,7 +42,7 @@ def run(name, f, argnames, xss):
     # make the log messages appear both in the file and on stderr but only once!
     global added_stderr_logger
     if not added_stderr_logger:
-        logging.getLogger().addHandler(logging.StreamHandler()) 
+        logging.getLogger().addHandler(logging.StreamHandler())
         added_stderr_logger = False
 
     shape = tuple(map(len, xss))
@@ -56,9 +56,9 @@ def run(name, f, argnames, xss):
     with ProcessPoolExecutor() as pool:
         data_list = list(pool.map(run_task, tasks))
     logging.info("... computations done")
-    
+
     data = np.reshape(data_list, shape + (nres,))
-    
+
     logging.info("storing data in hdf5 file %s", outputfile)
     with h5py.File(outputfile, "w") as fh:
         # save output
@@ -74,7 +74,7 @@ def run(name, f, argnames, xss):
         rho_end_axion[...] = data[..., 3]
         Omega_h_sq[...] = data[..., 4]
         status[...] = data[..., 5].astype("int")
-                
+
         # save input
         for argname, xs in zip(argnames, xss):
             ds = fh.create_dataset(argname, (len(xs),), dtype="d")
@@ -87,12 +87,12 @@ def run(name, f, argnames, xss):
 
 ######################### realignment ########################
 def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource):
-    source_vectors = [transport_equation.source_vector_weak_sphaleron, 
-                      transport_equation.source_vector_B_minus_L_current,   
+    source_vectors = [transport_equation.source_vector_weak_sphaleron,
+                      transport_equation.source_vector_B_minus_L_current,
                       transport_equation.source_vector_strong_sphaleron,]
     source_vector = source_vectors[nsource]
     return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,
-                axion_motion.realignment_axion_field, (1.0, 0.0), 
+                axion_motion.realignment_axion_field, (1.0, 0.0),
                 calc_init_time=True, source_vector_axion=source_vector)
 
 def run_generic_alp(nsource_vector=0):
@@ -103,7 +103,6 @@ def run_generic_alp(nsource_vector=0):
     m_a_list = np.geomspace(1e6, H_inf_max, N)
     run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a", "nsource_vector"],
         [[H_inf_max], Gamma_inf_list, m_a_list, [f_a], [nsource_vector]])
-
 
 ############################ clockwork ##########################
 def f_clockwork(H_inf, Gamma_inf, mR, m_phi):
