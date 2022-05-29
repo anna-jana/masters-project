@@ -3,7 +3,7 @@ import functools, itertools, operator
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import h5py
-import axion_motion, observables, clockwork_axion
+import axion_motion, observables, clockwork_axion, transport_equation
 
 ############################ general code ##########################
 nres = 6
@@ -86,18 +86,23 @@ def run(name, f, argnames, xss):
     logging.info("Terminating program.")
 
 ######################### realignment ########################
-def f_generic_alp(H_inf, Gamma_inf, m_a, f_a):
+def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource):
+    source_vectors = [transport_equation.source_vector_weak_sphaleron, 
+                      transport_equation.source_vector_B_minus_L_current,   
+                      transport_equation.source_vector_strong_sphaleron,]
+    source_vector = source_vectors[nsource]
     return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,
-                axion_motion.realignment_axion_field, (1.0, 0.0), calc_init_time=True)
+                axion_motion.realignment_axion_field, (1.0, 0.0), 
+                calc_init_time=True, source_vector_axion=source_vector)
 
-def run_generic_alp():
+def run_generic_alp(nsource_vector=0):
     f_a = 4 * 1e15
     N = 30
     H_inf_max = f_a*2*np.pi*1e-5 / 10
     Gamma_inf_list = np.geomspace(1e6, H_inf_max, N)
     m_a_list = np.geomspace(1e6, H_inf_max, N)
-    run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a"],
-        [[H_inf_max], Gamma_inf_list, m_a_list, [f_a]])
+    run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a", "nsource_vector"],
+        [[H_inf_max], Gamma_inf_list, m_a_list, [f_a], [nsource_vector]])
 
 
 ############################ clockwork ##########################

@@ -5,3 +5,4 @@ jupyter
 jupyterlab
 h5py
 tqdm
+scikit-image
