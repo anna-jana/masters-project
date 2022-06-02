@@ -42,24 +42,5 @@ class SingleAxionField(AxionField):
         T, H = T_and_H_fn(t) # T_and_H_fn has been transformed to take axion time
         return (theta_dot, - 3*H/energy_scale*theta_dot - self.calc_pot_deriv(theta, T, *axion_parameter)/energy_scale**2)
 
-class RealignmentAxionField(SingleAxionField):
-    def calc_pot_deriv(self, theta, T, m_a): return m_a**2 * theta
-    def calc_pot(self, T, m_a): return 0.5 * m_a**2 * theta**2
-    def find_dynamical_scale(self, m_a): return m_a
-    def get_energy(self, y, f_a, m_a):
-        theta, theta_dot = y
-        energy_scale = self.find_dynamical_scale(m_a)
-        return 0.5 * f_a**2 * (theta_dot * energy_scale)**2 + 0.5 * m_a**2 * f_a**2 * theta**2
-    def calc_source(self, y, conv_factor, __m_a): return y[1] / conv_factor
-    does_decay = True
-    has_relic_density = False
-    g_2 = 0.652 # [1] also from wikipedia
-    alpha = g_2**2 / (4 * np.pi) # eq. from paper
-    Gamma_a_const = alpha**2 / (64 * np.pi**3)
-    # from paper a to SU(2) gauge bosons
-    def get_decay_constant(self, f_a, m_a): return self.Gamma_a_const * m_a**3 / f_a**2
-    def find_H_osc(self, m_a): return 1 / 3
-    def find_mass(self, T, m_a): return 1.0
 
-realignment_axion_field = RealignmentAxionField()
 

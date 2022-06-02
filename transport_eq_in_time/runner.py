@@ -1,9 +1,11 @@
-import time, os, logging
+import time, os, logging, importlib
 import functools, itertools, operator
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import h5py
 import axion_motion, observables, clockwork_axion, transport_equation
+axion_motion, observables, clockwork_axion, transport_equation = map(importlib.reload, 
+    (axion_motion, observables, clockwork_axion, transport_equation))
 
 ############################ general code ##########################
 nres = 6
@@ -31,12 +33,11 @@ def run(name, f, argnames, xss):
         os.mkdir(datadir)
     i = 1
     while True:
-        logfile = f"{name}{i}.log"
-        if not os.path.exists(logfile):
+        outputfile = f"{name}{i}.hdf5"
+        if not os.path.exists(outputfile):
             break
         i += 1
-    outputfile = os.path.join(datadir, f"{name}{i}.hdf5")
-    logfile = os.path.join(datadir, logfile)
+    logfile = os.path.join(datadir, "log_file")
 
     logging.basicConfig(filename=logfile, level=logging.DEBUG)
     # make the log messages appear both in the file and on stderr but only once!

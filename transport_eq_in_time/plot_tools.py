@@ -112,11 +112,12 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"$\rho / f_a^2 / \mathrm{GeV}^2$")
 
-def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True):
+def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True, fig=None):
     color = None if show_steps else "tab:blue"
-    plt.figure()
+    if fig is None:
+        plt.figure()
     tend = 0
-    for j, (axion_sol, red_chem_pot_sol, ls) in enumerate(zip(axion_sols, red_chem_pot_sols, itertools.cycle(("-", "--")))):
+    for j, (axion_sol, red_chem_pot_sol, ls) in enumerate(zip(axion_sols, red_chem_pot_sols, itertools.cycle(("-", ":")))):
         t_inf_max = conv_factor * axion_sol.t[-1]
         ts_inf = np.linspace(decay_process.t0, decay_process.t0 + t_inf_max, 500)
         red_chem_pots = red_chem_pot_sol(np.log(ts_inf))

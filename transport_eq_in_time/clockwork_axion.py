@@ -4,8 +4,7 @@ from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
 from scipy.constants import hbar, electron_volt
-import axion_motion
-axion_motion = importlib.reload(axion_motion)
+import axion_motion; axion_motion = importlib.reload(axion_motion)
 
 ############################## helper functions #########################
 def sc(x, y):

@@ -1,12 +1,10 @@
 import time, importlib, itertools, enum
 import numpy as np, matplotlib.pyplot as plt
-import decay_process, axion_motion, transport_equation, plot_tools
 from scipy.optimize import root
-decay_process = importlib.reload(decay_process)
-axion_motion = importlib.reload(axion_motion)
-transport_equation = importlib.reload(transport_equation)
-plot_tools = importlib.reload(plot_tools)
-
+import decay_process, axion_motion, transport_equation, plot_tools
+decay_process, axion_motion, transport_equation, plot_tools = map(importlib.reload,
+    (decay_process, axion_motion, transport_equation, plot_tools))
+                                                                  
 Status = enum.Enum("Status", "OK ASYM_CONVERGENCE_FAILURE RELIC_DENSITY_CONVERGENCE_FAILURE AXION_OSCILLATES_BEFORE_INFLATION INFLATON_DECAYS_DURING_INFLATION ISOCURVATURE_BOUNDS")
 
 def calc_entropy_density(T, g_star):
