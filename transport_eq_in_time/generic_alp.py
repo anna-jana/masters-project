@@ -1,4 +1,4 @@
-import importlib, pickle, os, numpy as np, tqdm
+import importlib, pickle, os, numpy as np, tqdm, tqdm.notebook
 import axion_motion, analysis_tools, runner
 axion_motion, analysis_tools, runner = map(importlib.reload, (axion_motion, analysis_tools, runner))
 
@@ -23,10 +23,25 @@ class RealignmentAxionField(axion_motion.SingleAxionField):
 
 realignment_axion_field = RealignmentAxionField()
 
+H_inf_index = 0
+f_a_index = 0
+
+def recompute_dilution(data, f_a, notebook=False):
+    progress = tqdm.notebook.tqdm if notebook else tqdm.tqdm
+    m_a, Gamma_inf = data["m_a"], data["Gamma_inf"]
+    eta = data["eta"][H_inf_index, :, :, f_a_index]
+    rho_end_rad = data["rho_end_rad"][H_inf_index, :, :, f_a_index]
+    rho_end_axion = data["rho_end_axion"][H_inf_index, :, :, f_a_index]     
+    f_a_used = data["f_a"][f_a_index]
+    dilution = np.zeros(eta.shape)
+    for i, j in progress(list(itertools.product(range(len(Gamma_inf)), range(len(m_a))))):
+        dilution[i, j] = compute_dilution_factor_from_axion_decay(10.0, 
+                rho_end_rad[i, j], rho_end_axion[i, j] / f_a_used**2 * f_a**2, 
+                (m_a[j],), f_a, realignment_axion_field, False)  
+    return dilution * eta
+
 def compute_correct_curves(version):
     correct_alp_curves_filename = os.path.join(runner.datadir, f"generic_alp_correct_curves{version}.pkl")
-    H_inf_index = 0
-    f_a_index = 0
     data = runner.load_data("generic_alp", version)
     eta = data["eta"][H_inf_index, :, :, f_a_index]
     m_a = data["m_a"]
@@ -40,15 +55,7 @@ def compute_correct_curves(version):
     correct_asym_curves = []
 
     for f_a in tqdm.tqdm(f_a_list, position=0):
-        dilution = np.zeros(eta.shape)
-        for i in tqdm.tqdm(range(len(Gamma_inf)), leave=False, position=1):
-            for j in tqdm.tqdm(range(len(m_a)), leave=False, position=2):
-                dilution[i, j] = compute_dilution_factor_from_axion_decay(10.0, 
-                        rho_end_rad[i, j], rho_end_axion[i, j] / f_a_used**2 * f_a**2, 
-                        (m_a[j],), f_a, realignment_axion_field, False)  
-        eta_B = np.abs(dilution * eta)
-        A = np.log10(eta_B / eta_B_observed)
-        levels = find_level(np.log10(m_a), np.log10(Gamma_inf), A)
+        levels = find_level(np.log10(m_a), np.log10(Gamma_inf), np.log10(np.abs(eta_B) / eta_B_observed))
         correct_asym_curves.append([(10**xs, 10**ys) for xs, ys in levels])
 
     with open(correct_alp_curves_filename, "wb") as fhandle:
