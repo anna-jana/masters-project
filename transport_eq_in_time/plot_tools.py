@@ -112,27 +112,27 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
         plt.ylabel(r"$\rho / f_a^2 / \mathrm{GeV}^2$")
 
-def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True, fig=None):
+def plot_charge_evolution(conv_factor, axion_sols, red_chem_pot_sols, show_steps=True, fig=None, ax=None):
     color = None if show_steps else "tab:blue"
     if fig is None:
-        plt.figure()
+        fig, ax = plt.subplots()
     tend = 0
     for j, (axion_sol, red_chem_pot_sol, ls) in enumerate(zip(axion_sols, red_chem_pot_sols, itertools.cycle(("-", ":")))):
         t_inf_max = conv_factor * axion_sol.t[-1]
-        ts_inf = np.linspace(decay_process.t0, decay_process.t0 + t_inf_max, 500)
+        ts_inf = np.linspace(decay_process.t0, decay_process.t0 + t_inf_max, 100)
         red_chem_pots = red_chem_pot_sol(np.log(ts_inf))
         for i, (name, color) in enumerate(zip(transport_equation.charge_names, mcolors.TABLEAU_COLORS)):
-            plt.plot(ts_inf + tend, np.abs(red_chem_pots[i, :]), ls=ls if show_steps else "-", color=color, label=name if j == 0 else None)
+            ax.plot(ts_inf + tend, np.abs(red_chem_pots[i, :]), ls=ls if show_steps else "-", color=color, label=name if j == 0 else None)
         B_minus_L = np.abs(transport_equation.calc_B_minus_L(red_chem_pots))
-        plt.plot(ts_inf + tend, B_minus_L,
+        ax.plot(ts_inf + tend, B_minus_L,
                 label="B - L" if j == 0 else None, color="black", lw=2, ls=ls if show_steps else "-")
         tend += conv_factor * axion_sol.t[-1]
-    plt.xscale("log")
-    plt.yscale("log")
+    ax.set_xscale("log")
+    ax.set_yscale("log")
     #plt.ylim(1e-29, 1e-26)
-    plt.xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
-    plt.ylabel(r"$|\mu_i / T|$")
-    plt.legend(ncol=3, framealpha=1)
+    ax.set_xlabel(r"$t \cdot \Gamma_\mathrm{inf}$")
+    ax.set_ylabel(r"$|\mu_i / T|$")
+    ax.legend(ncol=3, framealpha=1)
 
 def plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, background_sols, axion_sols, red_chem_pot_sols, show_steps=True):
     plot_background_cosmology(conv_factor, Gamma_inf, background_sols, axion_sols, show_steps=True)

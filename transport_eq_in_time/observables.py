@@ -123,14 +123,14 @@ def init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time)
     red_chem_pots_init = np.zeros(transport_equation.N)
     return energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init  
 
-def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axion_init,
-        source_vector_axion=transport_equation.source_vector_weak_sphaleron,
+def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, 
+                        axion_init,source_vector_axion=transport_equation.source_vector_weak_sphaleron,
         start_tmax_axion_time=10.0, step_tmax_axion_time=2*2*np.pi,
         asym_max_steps=None, relic_max_steps=None,
         axion_decay_time=10.0, debug=False,
-        nosc_per_step=5, nsamples_per_osc=20,
+        nosc_per_step=5, nsamples_per_osc=20, nsamples=100, 
         rtol_asym=1e-3, rtol_relic=1e-3,
-        nsamples=100, calc_init_time=False, isocurvature_check=False):
+        calc_init_time=False, isocurvature_check=False, return_evolution=False):
     
     ############################### setup for asymmetry computation ########################
     status = Status.OK
@@ -165,7 +165,7 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
                  tmax_axion_time, conv_factor, Gamma_inf, scale, axion_parameter, axion_model, source_vector_axion,
                  calc_init_time and step == 1, debug)
         tmax_inf_time = tmax_axion_time * conv_factor
-        if debug:
+        if debug or return_evolution:
             axion_sols.append(sol_axion)
             red_chem_pot_sols.append(sol_transp_eq)
             background_sols.append(T_and_H_and_T_dot_fn)
@@ -200,7 +200,7 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
     ###################################### finish asymmetry #########################################
     if debug:
         plot_tools.plot_asymmetry_time_evolution(axion_model, conv_factor, Gamma_inf, axion_parameter, f_a, 
-                                                 background_sols, axion_sols, red_chem_pot_sols)
+                                                 background_sols, axion_sols, red_chem_pot_sols) 
     
     # use the last value of the reduced chemical potentials 
     eta_B = red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots[:, -1]))
@@ -305,4 +305,8 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, axi
         Omega_h_sq = 0.0
         f = 1.0
     ###################################### final results ######################################
-    return eta_B, f, rho_end_rad, rho_end_axion, Omega_h_sq, float(status.value)
+    if return_evolution:
+        # TODO: maybe also collect solution from decay and relic densiy
+        return background_sols, axion_sols, red_chem_pot_sols 
+    else:
+        return eta_B, f, rho_end_rad, rho_end_axion, Omega_h_sq, float(status.value)
