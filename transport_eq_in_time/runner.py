@@ -3,9 +3,9 @@ import functools, itertools, operator
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import h5py
-import axion_motion, observables, clockwork_axion, transport_equation
-axion_motion, observables, clockwork_axion, transport_equation = map(importlib.reload, 
-    (axion_motion, observables, clockwork_axion, transport_equation))
+import axion_motion, observables, clockwork_axion, generic_alp, transport_equation
+axion_motion, observables, clockwork_axion, generic_alp, transport_equation = map(importlib.reload, 
+    (axion_motion, observables, clockwork_axion, generic_alp, transport_equation))
 
 ############################ general code ##########################
 nres = 6
@@ -93,7 +93,7 @@ def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource):
                       transport_equation.source_vector_strong_sphaleron,]
     source_vector = source_vectors[nsource]
     return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,
-                axion_motion.realignment_axion_field, (1.0, 0.0),
+                generic_alp.realignment_axion_field, (1.0, 0.0),
                 calc_init_time=True, source_vector_axion=source_vector)
 
 def run_generic_alp(nsource_vector=0):
