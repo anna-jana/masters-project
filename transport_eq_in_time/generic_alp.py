@@ -29,16 +29,15 @@ f_a_index = 0
 def recompute_dilution(data, f_a, notebook=False):
     progress = tqdm.notebook.tqdm if notebook else tqdm.tqdm
     m_a, Gamma_inf = data["m_a"], data["Gamma_inf"]
-    eta = data["eta"][H_inf_index, :, :, f_a_index]
     rho_end_rad = data["rho_end_rad"][H_inf_index, :, :, f_a_index]
     rho_end_axion = data["rho_end_axion"][H_inf_index, :, :, f_a_index]     
     f_a_used = data["f_a"][f_a_index]
-    dilution = np.zeros(eta.shape)
+    dilution = np.zeros(rho_end_axion.shape)
     for i, j in progress(list(itertools.product(range(len(Gamma_inf)), range(len(m_a))))):
         dilution[i, j] = observables.compute_dilution_factor_from_axion_decay(10.0, 
                 rho_end_rad[i, j], rho_end_axion[i, j] / f_a_used**2 * f_a**2, 
                 (m_a[j],), f_a, realignment_axion_field, False)  
-    return dilution * eta
+    return dilution
 
 def compute_correct_curves(version):
     correct_alp_curves_filename = os.path.join(runner.datadir, f"generic_alp_correct_curves{version}.pkl")
@@ -55,6 +54,7 @@ def compute_correct_curves(version):
     correct_asym_curves = []
 
     for f_a in tqdm.tqdm(f_a_list, position=0):
+        eta_B = eta * recompute_dilution(data, f_a)
         levels = find_level(np.log10(m_a), np.log10(Gamma_inf), np.log10(np.abs(eta_B) / eta_B_observed))
         correct_asym_curves.append([(10**xs, 10**ys) for xs, ys in levels])
 
