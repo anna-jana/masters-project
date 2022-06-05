@@ -52,7 +52,7 @@ def compute_correct_curves(version):
 
     for f_a in tqdm.tqdm(f_a_list, position=0):
         eta_B = eta * recompute_dilution(data, f_a)
-        levels = find_level(np.log10(m_a), np.log10(Gamma_inf), np.log10(np.abs(eta_B) / eta_B_observed))
+        levels = analysis_tools.find_level(np.log10(m_a), np.log10(Gamma_inf), np.log10(np.abs(eta_B) / eta_B_observed))
         correct_asym_curves.append([(10**xs, 10**ys) for xs, ys in levels])
 
     with open(correct_alp_curves_filename, "wb") as fhandle:
