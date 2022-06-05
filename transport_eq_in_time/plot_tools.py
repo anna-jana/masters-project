@@ -83,7 +83,6 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
     plt.xscale("log" if logtime else "linear")
-    #plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
     plt.ylabel(f"${field_name} / f_a$")
     plt.legend()     
     
@@ -98,7 +97,6 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
         plt.axvline(1.0, color="black", ls="--")
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
     plt.xscale("log" if logtime else "linear")
-    #plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
     plt.ylabel(r"$\dot{" + field_name + r"} / f_a / m_a(T_\mathrm{osc})$")
     
     if show_energy:

@@ -87,6 +87,7 @@ def calc_eqi_temp(alpha, debug=False):
 charge_names = [r"$\tau$", "$L_{12}$", "$L_{3}$", "$q_{12}$", "$t$", "$b$", "$Q_{12}$", "$Q_3$", "$H$"]
 process_names = ["$WS$", "$SS$", r"$Y_\mathrm{tau}$", r"$Y_\mathrm{top}$", r"$Y_\mathrm{bottom}$", "$W_{12}$", "$W_3$"]
 conserved_names = ["$Y$", r"$B_{12} - 3 \cdot B_3$"]
+source_vector_names = [r"$a F \tilde{F}$", r"$a \partial_\mu \, J_{B - L}^\mu$", r"$a G \tilde{G}$"]
 
 ######### Charge Vectors #########
 # Interactions:

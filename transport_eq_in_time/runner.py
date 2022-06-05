@@ -96,12 +96,12 @@ def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource_vector):
                 generic_alp.realignment_axion_field, (1.0, 0.0),
                 calc_init_time=True, source_vector_axion=source_vector)
 
-def run_generic_alp(nsource_vector=0):
+def run_generic_alp(nsource_vector=0, m_a_min=1e6, Gamma_inf_min=1e6):
     f_a = 4 * 1e15
     N = 30
     H_inf_max = f_a*2*np.pi*1e-5 / 10
-    Gamma_inf_list = np.geomspace(1e6, H_inf_max, N)
-    m_a_list = np.geomspace(1e6, H_inf_max, N)
+    Gamma_inf_list = np.geomspace(Gamma_inf_min, H_inf_max, N)
+    m_a_list = np.geomspace(m_a_min, H_inf_max, N)
     run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a", "nsource_vector"],
         [[H_inf_max], Gamma_inf_list, m_a_list, [f_a], [nsource_vector]])
 

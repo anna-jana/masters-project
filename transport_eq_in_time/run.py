@@ -7,4 +7,6 @@ run_generic_alp(0)
 run_generic_alp(1)
 run_generic_alp(2)
 generic_alp.compute_correct_curves(1)
+generic_alp.compute_correct_curves(2)
+generic_alp.compute_correct_curves(3)
 
