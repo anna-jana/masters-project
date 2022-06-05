@@ -1,7 +1,7 @@
 import importlib, pickle, os, itertools, numpy as np, tqdm, tqdm.notebook
-import axion_motion, analysis_tools, runner, observables, transport_equation, decay_process
-axion_motion, analysis_tools, runner, observables, transport_equation, decay_process = \
-    map(importlib.reload, (axion_motion, analysis_tools, runner, observables, transport_equation, decay_process))
+import axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools
+axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools = \
+    map(importlib.reload, (axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools))
 
 class RealignmentAxionField(axion_motion.SingleAxionField):
     def calc_pot_deriv(self, theta, T, m_a): return m_a**2 * theta
