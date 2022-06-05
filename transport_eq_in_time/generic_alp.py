@@ -1,6 +1,6 @@
-import importlib, pickle, os, numpy as np, tqdm, tqdm.notebook
-import axion_motion, analysis_tools, runner
-axion_motion, analysis_tools, runner = map(importlib.reload, (axion_motion, analysis_tools, runner))
+import importlib, pickle, os, itertools, numpy as np, tqdm, tqdm.notebook
+import axion_motion, analysis_tools, runner, observables
+axion_motion, analysis_tools, runner, observables = map(importlib.reload, (axion_motion, analysis_tools, runner, observables))
 
 class RealignmentAxionField(axion_motion.SingleAxionField):
     def calc_pot_deriv(self, theta, T, m_a): return m_a**2 * theta
@@ -35,7 +35,7 @@ def recompute_dilution(data, f_a, notebook=False):
     f_a_used = data["f_a"][f_a_index]
     dilution = np.zeros(eta.shape)
     for i, j in progress(list(itertools.product(range(len(Gamma_inf)), range(len(m_a))))):
-        dilution[i, j] = compute_dilution_factor_from_axion_decay(10.0, 
+        dilution[i, j] = observables.compute_dilution_factor_from_axion_decay(10.0, 
                 rho_end_rad[i, j], rho_end_axion[i, j] / f_a_used**2 * f_a**2, 
                 (m_a[j],), f_a, realignment_axion_field, False)  
     return dilution * eta
