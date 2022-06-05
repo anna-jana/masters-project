@@ -33,7 +33,7 @@ def run(name, f, argnames, xss):
         os.mkdir(datadir)
     i = 1
     while True:
-        outputfile = f"{name}{i}.hdf5"
+        outputfile = os.path.join(datadir, f"{name}{i}.hdf5")
         if not os.path.exists(outputfile):
             break
         i += 1
