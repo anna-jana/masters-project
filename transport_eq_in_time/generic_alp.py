@@ -1,7 +1,7 @@
 import importlib, os, itertools, numpy as np, tqdm, tqdm.notebook
-import axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools
-axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools = \
-    map(importlib.reload, (axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools))
+import axion_motion, analysis_tools, observables, transport_equation, decay_process, analysis_tools, util
+axion_motion, analysis_tools, observables, transport_equation, decay_process, analysis_tools, util = \
+    map(importlib.reload, (axion_motion, analysis_tools, observables, transport_equation, decay_process, analysis_tools, util))
 
 class RealignmentAxionField(axion_motion.SingleAxionField):
     def calc_pot_deriv(self, theta, T, m_a): return m_a**2 * theta
@@ -38,8 +38,8 @@ def recompute_dilution(data, f_a, notebook=False):
     return dilution
 
 def compute_correct_curves(version):
-    correct_alp_curves_filename = os.path.join(runner.datadir, f"generic_alp_correct_curves{version}.pkl")
-    data = runner.load_data("generic_alp", version)
+    correct_alp_curves_filename = os.path.join(util.datadir, f"generic_alp_correct_curves{version}.pkl")
+    data = util.load_data("generic_alp", version)
     eta = data["eta"][0, :, :, 0, 0]
     m_a = data["m_a"]
     Gamma_inf = data["Gamma_inf"]
@@ -96,19 +96,22 @@ def compute_example_trajectories(f_a, H_inf, interesting_points, notebook=False)
         interesting_solutions.append((conv_factor, ts, sources, rates, red_chem_potss))
     return interesting_solutions
 
-dilutions_filename = os.path.join(runner.datadir, "dilutions_alp.pkl")
+dilutions_filename = os.path.join(util.datadir, "dilutions_alp.pkl")
+
+f_a = 1e13
 
 def recompute_all_dilutions():
-    f_a = 1e13
-    dilutions = [recompute_dilution(runner.load_data("generic_alp", i), f_a, notebook=True) for i in [1,2,3]] 
-    runner.save_pkl(dilutions_filename, (f_a, dilutions_filename))
-        
-example_trajectories_filename = os.path.join(runner.datadir, "example_trajectories_alp.pkl")
+    dilutions = [recompute_dilution(util.load_data("generic_alp", i), f_a) for i in [1,2,3]]
+    util.save_pkl(dilutions, dilutions_filename)
+
+example_trajectories_filename = os.path.join(util.datadir, "example_trajectories_alp.pkl")
 interesting_points_ws = [(3e6, 1e10), (9e6, 1e9), (2e9, 1e10), (5e6, 5e6), (1e9, 2e8), (1e10, 4e6)]
 interesting_points_jbl = [(5e5, 1e9), (5e8, 5e9), (2e10, 1e9), (2e5, 2e5), (1e8, 5e6), (1e10, 3e6)]
 interesting_points_ss = [(6e6, 1e9), (6e7, 4e9), (2e9, 1e10), (5e6, 5e6), (2e9, 1e9), (1e10, 3e6)]
 all_points = [interesting_points_ws, interesting_points_jbl, interesting_points_ss]
 
 def compute_all_example_trajectories():
-    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, ps, notebook=True) for ps in all_points]
-    runner.save_pkl(all_interesting_solutions, example_trajectories_filename)
+    data = util.load_data("generic_alp", 1)
+    H_inf = data["H_inf"][0]
+    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, ps) for ps in all_points]
+    util.save_pkl(all_interesting_solutions, example_trajectories_filename)

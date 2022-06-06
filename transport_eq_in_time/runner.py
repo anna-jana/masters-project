@@ -2,14 +2,10 @@ import time, os, logging, importlib, pickle, functools, itertools, operator
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import h5py
-import axion_motion, observables, clockwork_axion, generic_alp, transport_equation
-axion_motion, observables, clockwork_axion, generic_alp, transport_equation = map(importlib.reload, 
-    (axion_motion, observables, clockwork_axion, generic_alp, transport_equation))
+import axion_motion, observables, clockwork_axion, generic_alp, transport_equation, util
 
 ############################ general code ##########################
 nres = 6
-
-datadir = "data"
 
 def run_task(task):
     n, xs, f, nsteps = task
@@ -28,15 +24,15 @@ added_stderr_logger = False
 
 def run(name, f, argnames, xss):
     start_time = time.time()
-    if not os.path.exists(datadir):
-        os.mkdir(datadir)
+    if not os.path.exists(util.datadir):
+        os.mkdir(util.datadir)
     i = 1
     while True:
-        outputfile = os.path.join(datadir, f"{name}{i}.hdf5")
+        outputfile = os.path.join(util.datadir, f"{name}{i}.hdf5")
         if not os.path.exists(outputfile):
             break
         i += 1
-    logfile = os.path.join(datadir, "log_file")
+    logfile = os.path.join(util.datadir, "log_file")
 
     logging.basicConfig(filename=logfile, level=logging.DEBUG)
     # make the log messages appear both in the file and on stderr but only once!
@@ -107,8 +103,7 @@ def run_generic_alp(nsource_vector=0, m_a_min=1e6, Gamma_inf_min=1e6):
 ############################ clockwork ##########################
 def f_clockwork(H_inf, Gamma_inf, mR, m_phi):
     eps = clockwork_axion.calc_eps(mR)
-    f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
-    f = clockwork_axion.calc_f(f_eff, eps)
+    f = clockwork_axion.calc_f(clockwork_axion.default_f_eff, eps)
     M = m_phi / eps
     theta_i = 3*np.pi/4 # as in the paper = sqrt(average value of theta^^2 over 0..2pi)
     ax0 = (clockwork_axion.theta_to_phi_over_f(theta_i, eps), 0.0)
@@ -132,21 +127,3 @@ def run_cw_Gammainf_vs_mphi():
     Gamma_inf_list = np.geomspace(1e-5 * H_inf, H_inf, N)
     run("clockwork_Gammainf_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi"],
         [[H_inf], Gamma_inf_list, mR_list, m_phi_list])
-
-
-###################################### loading data ########################################
-def load_data(name, version):
-    filename = os.path.join(datadir, f"{name}{version}.hdf5")
-    with h5py.File(filename, "r") as fh:
-        data = {key : fh[key][...] for key in fh}
-    return data
-
-def load_pkl(filename):
-    with open(filename, "rb") as fh:
-        data = pickle.load(fh)
-    return data
-
-def save_pkl(filename, data):
-    with open(filename, "wb") as fh:
-        pickle.dump(data, fh)
-
