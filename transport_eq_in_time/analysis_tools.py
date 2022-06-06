@@ -34,7 +34,7 @@ def find_curve_intersection(xs1, ys1, xs2, ys2):
     sol = root(goal, initial_guess, method="lm")
     if sol.success:
         i, j = sol.x
-        return xs1_interp(i), ys1_interp(j)
+        return xs1_interp(i), ys1_interp(i)
     else:
         raise ValueError(sol.message)
 
