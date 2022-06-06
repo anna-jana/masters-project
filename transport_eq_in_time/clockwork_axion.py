@@ -105,7 +105,7 @@ def is_pot_curvature_too_large(mR, m_phi, H_inf, theta_i):
     d2_Veff = calc_d2V_eff_dphi2(phi_over_f_i, eps, calc_mass_scale(m_phi, eps))
     return np.sqrt(np.abs(d2_Veff)) - H_inf
 
-def get_max_mR(m_phi, H_inf, theta_i):
+def compute_max_mR(m_phi, H_inf, theta_i):
     sol = root_scalar(lambda mR: is_pot_curvature_too_large(mR, m_phi, H_inf, theta_i) / H_inf, bracket=(0, 20))
     return sol.root
 
@@ -119,7 +119,7 @@ def calc_decay_time(mR, m_phi, f_eff):
 def to_seconds(natural_time_in_GeV):
     return hbar * 1/electron_volt * 1e-9 * natural_time_in_GeV
 
-def get_min_mR(m_phi, f_eff):
+def compute_min_mR(m_phi, f_eff):
     try:
         sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff))) - constants.log_min_decay_time, bracket=(0, 15))
     except ValueError:
