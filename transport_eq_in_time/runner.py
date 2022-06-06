@@ -1,5 +1,4 @@
-import time, os, logging, importlib
-import functools, itertools, operator
+import time, os, logging, importlib, pickle, functools, itertools, operator
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import h5py
@@ -141,3 +140,13 @@ def load_data(name, version):
     with h5py.File(filename, "r") as fh:
         data = {key : fh[key][...] for key in fh}
     return data
+
+def load_pkl(filename):
+    with open(filename, "rb") as fh:
+        data = pickle.load(fh)
+    return data
+
+def save_pkl(filename, data):
+    with open(filename, "wb") as fh:
+        pickle.dump(data, fh)
+

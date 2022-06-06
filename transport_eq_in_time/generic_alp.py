@@ -1,4 +1,4 @@
-import importlib, pickle, os, itertools, numpy as np, tqdm, tqdm.notebook
+import importlib, os, itertools, numpy as np, tqdm, tqdm.notebook
 import axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools
 axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools = \
     map(importlib.reload, (axion_motion, analysis_tools, runner, observables, transport_equation, decay_process, analysis_tools))
@@ -58,7 +58,7 @@ def compute_correct_curves(version):
     with open(correct_alp_curves_filename, "wb") as fhandle:
         pickle.dump((f_a_list, correct_asym_curves), fhandle)
 
-def compute_example_trajectories(f_a, H_inf, interesting_points, notebook=False, output_filename=None):
+def compute_example_trajectories(f_a, H_inf, interesting_points, notebook=False):
     interesting_solutions = []
 
     for m_a, Gamma_inf in (tqdm.notebook.tqdm if notebook else tqdm.tqdm)(interesting_points):
@@ -94,9 +94,21 @@ def compute_example_trajectories(f_a, H_inf, interesting_points, notebook=False,
             red_chem_potss = np.hstack([red_chem_potss, red_chem_pots])
 
         interesting_solutions.append((conv_factor, ts, sources, rates, red_chem_potss))
-
-    if output_filename is not None:
-        with open(output_filename, "bw") as fh:
-            pickle.dump(interesting_solutions, fh)
-
     return interesting_solutions
+
+dilutions_filename = os.path.join(runner.datadir, "dilutions_alp.pkl")
+
+def recompute_all_dilutions():
+    f_a = 1e13
+    dilutions = [recompute_dilution(runner.load_data("generic_alp", i), f_a, notebook=True) for i in [1,2,3]] 
+    runner.save_pkl(dilutions_filename, (f_a, dilutions_filename))
+        
+example_trajectories_filename = os.path.join(runner.datadir, "example_trajectories_alp.pkl")
+interesting_points_ws = [(3e6, 1e10), (9e6, 1e9), (2e9, 1e10), (5e6, 5e6), (1e9, 2e8), (1e10, 4e6)]
+interesting_points_jbl = [(5e5, 1e9), (5e8, 5e9), (2e10, 1e9), (2e5, 2e5), (1e8, 5e6), (1e10, 3e6)]
+interesting_points_ss = [(6e6, 1e9), (6e7, 4e9), (2e9, 1e10), (5e6, 5e6), (2e9, 1e9), (1e10, 3e6)]
+all_points = [interesting_points_ws, interesting_points_jbl, interesting_points_ss]
+
+def compute_all_example_trajectories():
+    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, ps, notebook=True) for ps in all_points]
+    runner.save_pkl(all_interesting_solutions, example_trajectories_filename)
