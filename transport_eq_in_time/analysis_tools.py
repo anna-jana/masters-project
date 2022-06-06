@@ -27,7 +27,7 @@ def find_curve_intersection(xs1, ys1, xs2, ys2):
         i, j = I # index into curve one and index into curve two
         # the two curves should intersection i.e. both variables from each curve are equal
         try:
-            return (xs1_interp(i) / xs2_interp(j) - 1, ys1_interp(i) / ys2_interp(j) - 1)
+            return (xs1_interp(i) - xs2_interp(j), ys1_interp(i) - ys2_interp(j))
         except ValueError:
             return np.nan, np.nan # evaluation outside of the curves is undefined
     initial_guess = len(xs1) / 2, len(ys1) / 2

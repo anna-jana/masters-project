@@ -136,3 +136,6 @@ def get_min_mR(m_phi, f_eff):
 #    eps = calc_eps(mR)
 #    f = calc_f(f_eff, eps)
 #    return e_sq * eps / (16*np.pi**2 * f)
+
+default_f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
+
