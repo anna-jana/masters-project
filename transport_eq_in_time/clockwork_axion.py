@@ -4,7 +4,7 @@ from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
 from scipy.constants import hbar, electron_volt
-import axion_motion; axion_motion = importlib.reload(axion_motion)
+import axion_motion, generic_alp; axion_motion, generic_alp = map(importlib.reload, (axion_motion, generic_alp))
 
 ############################## helper functions #########################
 def sc(x, y):
@@ -113,15 +113,17 @@ def compute_max_mR(m_phi, H_inf, theta_i):
 def calc_decay_time(mR, m_phi, f_eff):
     eps = calc_eps(mR)
     f = calc_f(f_eff, eps)
-    decay_rate = constants.alpha**2 / (64*np.pi**3) * eps**2 * m_phi**3 / f**2
+    decay_rate = generic_alp.realignment_axion_field.alpha**2 / (64*np.pi**3) * eps**2 * m_phi**3 / f**2
     return 1 / decay_rate
 
 def to_seconds(natural_time_in_GeV):
     return hbar * 1/electron_volt * 1e-9 * natural_time_in_GeV
 
+log_min_decay_time = 26 # [seconds]
+
 def compute_min_mR(m_phi, f_eff):
     try:
-        sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff))) - constants.log_min_decay_time, bracket=(0, 15))
+        sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff))) - log_min_decay_time, bracket=(0, 15))
     except ValueError:
         return np.nan
     if sol.converged:
