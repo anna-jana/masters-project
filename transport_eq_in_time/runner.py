@@ -82,26 +82,29 @@ def run(name, f, argnames, xss):
     logging.info("Terminating program.")
 
 ######################### realignment ########################
+source_vectors = [transport_equation.source_vector_weak_sphaleron,
+                  transport_equation.source_vector_B_minus_L_current,
+                  transport_equation.source_vector_strong_sphaleron,]
+
 def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource_vector):
-    source_vectors = [transport_equation.source_vector_weak_sphaleron,
-                      transport_equation.source_vector_B_minus_L_current,
-                      transport_equation.source_vector_strong_sphaleron,]
     source_vector = source_vectors[nsource_vector]
     return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,
                 generic_alp.realignment_axion_field, (1.0, 0.0),
                 calc_init_time=True, source_vector_axion=source_vector)
 
+f_a = 4 * 1e15
+H_inf_max = f_a*2*np.pi*1e-5 / 10
+
 def run_generic_alp(nsource_vector=0, m_a_min=1e6, Gamma_inf_min=1e6):
-    f_a = 4 * 1e15
     N = 30
-    H_inf_max = f_a*2*np.pi*1e-5 / 10
     Gamma_inf_list = np.geomspace(Gamma_inf_min, H_inf_max, N)
     m_a_list = np.geomspace(m_a_min, H_inf_max, N)
     run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a", "nsource_vector"],
         [[H_inf_max], Gamma_inf_list, m_a_list, [f_a], [nsource_vector]])
 
 ############################ clockwork ##########################
-def f_clockwork(H_inf, Gamma_inf, mR, m_phi):
+def f_clockwork(H_inf, Gamma_inf, mR, m_phi, nsource_vector):
+    source_vector = source_vectors[nsource_vector]
     eps = clockwork_axion.calc_eps(mR)
     f = clockwork_axion.calc_f(clockwork_axion.default_f_eff, eps)
     M = m_phi / eps
@@ -109,22 +112,21 @@ def f_clockwork(H_inf, Gamma_inf, mR, m_phi):
     ax0 = (clockwork_axion.theta_to_phi_over_f(theta_i, eps), 0.0)
     return observables.compute_observables(H_inf, Gamma_inf, (eps, M), f,
                         clockwork_axion.clockwork_axion_field, ax0,
-                        calc_init_time=True, isocurvature_check=False)
+                        calc_init_time=True, isocurvature_check=False, 
+                            source_vector_axion=source_vector)
 
-def run_cw_mR_vs_mphi():
-    H_inf = Gamma_inf = 1e8
+def run_cw_mR_vs_mphi(nsource_vector=0):
     Gamma_inf_list = np.array([1e-4, 1e-2, 1]) * H_inf
-    N = 50
-    m_phi_list = np.geomspace(1e-6, 1e6, N + 1) * 1e-9 # [GeV]
+    N = 55
+    m_phi_list = np.geomspace(1e-6, 1e8, N) * 1e-9 # [GeV]
     mR_list = np.linspace(1, 15, N)
-    run("clockwork_mR_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi"],
-        [[H_inf], Gamma_inf_list, mR_list, m_phi_list])
+    run("clockwork_mR_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi", "nsource_vector"],
+        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [nsource_vector]])
 
-def run_cw_Gammainf_vs_mphi():
-    H_inf = 1e8
+def run_cw_Gammainf_vs_mphi(nsource_vector=0):
     mR_list = [2, 8, 14]
-    N = 30
-    m_phi_list = np.geomspace(1e-6, 1e2, N) * 1e-9 # [GeV]
+    N = 35
+    m_phi_list = np.geomspace(1e-6, 1e6, N) * 1e-9 # [GeV]
     Gamma_inf_list = np.geomspace(1e-5 * H_inf, H_inf, N)
-    run("clockwork_Gammainf_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi"],
-        [[H_inf], Gamma_inf_list, mR_list, m_phi_list])
+    run("clockwork_Gammainf_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi", "nsource_vector"],
+        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [nsource_vector]])
