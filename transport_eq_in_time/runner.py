@@ -39,7 +39,7 @@ def run(name, f, argnames, xss):
     global added_stderr_logger
     if not added_stderr_logger:
         logging.getLogger().addHandler(logging.StreamHandler())
-        added_stderr_logger = False
+        added_stderr_logger = True
 
     shape = tuple(map(len, xss))
     nsteps = functools.reduce(operator.mul, shape)
