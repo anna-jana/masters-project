@@ -104,6 +104,8 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
     plt.xscale("log" if logtime else "linear")
     plt.ylabel(r"$\dot{" + field_name + r"} / f_a / m_a(T_\mathrm{osc})$")
+    if not show_energy:
+        plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
     
     if show_energy:
         plt.subplot(n,1,3)
@@ -195,5 +197,5 @@ def plot_config_space_2d(ts, var1, var2, name1, name2, name, V_fn, parameter,
     plt.plot([var1[skip_steps]], [var2[skip_steps]], "ro")
     plt.xlabel(name1)
     plt.ylabel(name2)
-    plt.colorbar(label=f"$V({name1}, {name2})$")
+    plt.colorbar(label=f"$V({name1[1:-1]}, {name2[1:-1]})$")
     plt.title(name)
