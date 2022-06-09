@@ -121,12 +121,12 @@ def run_cw_mR_vs_mphi(nsource_vector=0):
     m_phi_list = np.geomspace(1e-6, 1e8, N) * 1e-9 # [GeV]
     mR_list = np.linspace(1, 15, N)
     run("clockwork_mR_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi", "nsource_vector"],
-        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [nsource_vector]])
+        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [0, 1, 2]])
 
-def run_cw_Gammainf_vs_mphi(nsource_vector=0):
-    mR_list = [2, 8, 14]
+def run_cw_Gammainf_vs_mphi():
+    mR_list = [8, 11, 14]
     N = 35
     m_phi_list = np.geomspace(1e-6, 1e6, N) * 1e-9 # [GeV]
     Gamma_inf_list = np.geomspace(1e-5 * H_inf, H_inf, N)
     run("clockwork_Gammainf_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi", "nsource_vector"],
-        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [nsource_vector]])
+        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [0, 1, 2]])

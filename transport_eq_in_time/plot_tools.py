@@ -1,4 +1,4 @@
-import numpy as np, matplotlib.pyplot as plt, matplotlib.colors as mcolors
+import numpy as np, matplotlib.pyplot as plt, matplotlib.colors as mcolors, matplotlib as mpl
 import importlib, itertools, os
 import decay_process, transport_equation
 decay_process = importlib.reload(decay_process)
@@ -7,6 +7,8 @@ transport_equation = importlib.reload(transport_equation)
 plotpath = "plots"
 if not os.path.exists(plotpath):
     os.mkdir(plotpath)
+    
+mpl.rcParams["font.size"] = 15
 
 def latex_exponential_notation(value, digits=1):
     exponent = int(np.floor(np.log10(np.abs(value))))

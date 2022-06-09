@@ -37,6 +37,8 @@ def recompute_dilution(data, f_a, notebook=False):
                 (m_a[j],), f_a, realignment_axion_field, False)
     return dilution
 
+f_a_list = np.geomspace(1e12, 1e15, 10)
+
 def compute_correct_curves(version):
     correct_alp_curves_filename = os.path.join(util.datadir, f"generic_alp_correct_curves{version}.pkl")
     data = util.load_data("generic_alp", version)
@@ -47,7 +49,6 @@ def compute_correct_curves(version):
     rho_end_axion = data["rho_end_axion"][0, :, :, 0, 0]
     f_a_used = data["f_a"][0]
 
-    f_a_list = np.geomspace(1e12, 1e15, 10)
     correct_asym_curves = []
 
     for f_a in tqdm.tqdm(f_a_list, position=0):
