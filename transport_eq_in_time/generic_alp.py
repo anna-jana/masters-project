@@ -59,13 +59,14 @@ def compute_correct_curves(version):
     with open(correct_alp_curves_filename, "wb") as fhandle:
         pickle.dump((f_a_list, correct_asym_curves), fhandle)
 
-def compute_example_trajectories(f_a, H_inf, interesting_points, notebook=False):
+def compute_example_trajectories(f_a, H_inf, nsource, interesting_points, notebook=False):
     interesting_solutions = []
 
     for m_a, Gamma_inf in (tqdm.notebook.tqdm if notebook else tqdm.tqdm)(interesting_points):
         background_sols, axion_sols, red_chem_pot_sols = \
             observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a, realignment_axion_field,
-                                (1, 0), calc_init_time=True, return_evolution=True)
+                                (1, 0), calc_init_time=True, return_evolution=True,
+                                source_vector_axion=transport_equation.source_vectors[nsource])
         ts = np.array([], dtype="d")
         sources = np.empty_like(ts)
         rates = np.empty_like(ts)

@@ -117,6 +117,9 @@ source_vector_B_minus_L_current = np.array((0,  0,  0,  0,  0, -2, -2))
 source_vector_weak_sphaleron    = np.array((1,  0,  0,  0,  0,  0,  0))
 source_vector_strong_sphaleron  = np.array((0,  1,  0,  0,  0,  0,  0))
 source_vector_none              = np.zeros(len(source_vector_B_minus_L_current))
+source_vectors = [source_vector_weak_sphaleron,
+                  source_vector_B_minus_L_current,
+                  source_vector_strong_sphaleron,]
 
 ########### internal degrees of freedom ############
 dofs = np.array([1,4,2,12,3,3,12,6,4])

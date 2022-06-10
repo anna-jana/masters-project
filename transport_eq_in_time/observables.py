@@ -124,7 +124,7 @@ def init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time)
     return energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init  
 
 def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model, 
-                        axion_init,source_vector_axion=transport_equation.source_vector_weak_sphaleron,
+                        axion_init, source_vector_axion=transport_equation.source_vector_weak_sphaleron,
         start_tmax_axion_time=10.0, step_tmax_axion_time=2*2*np.pi,
         asym_max_steps=None, relic_max_steps=None,
         axion_decay_time=10.0, debug=False,

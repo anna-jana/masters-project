@@ -82,12 +82,8 @@ def run(name, f, argnames, xss):
     logging.info("Terminating program.")
 
 ######################### realignment ########################
-source_vectors = [transport_equation.source_vector_weak_sphaleron,
-                  transport_equation.source_vector_B_minus_L_current,
-                  transport_equation.source_vector_strong_sphaleron,]
-
 def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource_vector):
-    source_vector = source_vectors[nsource_vector]
+    source_vector = transport_equation.source_vectors[nsource_vector]
     return observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a,
                 generic_alp.realignment_axion_field, (1.0, 0.0),
                 calc_init_time=True, source_vector_axion=source_vector)
@@ -104,7 +100,7 @@ def run_generic_alp(nsource_vector=0, m_a_min=1e6, Gamma_inf_min=1e6):
 
 ############################ clockwork ##########################
 def f_clockwork(H_inf, Gamma_inf, mR, m_phi, nsource_vector):
-    source_vector = source_vectors[nsource_vector]
+    source_vector = transport_equation.source_vectors[nsource_vector]
     eps = clockwork_axion.calc_eps(mR)
     f = clockwork_axion.calc_f(clockwork_axion.default_f_eff, eps)
     M = m_phi / eps
