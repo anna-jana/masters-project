@@ -24,6 +24,8 @@ class RealignmentAxionField(axion_motion.SingleAxionField):
 
 realignment_axion_field = RealignmentAxionField()
 
+
+######################################### postprocessing ##############################################
 def recompute_dilution(data, f_a, notebook=False):
     progress = tqdm.notebook.tqdm if notebook else tqdm.tqdm
     m_a, Gamma_inf = data["m_a"], data["Gamma_inf"]
@@ -87,9 +89,11 @@ def compute_example_trajectories(f_a, H_inf, nsource, interesting_points, notebo
             red_chem_pots = red_chem_pot_sol(np.log(tinfs))
 
             gammas = [transport_equation.calc_rate_vector(T) for T in Ts]
-            source = theta_dots * m_a / Ts # m_a for unit conversion
+            # m_a for unit conversion
+            source =  - theta_dots * m_a / Ts * [gamma @ transport_equation.source_vectors[nsource]
+                                                 for gamma in gammas]
             rate = - np.array([gamma @ transport_equation.charge_vector @ transport_equation.charge_vector_B_minus_L
-                                            for gamma in gammas]) / Hs
+                    for gamma in gammas]) / Hs
             ts = np.hstack([ts, plot_ts])
             sources = np.hstack([sources, source])
             rates = np.hstack([rates, rate])
@@ -115,5 +119,6 @@ all_points = [interesting_points_ws, interesting_points_jbl, interesting_points_
 def compute_all_example_trajectories():
     data = util.load_data("generic_alp", 1)
     H_inf = data["H_inf"][0]
-    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, ps) for ps in all_points]
+    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, nsource, ps) 
+                                 for nsource, ps in enumerate(all_points)]
     util.save_pkl(all_interesting_solutions, example_trajectories_filename)

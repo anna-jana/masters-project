@@ -1,10 +1,13 @@
-import importlib
+import importlib, os, itertools
 import numpy as np, matplotlib.pyplot as plt
+import tqdm
 from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
 from scipy.constants import hbar, electron_volt
-import axion_motion, generic_alp; axion_motion, generic_alp = map(importlib.reload, (axion_motion, generic_alp))
+import axion_motion, generic_alp, util, transport_equation, decay_process, observables
+axion_motion, generic_alp, util, transport_equation, decay_process, observables = \
+    map(importlib.reload, (axion_motion, generic_alp, util, transport_equation, decay_process, observables))
 
 ############################## helper functions #########################
 def sc(x, y):
@@ -130,14 +133,75 @@ def compute_min_mR(m_phi, f_eff):
         return sol.root
     else:
         return np.nan
-
+    
+default_f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
+    
 ################################ detection ##############################
 #e_sq = (constants.g_1 * constants.g_2)**2 / (constants.g_1**2 + constants.g_2**2)
 
-#def calc_axion_photon_coupling(mR, f_eff):
-#    eps = calc_eps(mR)
-#    f = calc_f(f_eff, eps)
-#    return e_sq * eps / (16*np.pi**2 * f)
+def calc_axion_photon_coupling(mR, f_eff):
+    eps = calc_eps(mR)
+    f = calc_f(f_eff, eps)
+    return e_sq * eps / (16*np.pi**2 * f)
 
-default_f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
 
+####################################### postprocessing #################################
+def compute_example_trajectory(H_inf, Gamma_inf, nsource, f, m_phi, mR):
+    m_phi /= 1e9
+    eps = calc_eps(mR)
+    M = m_phi / eps 
+    phi0_over_f = theta_to_phi_over_f(1.0, eps)
+    conv_factor = Gamma_inf / clockwork_axion_field.find_dynamical_scale(eps, M)
+    
+    H_osc = clockwork_axion_field.find_H_osc(eps, M)
+    t_osc = 2 * (1 / H_osc + 1 / (H_inf / M))
+    tmax_ax = t_osc + 1/eps*100
+    tmax_inf = tmax_ax * conv_factor
+
+    phi0_over_f = theta_to_phi_over_f(1.0, eps)
+    _, T_and_H_fn, _ = decay_process.solve(tmax_inf, 0.0, 3*H_inf**2*decay_process.M_pl**2, decay_process.find_scale(Gamma_inf), Gamma_inf)
+    sol = clockwork_axion_field.solve((phi0_over_f, 0.0), (eps, M), tmax_ax, T_and_H_fn, Gamma_inf)
+    relic_ts = np.geomspace(sol.t[1], sol.t[-1], 400)
+    phi_over_f = sol.sol(relic_ts)[0,:]
+        
+    background_sols, axion_sols, red_chem_pot_sols = observables.compute_observables(
+                        H_inf, Gamma_inf, (eps, M), f, clockwork_axion_field, 
+                        (phi0_over_f, 0), source_vector_axion=transport_equation.source_vectors[nsource], 
+                        calc_init_time=True, return_evolution=True, isocurvature_check=False)  
+    collected = []
+    tstart = 0
+    for red_chem_pot_sol, axion_sol, T_and_H_and_T_dot_fn in zip(red_chem_pot_sols, axion_sols, background_sols):
+        tmax_axion = axion_sol.t[-1]
+        tmax_inf = tmax_axion * conv_factor
+        tinfs = np.geomspace(decay_process.t0, decay_process.t0 + tmax_inf, 300)
+        taxs = (tinfs - decay_process.t0) / conv_factor
+        plot_ts = tstart + tinfs
+        tstart += tmax_inf
+        B_minus_L = transport_equation.calc_B_minus_L(red_chem_pot_sol(np.log(tinfs)))
+        Ts, _, _ = T_and_H_and_T_dot_fn(tinfs)
+        source = clockwork_axion_field.get_source(axion_sol, conv_factor, eps, M)(tinfs) / Ts
+        collected.append((B_minus_L, source, plot_ts))
+    B_minus_L = np.concatenate([x[0] for x in collected])
+    source = np.concatenate([x[1] for x in collected])
+    ts = np.concatenate([x[2] for x in collected])
+            
+    return B_minus_L, source, ts, phi_over_f, relic_ts
+
+interesting_points = [(1e-3, 13), (1e3, 10), (1e1, 2), (1e-2, 8)]
+example_trajectories_filename = os.path.join(util.datadir, "example_trajectories_cw.pkl")
+
+def compute_all_example_trajectories():
+    source_vectors = [1] # source vector
+    Gamma_inf_indicies = [2] # TODO loop
+    data = {}
+    for v, Gamma_inf_index in itertools.product(source_vectors, Gamma_inf_indicies):
+        data = util.load_data("clockwork_mR_vs_mphi", v)
+        H_inf = data["H_inf"][0]
+        nsource = int(data["nsource_vector"][0])
+        source_name = transport_equation.source_vector_names[nsource]
+        f = 1e12
+        Gamma_inf = data["Gamma_inf"][Gamma_inf_index]
+        interesting_solutions = [compute_example_trajectory(H_inf, Gamma_inf, nsource, f, *p)
+                                for p in tqdm.tqdm(interesting_points)]
+        data[(v, Gamma_inf_index)] = interesting_solutions
+    util.save_pkl(data, example_trajectories_filename)
