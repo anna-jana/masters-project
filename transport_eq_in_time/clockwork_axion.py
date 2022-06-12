@@ -193,7 +193,7 @@ example_trajectories_filename = os.path.join(util.datadir, "example_trajectories
 def compute_all_example_trajectories():
     source_vectors = [1] # source vector
     Gamma_inf_indicies = [2] # TODO loop
-    data = {}
+    output = {}
     for v, Gamma_inf_index in itertools.product(source_vectors, Gamma_inf_indicies):
         data = util.load_data("clockwork_mR_vs_mphi", v)
         H_inf = data["H_inf"][0]
@@ -203,5 +203,5 @@ def compute_all_example_trajectories():
         Gamma_inf = data["Gamma_inf"][Gamma_inf_index]
         interesting_solutions = [compute_example_trajectory(H_inf, Gamma_inf, nsource, f, *p)
                                 for p in tqdm.tqdm(interesting_points)]
-        data[(v, Gamma_inf_index)] = interesting_solutions
-    util.save_pkl(data, example_trajectories_filename)
+        output[(v, Gamma_inf_index)] = interesting_solutions
+    util.save_pkl(output, example_trajectories_filename)
