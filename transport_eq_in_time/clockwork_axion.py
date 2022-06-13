@@ -159,7 +159,8 @@ def compute_example_trajectory(H_inf, Gamma_inf, nsource, f, m_phi, mR):
     tmax_inf = tmax_ax * conv_factor
 
     phi0_over_f = theta_to_phi_over_f(1.0, eps)
-    _, T_and_H_fn, _ = decay_process.solve(tmax_inf, 0.0, 3*H_inf**2*decay_process.M_pl**2, decay_process.find_scale(Gamma_inf), Gamma_inf)
+    _, T_and_H_fn, _ = decay_process.solve(tmax_inf, 0.0, 3*H_inf**2*decay_process.M_pl**2, 
+                                           decay_process.find_scale(Gamma_inf), Gamma_inf)
     sol = clockwork_axion_field.solve((phi0_over_f, 0.0), (eps, M), tmax_ax, T_and_H_fn, Gamma_inf)
     relic_ts = np.geomspace(sol.t[1], sol.t[-1], 400)
     phi_over_f = sol.sol(relic_ts)[0,:]
@@ -177,15 +178,24 @@ def compute_example_trajectory(H_inf, Gamma_inf, nsource, f, m_phi, mR):
         taxs = (tinfs - decay_process.t0) / conv_factor
         plot_ts = tstart + tinfs
         tstart += tmax_inf
-        B_minus_L = transport_equation.calc_B_minus_L(red_chem_pot_sol(np.log(tinfs)))
-        Ts, _, _ = T_and_H_and_T_dot_fn(tinfs)
-        source = clockwork_axion_field.get_source(axion_sol, conv_factor, eps, M)(tinfs) / Ts
-        collected.append((B_minus_L, source, plot_ts))
+        red_chem_pots = red_chem_pot_sol(np.log(tinfs))
+        B_minus_L = transport_equation.calc_B_minus_L(red_chem_pots)
+        Ts, Hs, _ = T_and_H_and_T_dot_fn(tinfs)
+        theta_dots = axion_sol.sol(taxs)[1, :]
+        gammas = [transport_equation.calc_rate_vector(T) for T in Ts]
+        source =  (
+            - theta_dots * clockwork_axion_field.find_dynamical_scale(eps, M) / Ts * 
+            [gamma @ transport_equation.source_vectors[nsource] for gamma in gammas]
+        )
+        rate = - np.array([gamma @ transport_equation.charge_vector @ transport_equation.charge_vector_B_minus_L
+                    for gamma in gammas]) / Hs
+        collected.append((B_minus_L, source, rate, plot_ts))
     B_minus_L = np.concatenate([x[0] for x in collected])
     source = np.concatenate([x[1] for x in collected])
-    ts = np.concatenate([x[2] for x in collected])
+    rate = np.concatenate([x[2] for x in collected])
+    ts = np.concatenate([x[3] for x in collected])
             
-    return B_minus_L, source, ts, phi_over_f, relic_ts
+    return B_minus_L, source, rate, ts, phi_over_f, relic_ts
 
 interesting_points = [(1e-3, 13), (1e3, 10), (1e1, 2), (1e-2, 8)]
 example_trajectories_filename = os.path.join(util.datadir, "example_trajectories_cw.pkl")
