@@ -197,8 +197,12 @@
 \end{equation}
 
 \begin{align}
-	\mathcal{H}(t, \mathbf{x}) &= \varepsilon \int_{- \infty}^t \, \mathrm{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \\
+	\mathcal{H}(t, \mathbf{x}) &= \varepsilon \int_{- \infty}^t \, \mathrm{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \nonumber \\
 	&= \sum_i \mu_i J_i^0(t, \mathbf{x}) - \int_{- \infty}^t \, \mathbf{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i \sum_\alpha n_i^\alpha O_\alpha(t' , \mathbf{x})
+\end{align}
+
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{d} t} \mathcal{H} = \varepsilon \sum_i \mu_i J_i^0(t, \mathbf{x}) - \varepsilon^2 \int_{- \infty}^t \, \mathrm{d}t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \to 0 
 \end{align}
 
 \begin{align}
@@ -209,12 +213,73 @@
 	X = - \sum_{i, \alpha} \frac{\mu_i}{T} n_i^\alpha \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon(t' - t)} O_\alpha(x')
 \end{equation}
 
+Pertubative expansion of $\rho$ in a series of $X$:
 \begin{equation}
 	\rho \approx \left[ 1 + T \int_0^{1/T} \, \mathrm{d} \tau e^{-(H - \sum_i \mu_i Q_i) \tau} X e^{(H - \sum_i \mu_i Q_i) \tau} - \langle X \rangle_\mathrm{GC}  \right] \rho_\mathrm{GC} 
 \end{equation}
 
 \begin{equation}
 	\langle Q_\alpha \rangle = 0
+\end{equation}
+
+\begin{equation}
+	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n_j^\beta \frac{\mu_j}{T} \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon (t' - t)} T \int_{0}^{1/T} \, \mathrm{d} \tau I
+\end{equation}
+
+\begin{align}
+	I &= \left\langle O_\alpha(x) \left( e^{-(H - \sum_i \mu_i Q_i) \tau} O_\beta(x') e^{(H - \sum_i \mu_i Q_i) \tau} - \langle O_\beta(x') \rangle_\mathrm{GC} \right)  \right\rangle_{\mathrm{GC}} \nonumber \\
+	&= \left\langle O_\alpha(x) \left( O_\beta(t' + i \tau, \mathbf{x}') - \langle O_\beta(x') \rangle_\mathrm{C} \right) \right\rangle_\mathrm{C} \nonumber \\
+	&= \int_{- \infty}^{t'} \, \mathrm{d} t'' \left\langle O_\alpha(x) \frac{\mathrm{d}}{\mathrm{d} t''} O_\beta(t'' + i \tau, \mathbf{x}') \right\rangle_{\mathrm{C}}
+\end{align}
+
+\begin{equation}
+	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n_i^\beta \mu_j \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon(t' - t)} \int_{- \infty}^{t'} \, \mathrm{d} t'' i \langle [ O_\alpha(x), O_\beta(t'', \mathbf{x}')] \rangle_\mathrm{C}  
+\end{equation}
+
+Kubo-Martin-Schwinger Relation:
+
+\begin{align}
+	\langle O_\alpha(x) O_\beta(t'' + i/T, \mathbf{x}') \rangle &= \operatorname{Tr} [ \rho_C O_\alpha(x) e^{- H / T} O_\beta(t'', \mathbf{x}') e^{+ H / T}] \nonumber \\ &= \langle O_\beta(t'', \mathbf{x}') O_\alpha(x) \rangle_{\mathrm{C}}
+\end{align}
+
+Definition spectral function:
+\begin{equation}
+	G^\rho_{\alpha, \beta}(x - x') = \langle [ O_\alpha(x), O_\beta(x')] \rangle_{\mathrm{C}}
+\end{equation}
+
+Fourier transform of the real space spectral function:
+\begin{equation}
+	G^\rho_{\alpha, \beta}(\omega, \mathbf{p}) = \int \mathrm{d}^4 x \, e^{i \omega t - i \mathbf{p} \cdot \mathbf{x}} G^\rho_{\alpha, \beta}(x)
+\end{equation}
+
+\begin{equation}
+	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n^\beta_j \mu_j \lim_{\varepsilon \searrow 0} \int \frac{\mathrm{d} \omega}{\omega} \frac{1}{\omega - i \varepsilon} \frac{1}{i \varepsilon} G^\rho_{\alpha, \beta}(\omega, \mathbf{0}) = \sum_{j, \beta} n^\beta_j \frac{\mu_j}{T} \frac{T G^\rho_\alpha(\omega, \mathbf{0})}{2\omega} \big|_{\omega = 0}
+\end{equation}
+
+\begin{equation}
+	\dot{q}_i = - \sum_j \sum_\alpha \Gamma_\alpha n_i^\alpha n_j^\alpha \frac{\mu_j}{T}
+\end{equation}
+
+Axion source term:
+
+\begin{equation}
+	\mathcal{L}_{\mathrm{int}, \beta} = - \frac{a}{f} O_\beta
+\end{equation}
+
+\begin{equation}
+	H(t) \to \tilde{H}(t) = H(t) + \frac{a(t)}{f} \int \mathrm{d}^3 x  O_\beta(t, \mathbf{x})
+\end{equation}
+
+\begin{equation}
+	O_\alpha(t, \mathbf{x})|_{a/f} - O_\alpha(t_0, \mathbf{x}) = i \int_{t_0}^{t} \mathrm{d} t' [\tilde{H}(t'), O_\alpha(t', \mathbf{x})|_{a / f}]
+\end{equation}
+
+\begin{align}
+	& \langle O_\alpha(t, \mathbf{x})|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}} = \nonumber \\  & i \int_{t_0}^{t} \mathrm{d} t' [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] + \frac{a(t')}{f} i \int_{t_0}^{t} \mathrm{d} t' [O_\beta(t', \mathbf{d}'), O_\alpha(t', \mathbf{x})|_{a / f}]
+\end{align}
+
+\begin{equation}
+	content...
 \end{equation}
 
 \section{Properties and Analytical Results}
