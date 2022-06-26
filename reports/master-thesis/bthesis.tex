@@ -149,9 +149,30 @@
 
 \section{Early Universe Cosmology}
 
+\begin{itemize}
+	\item FLRW metric
+	\item Friedmann equations
+	\item power law solutions
+	\item equilibrium thermodynamics with $g_*$
+	\item boltzmann equations
+	\item scalar fields
+	\item inflation and reheating
+\end{itemize}
+
 \section{Baryogenesis}
+\begin{itemize}
+	\item asymmetry parameter
+	\item dings da conditions
+	\item B - L in the SM
+	\item quik overview of mechanism 
+\end{itemize}
 
 \section{Axions}
+\begin{itemize}
+	\item $\theta$ parameter
+	\item PQ symmetry
+	\item goldstone boson 
+\end{itemize}
 
 \chapter{Spontaneous Baryogenesis}
 
@@ -163,11 +184,48 @@
 
 \section{Transport Equation}
 
+\begin{equation}
+	\partial_\mu J_i^\mu = \sum_\alpha n_i^\alpha O_\alpha
+\end{equation}
+
+\begin{equation}
+	\partial_t \langle J_i^0 \rangle_{\mathrm{GC}} = \sum_\alpha n_i^\alpha \langle O_\alpha \rangle_{\mathrm{GC}}
+\end{equation}
+
+\begin{equation}
+	\rho_\mathrm{GC} = \frac{e^{- (H - \sum_i \mu_i Q_i) / T}}{\operatorname{Tr} \left[ e^{- (H - \sum_i \mu_i Q_i) / T} \right] }
+\end{equation}
+
+\begin{align}
+	\mathcal{H}(t, \mathbf{x}) &= \varepsilon \int_{- \infty}^t \, \mathrm{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \\
+	&= \sum_i \mu_i J_i^0(t, \mathbf{x}) - \int_{- \infty}^t \, \mathbf{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i \sum_\alpha n_i^\alpha O_\alpha(t' , \mathbf{x})
+\end{align}
+
+\begin{align}
+	\rho \sim e^{- (H - \int \mathrm{d}^3 x \mathcal{H}) / T} = e^{-(H - \sum_i \mu_i Q_i) / T + X}
+\end{align}
+
+\begin{equation}
+	X = - \sum_{i, \alpha} \frac{\mu_i}{T} n_i^\alpha \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon(t' - t)} O_\alpha(x')
+\end{equation}
+
+\begin{equation}
+	\rho \approx \left[ 1 + T \int_0^{1/T} \, \mathrm{d} \tau e^{-(H - \sum_i \mu_i Q_i) \tau} X e^{(H - \sum_i \mu_i Q_i) \tau} - \langle X \rangle_\mathrm{GC}  \right] \rho_\mathrm{GC} 
+\end{equation}
+
+\begin{equation}
+	\langle Q_\alpha \rangle = 0
+\end{equation}
+
 \section{Properties and Analytical Results}
 
 \chapter{Motion of the Axion Field}
 
 \section{ALP Realignment}
+
+\begin{equation}
+	\mathcal{L} = \frac{1}{2} \left( \partial_\mu \phi \right)^2 - \frac{1}{2} m_a^2 \phi^2
+\end{equation}
 
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_realignment_field_evolution.pdf}
@@ -187,6 +245,15 @@
 
 
 \section{Multi Axion Systems}
+
+\begin{equation}
+	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \phi_j / f_j \right) \right] 
+\end{equation}
+
+\begin{equation}
+	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \frac{1}{2} \sum_i m_i^2 \phi_i^2 - \sum_{i, j}
+	g_{i, j} \phi_i^2 \phi_j^2
+\end{equation}
 
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/multi_axion_canonical_field_evolution.pdf}
