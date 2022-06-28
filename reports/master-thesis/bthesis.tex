@@ -184,14 +184,17 @@
 
 \section{Transport Equation}
 
+Current (continuity) equation for the charge $i$:
 \begin{equation}
 	\partial_\mu J_i^\mu = \sum_\alpha n_i^\alpha O_\alpha
 \end{equation}
 
+Taking the expectation value in the grand-canonical ensemble:
 \begin{equation}
 	\partial_t \langle J_i^0 \rangle_{\mathrm{GC}} = \sum_\alpha n_i^\alpha \langle O_\alpha \rangle_{\mathrm{GC}}
 \end{equation}
 
+which has the density matrix operator:
 \begin{equation}
 	\rho_\mathrm{GC} = \frac{e^{- (H - \sum_i \mu_i Q_i) / T}}{\operatorname{Tr} \left[ e^{- (H - \sum_i \mu_i Q_i) / T} \right] }
 \end{equation}
@@ -274,17 +277,81 @@ Axion source term:
 	O_\alpha(t, \mathbf{x})|_{a/f} - O_\alpha(t_0, \mathbf{x}) = i \int_{t_0}^{t} \mathrm{d} t' [\tilde{H}(t'), O_\alpha(t', \mathbf{x})|_{a / f}]
 \end{equation}
 
-\begin{align}
-	& \langle O_\alpha(t, \mathbf{x})|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}} = \nonumber \\  & i \int_{t_0}^{t} \mathrm{d} t' [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] + \frac{a(t')}{f} i \int_{t_0}^{t} \mathrm{d} t' [O_\beta(t', \mathbf{d}'), O_\alpha(t', \mathbf{x})|_{a / f}]
-\end{align}
-
 \begin{equation}
-	content...
+	\langle O_\alpha(t, \mathbf{x})|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}} = i \int_{t_0}^{t} \mathrm{d} t' \langle [\tilde{H}(t'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{GC}}
 \end{equation}
 
-\section{Properties and Analytical Results}
+
+\begin{align}
+	& \langle O_\alpha(t, \mathbf{x})|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}} = \nonumber \\  & i \int_{t_0}^{t} \mathrm{d} t' \langle [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{GC}} + \frac{a(t')}{f} i \int_{t_0}^{t} \mathrm{d} t' \langle [O_\beta(t', \mathbf{x}'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{GC}}
+\end{align}
+
+\begin{align}
+	i \int_{t_0}^{t} \mathrm{d} t' [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] &\approxeq i \int_{t_0}^{t} \mathrm{d} t' \langle [H(t'), O_\alpha(t', \mathbf{x})] \rangle_{\mathrm{GC}} + i \int_{t_0}^{t} \mathrm{d} t' \langle [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{C}} \nonumber \\ &= \langle O_\alpha(x) \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}}	
+\end{align}
+
+\begin{align}
+	\langle O_\alpha(x)|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t, \mathbf{x}) \rangle_{\mathrm{GC}} &\approxeq - i \int_{-  \infty}^t \mathrm{d}^4 x' \langle [ O_\alpha(x), O_\beta(x') ] \rangle_{\mathrm{C}} \frac{a(t')}{f} \nonumber \\ &= - i \int_{-  \infty}^t \mathrm{d}^4 x' G^\rho_{\alpha \beta}(x - x') \frac{a(t')}{f}
+\end{align}
+
+Axion moves slowly compared to reaction rates in the thermal plasma: 
+\begin{equation}
+	a(t') \approx a(t) + \dot{a}(t) (t' - t)
+\end{equation}
+
+Constant part:
+\begin{equation}
+	- i \frac{a_0}{f} \int_{-  \infty}^t \mathrm{d}^4 x' G^\rho_{\alpha \beta}(x - x') = - i \frac{a_0}{f} \operatorname{Pv} \int \frac{\mathrm{d} \omega}{2\pi} \frac{1}{\omega} G^\rho_{\alpha \beta} (\omega, \mathbf{0})
+\end{equation}
+
+Derivative part:
+\begin{align}
+	- i \frac{\dot{a}}{f} \int_{-  \infty}^t \mathrm{d}^4 x' G^\rho_{\alpha \beta}(x - x') &= - i \frac{\dot{a}}{f} \int_{-  \infty}^t \mathrm{d} t' \int \frac{\mathrm{d} \omega}{2\pi} e^{- i \omega (t - t')} \partial_\omega G^\rho_{\alpha \beta}(\omega, \mathbf{0}) \nonumber \\
+	&= - i \frac{\dot{a}}{f} \lim_{\varepsilon \searrow 0} \int \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega - i \varepsilon} \partial_\omega G^\rho_{\alpha \beta}(\omega, \mathbf{0}) \nonumber \\
+	&= \frac{\dot{a} / f}{T} \Gamma_\alpha \delta_{\alpha \beta}
+\end{align}
+
+
+% \section{Properties and Analytical Results}
 
 \chapter{Motion of the Axion Field}
+
+Action of (multiple) scalar field(s):
+
+\begin{equation}
+	S[\phi] = \int \mathrm{d}^4 x \sqrt{-g} \left[- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right]
+\end{equation}
+
+\begin{equation}
+	\Box \phi = \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
+\end{equation}
+
+\begin{equation}
+	g = \det g_{\mu \nu} = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta = - a(t)^6 f(\mathbf{x})
+\end{equation}
+
+\begin{align}
+	    \frac{\partial V}{\partial \phi} &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
+	                                      = - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
+	                                     &= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi}
+	                                      = - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
+	                                     = - 3H \dot{\phi} - \ddot{\phi}.
+\end{align}
+
+\begin{align}
+	\Box \phi &= - \frac{1}{\sqrt{a(t)^6}} (\partial_t \sqrt{ a(t)^6 } \dot{\phi} - \ddot{\phi} + a(t)^5 \partial_i^2 \phi) \\
+	&= - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
+	&= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
+	&= - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi} \\
+	&= - 3H \dot{\phi} - \ddot{\phi} + \frac{\nabla^2 \phi}{a(t)}.
+\end{align}
+
+
+\begin{equation}
+	\ddot{\phi} + 3 H \dot{\phi} - \frac{\nabla^2 \phi}{a(t)^2} + V'(\phi) = 0.
+\end{equation}
+
+
 
 \section{ALP Realignment}
 
