@@ -322,31 +322,29 @@ Action of (multiple) scalar field(s):
 	S[\phi] = \int \mathrm{d}^4 x \sqrt{-g} \left[- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right]
 \end{equation}
 
+
+Lagrange equation:
+
 \begin{equation}
-	\Box \phi = \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
+	\Box \phi \equiv \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
 \end{equation}
 
+Determinant of the metric:
 \begin{equation}
 	g = \det g_{\mu \nu} = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta = - a(t)^6 f(\mathbf{x})
 \end{equation}
 
+Computing the box operator for the metric:
 \begin{align}
-	    \frac{\partial V}{\partial \phi} &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
-	                                      = - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
-	                                     &= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi}
-	                                      = - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
-	                                     = - 3H \dot{\phi} - \ddot{\phi}.
+	    \Box \phi 
+	    &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
+	    = - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \nonumber \\
+	    &= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi}
+	    = - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
+	    = - 3H \dot{\phi} - \ddot{\phi}.
 \end{align}
 
-\begin{align}
-	\Box \phi &= - \frac{1}{\sqrt{a(t)^6}} (\partial_t \sqrt{ a(t)^6 } \dot{\phi} - \ddot{\phi} + a(t)^5 \partial_i^2 \phi) \\
-	&= - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
-	&= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
-	&= - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi} \\
-	&= - 3H \dot{\phi} - \ddot{\phi} + \frac{\nabla^2 \phi}{a(t)}.
-\end{align}
-
-
+Klein Gordon equation on FLRW background:
 \begin{equation}
 	\ddot{\phi} + 3 H \dot{\phi} - \frac{\nabla^2 \phi}{a(t)^2} + V'(\phi) = 0.
 \end{equation}
@@ -355,10 +353,31 @@ Action of (multiple) scalar field(s):
 
 \section{ALP Realignment}
 
+generic scalar field with mass $m_a$:
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} \left( \partial_\mu \phi \right)^2 - \frac{1}{2} m_a^2 \phi^2
 	\label{eq:L_alp}
 \end{equation}
+
+The resulting eom:
+\begin{equation}
+	\ddot{\phi} + 3 H \dot{\phi} + m_a^2 \phi = 0 
+\end{equation}
+
+\begin{equation}
+	H(t) \ll m_a
+\end{equation}
+
+\begin{equation}
+	???
+\end{equation}
+
+\begin{equation}
+	3 H \sim m_a
+\end{equation}
+
+¸
+
 
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_realignment_field_evolution.pdf}
@@ -366,6 +385,32 @@ Action of (multiple) scalar field(s):
 \end{figure}
 
 \section{Clockwork Theory Axions and Deformed Potentials}
+
+\begin{equation}
+	\mathcal{L} = \frac{f^2}{2} Z(\theta) (\partial_\mu \theta)^2 - \Lambda^4 U(\theta)
+\end{equation}
+
+\begin{equation}
+	Z(\theta) = 
+\end{equation}
+
+\begin{equation}
+	\phi(x) \equiv f \int_0^{\theta(x)} \mathrm{d} \theta \sqrt{Z(\theta)}
+\end{equation}
+
+\begin{equation}
+	\ddot{\phi} + 3 H \dot{\phi} + \frac{\partial V}{\partial \phi}
+\end{equation}
+
+\begin{equation}
+	V(\phi) = \Lambda^4 U[\theta(\phi)]
+\end{equation}
+
+\begin{equation}
+	\frac{\partial V}{\partial \phi} = 
+\end{equation}
+
+
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_potential.pdf}
     \caption{Plot of the deformed potentials of the clockwork axion model. On the x-axis the value of the canonical normalized field $\phi$ over the effective axion decay constant $f_\mathrm{eff}$ in the angular range $[-\pi, +\pi]$ is shown on a linear-scale. On the y-axis the value of the potential over the energy scale of the confining sector $2 \Lambda^4$ is show. The potential is shown for different values of the size of the extra dimension $mR$ indicated by the color of the plot lines. The corresponding value of $mR$ is shown on a colorbar on the right hand side.}
