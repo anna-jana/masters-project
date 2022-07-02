@@ -391,10 +391,6 @@ The resulting eom:
 \end{equation}
 
 \begin{equation}
-	Z(\theta) = 
-\end{equation}
-
-\begin{equation}
 	\phi(x) \equiv f \int_0^{\theta(x)} \mathrm{d} \theta \sqrt{Z(\theta)}
 \end{equation}
 
@@ -407,8 +403,61 @@ The resulting eom:
 \end{equation}
 
 \begin{equation}
-	\frac{\partial V}{\partial \phi} = 
+	\frac{\partial V}{\partial \phi} = \frac{1}{\sqrt{Z}} \frac{\Lambda^4}{f} \frac{\partial U}{\partial \theta}
 \end{equation}
+
+\begin{equation}
+	\frac{\partial^2 V}{\partial \phi^2} = \frac{\Lambda^4}{f^2} \frac{1}{Z} \left( \frac{\partial^2 U}{\partial \theta^2} - \frac{1}{2 Z} \frac{\partial Z}{\partial \theta} \frac{\partial U}{\partial \theta} \right)
+\end{equation}
+
+\begin{equation}
+	Z = \frac{1}{\coth(\pi m R) - \cos(\theta)} \approx \frac{2}{1 + 2\varepsilon^2 - \cos(\theta)}
+\end{equation}
+
+\begin{equation}
+	V = \frac{2 \Lambda^4}{1 + \frac{1}{u^2[\phi]}}
+\end{equation}
+
+\begin{equation}
+	\varepsilon \equiv e^{- \pi m R}
+\end{equation}
+
+\begin{equation}
+	M \equiv \frac{\Lambda^2}{f}
+\end{equation}
+
+\begin{equation}
+	u[\phi] = e^{-\pi mR} \operatorname{sc} \big[ \frac{\phi}{2f} \big| 1 - \varepsilon^2 \big]
+\end{equation}
+
+\begin{equation}
+	2 \pi f_\mathrm{eff} \equiv 4 f K(1 - \varepsilon^2)
+\end{equation}
+
+\begin{equation}
+	\phi \approx \frac{\pi f_\mathrm{eff}}{\varepsilon} \frac{F(\theta/2 | - 1 / \varepsilon^2)}{K(1 - \varepsilon^2)} = \frac{2}{\varepsilon} f F(\theta / 2 | - 1 / \varepsilon^2)
+\end{equation}
+
+\begin{equation}
+	\frac{\partial V}{\partial \phi} = 4 \frac{\Lambda^4}{f^2} \frac{\frac{\partial u}{\partial \phi} f}{u^3(1 + 1/u^2)^2}
+\end{equation}
+
+\begin{equation}
+	\frac{\partial u}{\partial \phi} = \epsilon \frac{1}{2 f} \frac{\operatorname{dn}[\phi/2f|1 - \varepsilon^2]}{(\operatorname{cn}[\phi/2f|1 - \varepsilon^2])^2}
+\end{equation}
+
+\begin{equation}
+	\dot{\theta} = \frac{\frac{1}{2M^2} \left| \frac{\partial V}{\partial \phi} \right| \dot{\phi} / f}{\left(\left(1 - \frac{V/f^2}{2M^2}\right) \frac{V / f^2}{2 M^2} \right)^{1/2}}
+\end{equation}
+
+\begin{equation}
+	\frac{\partial^2 V}{\partial \phi^2} = 4 M^2 \left[ f^2 \frac{\partial^2 u}{\partial \phi^2} \frac{1}{u^3(1 + 1/u^2)^2} + f^2 \left( \frac{\partial u}{\partial \phi} \right)^2 \frac{4(1 + 1/u^2) - 3u^2(1 + 1/u^2)^2}{\left( u^3(1 + 1/u^2)^2 \right)^2} \right]
+\end{equation}
+
+\begin{equation}
+	\frac{\partial^2 u}{\partial \phi^2} = \frac{\varepsilon}{4 f^2} \left[ 2 \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-3} \operatorname{dn}(\phi/2f|1 - \varepsilon^2)^2 - (1 - \varepsilon^2) \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-1} \right] \operatorname{sn}(\phi/2f|1 - \varepsilon^2)
+\end{equation}
+
 
 
 \begin{figure}[h]
