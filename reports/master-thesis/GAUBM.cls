@@ -136,17 +136,17 @@
   \noindent
   \begin{tabular}[t]{p{0.175\textwidth}p{0.825\textwidth-4\tabcolsep}}
     \bfseries\large Erkl\"arung&
-	Ich versichere hiermit, dass ich die vorliegende Arbeit ohne fremde Hilfe selbstständig
+	Ich versichere hiermit, dass ich die vorliegende Arbeit ohne fremde Hilfe selbstst\"andig
 	verfasst und nur die von mir angegebenen Quellen und Hilfsmittel verwendet habe.
-	Wörtlich oder sinngemä\ss{} aus anderen Werken entnommene Stellen habe ich unter
+	W\"ortlich oder sinngem\"a\ss{} aus anderen Werken entnommene Stellen habe ich unter
 	Angabe der Quellen kenntlich gemacht.
-	Die Richtlinien zur Sicherung der guten wissenschaftlichen Praxis an der Universität
-	Göttingen wurden von mir beachtet.
+	Die Richtlinien zur Sicherung der guten wissenschaftlichen Praxis an der Universit\"at
+	G\"ottingen wurden von mir beachtet.
 	Eine gegebenenfalls eingereichte digitale Version stimmt mit der schriftlichen Fassung
-	überein.
-	Mir ist bewusst, dass bei Versto\ss{} gegen diese Grundsätze die Prüfung mit nicht
+	\"uberein.
+	Mir ist bewusst, dass bei Versto\ss{} gegen diese Grunds\"atze die Pr\"ufung mit nicht
 	bestanden bewertet wird.\\[1em]
-    &\begin{center}Göttingen, den \today\end{center}\\[1.5cm]
+    &\begin{center}G\"ottingen, den \today\end{center}\\[1.5cm]
     &\begin{center}(\@ThesisAuthor)\end{center}
     %\begin{minipage}[t]{0.76\textwidth-4\tabcolsep}
     %  \@author\end{minipage}
