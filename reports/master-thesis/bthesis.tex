@@ -159,6 +159,9 @@
 	\item inflation and reheating
 \end{itemize}
 
+
+
+
 \section{Baryogenesis}
 \begin{itemize}
 	\item asymmetry parameter
@@ -369,6 +372,7 @@ Klein Gordon equation on FLRW background:
 \begin{equation}
 	\ddot{\phi} + 3 H \dot{\phi} - \nabla^2 \phi + V'(\phi) = 0.
 \end{equation}
+In this thesis we assume that all fields are homogeneous after inflation and hence neglect the spacial derivatives of the Laplacian. 
 
 
 
@@ -385,17 +389,45 @@ The resulting eom:
 	\ddot{\phi} + 3 H \dot{\phi} + m_a^2 \phi = 0 
 \end{equation}
 
+approximation for early times \cite[appendix A]{early_scalar_field_dynamics_PhysRevD.84.123506}:
 \begin{equation}
-	H(t) \ll m_a
+	\label{eq:scalar_field_early_times_eom}
+	c H \dot{\phi} \simeq - \frac{\partial V}{\partial \phi}
 \end{equation}
 
+move this formula maybe in fundamentals of cosmology section
 \begin{equation}
-	???
+	\frac{\dot{H}}{H^2} = - \frac{3(w + 1)}{2}
 \end{equation}
 
+In radiation domination we find $c = 5$.
+Taking the derivative of \eqref{eq:scalar_field_early_times_eom} yields
 \begin{equation}
-	3 H_\mathrm{osc} \sim m_a
+	c \simeq 3 - \frac{\dot{H}}{H^2} - \frac{V''}{c H^2}
+	= 3 + \frac{3(w + 1)}{2} - \frac{V''}{c H^2}
 \end{equation}
+Hence $c$ is constant as long as
+\begin{equation}
+	\frac{V''}{c H^2} \ll 1,
+\end{equation}
+holds.
+Plugging in the harmonic potential for the ALP model:
+\begin{equation}
+	\dot{\phi} \simeq - \frac{1}{5 H} \frac{\partial V}{\partial \phi} = - \frac{1}{5 H} m_a^2 \phi
+\end{equation}
+as long as
+\begin{equation}
+	\frac{m_a^2}{c H^2} \ll 1 \implies m_a \ll c H
+\end{equation}
+The threshold of this equation is defined as $H_\mathrm{osc}$.
+Once this condition is violated ($H \ll H_\mathrm{osc}$) we obtain a WKB-like solution for the ALP model:
+
+\begin{equation}
+	\phi = f_a t^{-1/2} \sin(m_a t + \delta)
+\end{equation}
+
+
+
 
 
 
