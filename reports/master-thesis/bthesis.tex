@@ -64,6 +64,11 @@
 %% kann es von der Seite mit diesem Template heruntergeladen werden
 %% und in einem LaTeX bekanntem Verzeichnis installiert werden (notfalls
 %% dem Verzeichnis mit der Arbeit).
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{float}
+
 \begin{document}
 %%
 %%                   Ab hier muessen die Anpassungen geschehen
@@ -149,6 +154,8 @@
 
 \section{Early Universe Cosmology}
 
+Based on \cite{the_early_universe_kolb_and_turner}
+
 \begin{itemize}
 	\item FLRW metric
 	\item Friedmann equations
@@ -159,7 +166,140 @@
 	\item inflation and reheating
 \end{itemize}
 
+\subsection{Dynamics of the Expansion of the Universe}
+Friedmann-Larmetre-Robinson-Walker metric:
+\begin{equation}
+	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right]
+\end{equation}
 
+In this thesis we use $k = 0$ i.e. a flat universe as suggested by e.g. the Planck mission.
+
+Energy momentum tensor:
+\begin{equation}
+	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P)
+\end{equation}
+
+\begin{equation}
+	w = \frac{P}{\rho}
+\end{equation}
+
+\begin{align}
+	p &= \frac{1}{3} \rho \implies \rho \sim a^{-4} \quad \mathrm{(Radiation)} \nonumber \\
+	p &= 0 \implies \rho \sim a^{-3} \quad \mathrm{(Matter)} \nonumber \\
+	p &= - \rho \implies \rho \sim \mathrm{const} \quad \mathrm{(Vacuum Energy)}
+\end{align}
+
+Friedmann equation:
+\begin{equation}
+	\left( \frac{\dot{a}}{a} \right)^2 = \frac{8 \pi G}{3} \rho - \frac{k}{a^2}
+\end{equation}
+For $k = 0$ and with $H = \frac{\dot{a}}{a}$ and $M_\mathrm{pl} = 1 / \sqrt{8 \pi G}$:
+\begin{align}
+	3 M_\mathrm{pl} H^2 = \rho 
+\end{align}
+
+Acceleration equation:
+\begin{equation}
+	\frac{\ddot{a}}{a} = - \frac{4 \pi G}{3} ( \rho + 3 p )
+\end{equation}
+
+\begin{equation}
+	\rho \sim a^{-3(1 + w)}
+\end{equation}
+
+\begin{equation}
+	a \sim t^{2/3(1 + w)}
+\end{equation}
+
+\begin{equation}
+	\Omega_i = \frac{\rho_i}{\rho_c}
+\end{equation}
+
+\begin{equation}
+	\rho_c = \frac{3 H^2}{8 \pi G}
+\end{equation}
+
+\subsection{Cosmological Thermodynamics}
+Fermi-Dirac / Bose-Einstein for ferminons / bosons:
+with $E^2 = p^2 + m^2$
+\begin{equation}
+	f(\mathbf{p}) = \frac{1}{\exp((E - \mu) / T) \pm 1}
+\end{equation}
+
+Important thermodynamic observables:
+\begin{equation}
+	n = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p f(\mathbf{p})
+\end{equation}
+
+\begin{equation}
+	\rho = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p E(\mathbf{p}) f(\mathbf{p})
+\end{equation}
+
+\begin{equation}
+	p = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p \frac{p^2}{3E(\mathbf{p})} f(\mathbf{p})
+\end{equation}
+
+Relativisitic limit:
+\begin{equation}
+	\rho = \begin{cases} 
+		\frac{\pi^2}{30} g T^4 & \text{Bosons} \\
+		\frac{7}{8} \frac{\pi^2}{30} g T^4 & \text{Fermions}
+	\end{cases}
+\end{equation}
+\begin{equation}
+	n = \begin{cases} 
+		\frac{\zeta(3)}{\pi^2} g T^3 & \text{Bosons} \\
+		\frac{3}{4} \frac{\zeta(3)}{\pi^2} g T^3 & \text{Fermions}
+	\end{cases}
+\end{equation}
+\begin{equation}
+	p = \rho / 3
+\end{equation}
+\begin{equation}
+	s = \frac{2 \pi^2}{45} g_i T^3
+\end{equation}
+
+For $T \ll m$
+\begin{equation}
+	n_+ - n_- \approx \frac{g T^3}{6} \left( \frac{\mu}{T} \right)
+\end{equation}
+
+For multiple particle species:
+\begin{align}
+	\rho &= \frac{\pi^2}{30} g_{*, \rho}(T) T^4 \nonumber \\
+	s &= \frac{2 \pi^2}{45} g_i T^3
+\end{align}
+with 
+\begin{equation}
+	g_{*, \rho} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^4 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^4
+\end{equation}
+and
+\begin{equation}
+	g_{*, s} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^3
+\end{equation}
+
+\subsection{Inflation and Reheating}
+The inflaton field $\phi$:
+\begin{equation}
+	\mathcal{L} = \frac{1}{2} (\partial_\mu \phi)^2 - \frac{1}{2} m_\mathrm{inf}^2 \phi^2
+\end{equation}
+\begin{equation}
+	\label{eq:inflaton_field_eq}
+	\ddot{\phi} + 3 H \dot{\phi} + \Gamma_\mathrm{inf} \dot{\phi} + V'(\phi) = 0
+\end{equation}
+The term $\Gamma_\mathrm{inf}$ is a phenomenological term describing the decay of the inflaton field into standard model particles, as we will see shortly.
+TODO: describe slow roll as well?????
+
+If the multiply eq. \eqref{eq:inflaton_field_eq} with $\dot{\phi}$ and average over one oscillation, we obtain 
+the equation for reheating:
+\begin{equation}
+	\dot{\rho}_\mathrm{inf} + 3 H \rho_\mathrm{inf} = - \Gamma_\mathrm{inf} \rho_\mathrm{inf}
+\end{equation}
+The corresponding equation for the radiation energy density reads
+\begin{equation}
+	\dot{\rho}_\mathrm{rad} + 4 H \rho_\mathrm{rad} = + \Gamma_\mathrm{inf} \rho_\mathrm{inf}
+\end{equation}
+The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay.
 
 
 \section{Baryogenesis}
@@ -169,6 +309,66 @@
 	\item B - L in the SM
 	\item quik overview of mechanism 
 \end{itemize}
+
+\begin{equation}
+	\label{eq:B_and_L_current_equations}
+	\partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a,
+\end{equation}
+
+\begin{equation}
+	\label{eq:chern_simons_current}
+	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right),
+\end{equation}
+
+\begin{equation}
+	A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U
+\end{equation}
+
+\begin{equation}
+	\label{eq:chern_simons_number}
+	\frac{g_2^3}{32 \pi^2} \int \mathrm{d}^4 x \, \partial_\mu K^\mu =
+	\frac{g_2^3}{32 \pi^2} \int \mathrm{d}^3 \sigma_\mu K_\mu
+	=: N_{\mathrm{CS}}.
+\end{equation}
+
+\begin{equation}
+	N_{\mathrm{CS}} := \int \mathrm{d}^3 x \, K^0.
+\end{equation}
+
+\begin{equation}
+	\int \mathrm{d}^4 x \partial_\mu K^\mu = \int \mathrm{d} t \, \partial_t \int \mathrm{d}^3 x \, K^0 =
+	N_{\mathrm{CS}}(t_f) - N_{\mathrm{CS}}(t_i) = \Delta N_{\mathrm{CS}}(t_i, t_f)
+\end{equation}
+
+\begin{equation}
+	\Gamma_{\mathrm{sph}} \sim \left( \frac{E_{\mathrm{sph}}}{T} \right)^3 \left( \frac{m_W(T)}{T} \right)^4 T^4 e^{- E_{\mathrm{sph}} / T}.
+\end{equation}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\draw[thick,->] (-4.5,0) -- (4.5,0) node[anchor=west] {Chern-Simons Number};
+		\draw[thick,->] (0,0) -- (0,4.5) node[anchor=south] {Field Energy};
+		\draw[scale=1, domain=-4.5:4.5, smooth, variable=\x, blue] plot ({\x}, {1.8*(1 - cos(2 * \x r))});
+		\foreach \x in {0,3.14,-3.14}
+		\filldraw[color=red] (\x, 0) circle (0.1);
+		\foreach \x in {3.14/2, -3.14/2}
+		\filldraw[color=green] (\x, 1.8*2) circle (0.1);
+		\draw[thick,->] (0.0, -0.5) -- (3.14, -0.5);
+		\draw[->] (3.3 / 2 + 0.5, 1.8*2 + 0.5 + 0.1) node[anchor=south]  {Sphaleron} -- (3.4 / 2, 1.8*2 + 0.1) ;
+		\draw[->] (-2.7, -0.7) node[anchor=north]  {Vacuum Configuration} -- (-3, -0.2) ;
+		\node at (1.5, -0.7) {Instanton};
+		\draw[->] (-3.14/6, 2) .. controls (-3.14 / 2, 1.8*2 + 1) .. (-3.14 + 3.14/6, 2) node[midway,above,xshift=-8]{Sphaleron Transition};
+	\end{tikzpicture}
+	\caption{Cartoon of the vacuum structure of a non-albelian gauge theory, which leads to the non-conservation of baryon and lepton numbers in the standard model.
+		On the x-axis the Chern-Simons number is shown and on the y-axis the free-energy of the gauge field.
+		The energy is sketched as a blue line. The vacuum-configurations are indicated by red dots and the sphaleron configurations by green ones. Sphaleron and instanton transitions are indicated by arrows from one vacuum state
+		to the next.
+	}
+	\label{fig:sphaleron_cartoon}
+\end{figure}
+
+
 
 \section{Axions}
 \begin{itemize}
