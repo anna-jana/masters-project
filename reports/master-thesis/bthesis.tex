@@ -627,10 +627,6 @@ Once this condition is violated ($H \ll H_\mathrm{osc}$) we obtain a WKB-like so
 \end{equation}
 
 
-
-
-
-
 \begin{figure}[h]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_realignment_field_evolution.pdf}
     \caption{Evolution of the axion field for standard misalignment of an ALP with the Lagrangian in eq. \eqref{eq:L_alp}. On the x-axis time is shown in units of the axion mass $m_a$ on a log-scale. On the y-axis the misalignment angle $\theta$ is shown. Different epochs of the evolution are annotated.}
@@ -639,6 +635,7 @@ Once this condition is violated ($H \ll H_\mathrm{osc}$) we obtain a WKB-like so
 \section{Clockwork Theory Axions and Deformed Potentials}
 
 Based on \cite{Deformed_potential_Bae_2019}
+Details of derivation of the clockwork potential are from \cite{general_cont_clockwork_Choi_2018}.
 
 \begin{equation}
 	\mathcal{L} = \frac{f^2}{2} Z(\theta) (\partial_\mu \theta)^2 - \Lambda^4 U(\theta)
@@ -694,6 +691,8 @@ Based on \cite{Deformed_potential_Bae_2019}
 
 $\operatorname{sc}[\cdot | \cdot]$ is a Jacobi elliptic function
 
+See \url{https://en.wikipedia.org/wiki/Jacobi_elliptic_functions} for an overview.
+
 \begin{equation}
 	u = \int_0^\varphi \mathrm{d} \theta \frac{1}{\sqrt{1 - m \sin^2 \theta}}
 \end{equation}
@@ -702,7 +701,8 @@ $\operatorname{sc}[\cdot | \cdot]$ is a Jacobi elliptic function
 	\operatorname{am}(u, m) &\equiv \varphi \\
 	\operatorname{sn}(u, m) &\equiv \sin \operatorname{am}(u, m) \\
 	\operatorname{cn}(u, m) &\equiv \cos \operatorname{am}(u, m) \\
-	\operatorname{dn}(u, m) &\equiv \frac{\mathrm{d}}{\mathrm{d} u} \operatorname{am}(u, m) 
+	\operatorname{dn}(u, m) &\equiv \frac{\mathrm{d}}{\mathrm{d} u} \operatorname{am}(u, m) \\
+	\operatorname{sc}(u, m) &\equiv \tan \operatorname{am}(u, m)
 \end{align}
 
 
