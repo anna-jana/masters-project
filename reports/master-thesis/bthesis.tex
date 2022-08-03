@@ -661,9 +661,51 @@ Details of derivation of the clockwork potential are from \cite{general_cont_clo
 	\frac{\partial^2 V}{\partial \phi^2} = \frac{\Lambda^4}{f^2} \frac{1}{Z} \left( \frac{\partial^2 U}{\partial \theta^2} - \frac{1}{2 Z} \frac{\partial Z}{\partial \theta} \frac{\partial U}{\partial \theta} \right)
 \end{equation}
 
+
+
+We start by assuming a flat and compactified extra-dimension with a coordinate $y$. The compactification is on $S_1 / \mathbb{Z}_2$ with fixed points $y = 0$ and $y = mR$ \footnote{In ref. \cite{general_cont_clockwork_Choi_2018} a general dilaton background is considered and our calculations correspond to $k_1 = k_2 = k_3 = 0$.}.
+On this space-time we introduce an angular field $\theta(x, y)$.
 \begin{equation}
-	S = \frac{f_5^3}{2} \int \mathrm{d} x^4 \mathrm{d} y \left[ (\partial_\mu \phi)^2 - (\partial_y \phi - m \sin(m)) \right]
+	S = \frac{f_5^3}{2} \int \mathrm{d} x^4 \mathrm{d} y \left[ (\partial_\mu \theta)^2 - (\partial_y \theta - m \sin(\theta))^2 \right]
 \end{equation}
+The equation of motion is obtained by varying $\theta \to \theta + \delta \theta$. In particular we need to keep track of the term linear in $\partial_y$ as it
+creates boundary terms while the other terms behave like in regular Euler-Lagrange equations:
+\begin{equation}
+	\partial_\mu \partial^\mu \theta + \partial_y^2 \theta + m^2 \cos \theta m \sin(\theta) (\delta(y) - \delta(y - \pi R)).
+\end{equation}
+We are interested in the low energy theory. For this we want to decompose the field into separation of variables Ansatz. Because the potential introduces a non-linearity into the equations, we do a field redefinition 
+\begin{equation}
+	\varphi(x, y) = \tan(\theta(x, y) / 2).
+\end{equation}
+\begin{ equation}
+	\theta(x, y) = \sum_{n = 0}^\infty f_n(y) \chi_n(x)
+\end{ equation}
+We call the $f_n(y)$ the mode functions. 
+
+ 
+
+
+
+We now do a field redefinition 
+\begin{equation}
+	\varphi(x, y) = \tan(\theta(x, y) / 2)
+\end{equation}
+and the action reads
+\begin{equation}
+	S = - \frac{f_5^3}{2} \int \mathrm{d}^5 x \frac{4}{(1 + \varphi^2)^2} \left[ (\partial_\mu \varphi)^2 + (\partial_y \varphi - m \varphi)^2 \right].
+\end{equation}
+From this we can derive the equations of motion 
+
+
+\begin{equation}
+	k_1 = k_2 = 0
+\end{equation}
+
+
+
+
+
+
 
 \begin{equation}
 	f^2 = f_5^3 (1 - \varepsilon^2) / (2m)
