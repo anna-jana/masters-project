@@ -150,96 +150,106 @@
 
 \chapter{Introduction}
 
+MOTIVATION!!!
+-> we are here, a
+
+PROBLEM OVERVIEW
+
+CONTENT SUMMERY OF THESIS
+
+In this thesis we will always use natural units with $c = \hbar = k_B = 0$
+and the following metric convention $(+1, -1, -1, -1)$ 
+TODO: check metric convention everywhere!!!!!!!!!
+
 \chapter{Fundamentals}
 
 \section{Early Universe Cosmology}
-
-Based on \cite{the_early_universe_kolb_and_turner}
-
-\begin{itemize}
-	\item FLRW metric
-	\item Friedmann equations
-	\item power law solutions
-	\item equilibrium thermodynamics with $g_*$
-	\item boltzmann equations
-	\item scalar fields
-	\item inflation and reheating
-\end{itemize}
+In this section we will introduce the basics of cosmology and the background cosmological model we will use for the computations in this thesis later on.
+A good reference and the source for this section is \cite{the_early_universe_kolb_and_turner}.
 
 \subsection{Dynamics of the Expansion of the Universe}
-Friedmann-Larmetre-Robinson-Walker metric:
+\label{sec:dynamics_of_the_examsion_of_the_universe}
+The dynamics of the expanding universe is governed by Einsteins theory of general relativity. The Einstein field-equation connects geometry i.e. the curvature with the content i.e. the energy-momentum tensor $T$ of the universe \footnote{
+TODO: introduce all quantities????
+}:
 \begin{equation}
-	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right]
+	R_{\mu \nu} - \frac{1}{2} R g_{\mu \nu} = 8 \pi G T_{\mu \nu}.
 \end{equation}
-
-In this thesis we use $k = 0$ i.e. a flat universe as suggested by e.g. the Planck mission.
-
-Energy momentum tensor:
+We assume the cosmological assumption that the universe is homogeneous and isotropic on the large scales we are interested in. In this case the most general form of the metric is the Friedmann-Lametre-Robinson-Walker metric, which reads:
 \begin{equation}
-	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P)
+	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right].
 \end{equation}
-
+The quatitiy $a$ is called the scale factor and has to be determined by the Einstein field-equations.
+The parameter $k$ fixes the topology of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission ?????.
+On the overhand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
 \begin{equation}
-	w = \frac{P}{\rho}
+	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P),
 \end{equation}
-
+where $\rho$ is the energy-density and $P$ the pressure.
+Plugging these assumption into the Einstein field-equations yields the Friedmann equation (first order constraint, from the $T^{00}$ component) \footnote{
+A useful compact form of the Friedmann equation for $k = 0$ and $M_\mathrm{pl} = 1 / \sqrt{8 \pi G}$ is $3 M_\mathrm{pl} H^2 = \rho$
+}:
+\begin{equation}
+	\left( \frac{\dot{a}}{a} \right)^2 = \frac{8 \pi G}{3} \rho - \frac{k}{a^2}
+\end{equation}
+as well as the acceleration equation (second order e.o.m., from the trace of $T$)
+\begin{equation}
+	\frac{\ddot{a}}{a} = - \frac{4 \pi G}{3} ( \rho + 3 p ).
+\end{equation}
+From these equations one can derive a continuity equation for the energy-momentum tensor
+\begin{equation}
+	\label{eq:continuity_equation}
+	\dot{\rho} = - 3 H (\rho + P),
+\end{equation}
+where $H = \frac{\dot{a}}{a}$ is the Hubble-parameter. \\
+\noindent A set of useful solutions for $k = $ can be derived for a power-law dependence of the energy density on the scale-factor $\rho = \rho_0 a^X$ i.e. that the dilution of the energy is described by a power-law. For this we also introduce the so called equation of state (e.o.s.)
+\begin{equation}
+	w = \frac{P}{\rho}.
+\end{equation}
+This can in general have a complicated form and depend on further parameters such as temperature or field configurations, but we will assume a constant e.o.s $w$ for now.
+Then one finds using eq. \eqref{eq:continuity_equation}:
+\begin{equation}
+	\rho \sim a^{-3(1 + w)}.
+\end{equation}
+This result is important as most of the universes history falls into this case.
+One finds the following relations:
 \begin{align}
 	p &= \frac{1}{3} \rho \implies \rho \sim a^{-4} \quad \mathrm{(Radiation)} \nonumber \\
 	p &= 0 \implies \rho \sim a^{-3} \quad \mathrm{(Matter)} \nonumber \\
 	p &= - \rho \implies \rho \sim \mathrm{const} \quad \mathrm{(Vacuum Energy)}
 \end{align}
-
-Friedmann equation:
+While matter is just diluted in numbers by the expansion, radiation is also redshifted.
+Vacuum energy is essentially defined by this equation of state.
+Finally we mention that energy densities is often stated relative to the critical-density $\rho_c = \frac{3 H^2}{8 \pi G}$ as
 \begin{equation}
-	\left( \frac{\dot{a}}{a} \right)^2 = \frac{8 \pi G}{3} \rho - \frac{k}{a^2}
-\end{equation}
-For $k = 0$ and with $H = \frac{\dot{a}}{a}$ and $M_\mathrm{pl} = 1 / \sqrt{8 \pi G}$:
-\begin{align}
-	3 M_\mathrm{pl} H^2 = \rho 
-\end{align}
-
-Acceleration equation:
-\begin{equation}
-	\frac{\ddot{a}}{a} = - \frac{4 \pi G}{3} ( \rho + 3 p )
+	\Omega_i = \frac{\rho_i}{\rho_c}.
 \end{equation}
 
-\begin{equation}
-	\rho \sim a^{-3(1 + w)}
-\end{equation}
+\subsection{Cosmological Equilibrium Thermodynamics}
+We will now cover the thermodynamic description of the particle content of the universe
+in equilibrium. 
+In this case the distribution of particles is given by Fermi-Dirac or Bose-Einstein for ferminons or bosons respectively \footnote{
 
+}:
 \begin{equation}
-	a \sim t^{2/3(1 + w)}
+	f(\mathbf{p}) = \frac{1}{\exp((E - \mu) / T) \pm 1},
 \end{equation}
-
-\begin{equation}
-	\Omega_i = \frac{\rho_i}{\rho_c}
-\end{equation}
-
-\begin{equation}
-	\rho_c = \frac{3 H^2}{8 \pi G}
-\end{equation}
-
-\subsection{Cosmological Thermodynamics}
-Fermi-Dirac / Bose-Einstein for ferminons / bosons:
-with $E^2 = p^2 + m^2$
-\begin{equation}
-	f(\mathbf{p}) = \frac{1}{\exp((E - \mu) / T) \pm 1}
-\end{equation}
-
-Important thermodynamic observables:
+where we have the relativistic relation for the energy $E^2 = p^2 + m^2$. The distribution is parametrized by the temperature $T$ and the chemical potential $\mu$.
+Note the different sign in the expression for fermions and bosons. 
+From this probability distribution one can compute the important thermodynamics observables.
+The number density of particles:
 \begin{equation}
 	n = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p f(\mathbf{p})
 \end{equation}
-
+The energy density:
 \begin{equation}
 	\rho = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p E(\mathbf{p}) f(\mathbf{p})
 \end{equation}
-
+The pressure:
 \begin{equation}
 	p = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p \frac{p^2}{3E(\mathbf{p})} f(\mathbf{p})
 \end{equation}
-
-Relativisitic limit:
+These integrals can be evaluated in the relativistic limit where $T \ll m$:
 \begin{equation}
 	\rho = \begin{cases} 
 		\frac{\pi^2}{30} g T^4 & \text{Bosons} \\
@@ -259,12 +269,11 @@ Relativisitic limit:
 	s = \frac{2 \pi^2}{45} g_i T^3
 \end{equation}
 
-For $T \ll m$
 \begin{equation}
 	n_+ - n_- \approx \frac{g T^3}{6} \left( \frac{\mu}{T} \right)
 \end{equation}
 
-For multiple particle species:
+This result can be generalized to multiple particle species by using effective degrees of freedom $g_*$:
 \begin{align}
 	\rho &= \frac{\pi^2}{30} g_{*, \rho}(T) T^4 \nonumber \\
 	s &= \frac{2 \pi^2}{45} g_i T^3
@@ -273,24 +282,34 @@ with
 \begin{equation}
 	g_{*, \rho} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^4 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^4
 \end{equation}
-and
+and for the entropy:
 \begin{equation}
-	g_{*, s} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^3
+	g_{*, s} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^3.
 \end{equation}
+These expressions allow us to model the standard model plasma in the early universe, if
+all interactions are fast enough.
+
 
 \subsection{Inflation and Reheating}
-The inflaton field $\phi$:
-\begin{equation}
-	\mathcal{L} = \frac{1}{2} (\partial_\mu \phi)^2 - \frac{1}{2} m_\mathrm{inf}^2 \phi^2
-\end{equation}
+In order to solve several problems with standard Friedmann cosmology as discussed so far e.g. the flatness problem i.e. the fine-tuning of $k = 0$,
+an epoch of exponential expansion before the usual subsequent evolution of the universe is proposed. The easiest way to implement this, is so called slow-roll inflation. In this model a scalar field called the inflaton field $\phi$ with a mass $m_\mathrm{inf}$ is introduced. The equation of motion for the inflaton field reads \footnote{see section \ref{sec:motion_of_the_axion_field} for the derivation of equation of motion of scalar fields in a expanding universe.}:
 \begin{equation}
 	\label{eq:inflaton_field_eq}
-	\ddot{\phi} + 3 H \dot{\phi} + \Gamma_\mathrm{inf} \dot{\phi} + V'(\phi) = 0
+	\ddot{\phi} + 3 H \dot{\phi} + \Gamma_\mathrm{inf} \dot{\phi} + V'(\phi) = 0.
 \end{equation}
-The term $\Gamma_\mathrm{inf}$ is a phenomenological term describing the decay of the inflaton field into standard model particles, as we will see shortly.
-TODO: describe slow roll as well?????
-
-If the multiply eq. \eqref{eq:inflaton_field_eq} with $\dot{\phi}$ and average over one oscillation, we obtain 
+The energy density is given by the energy density of the inflaton field
+and standard model radiation:
+\begin{align}
+	\rho_\mathrm{inf} &= \frac{1}{2} \dot{\phi}^2 + \frac{1}{2} m_\mathrm{inf}^2 \phi^2 \\
+	\rho &= \rho_\mathrm{inf} + \rho_\mathrm{rad}.
+\end{align}
+TODO: describe initial condition for reheating 
+\begin{align}
+	\rho_\mathrm{inf}(t_\mathrm{inf}) &= 3 M_\mathrm{pl}^2 H_\mathrm{inf}^2 \nonumber \\
+	\rho_\mathrm{rad}(t_\mathrm{inf}) &= 0
+\end{align}
+The term $\Gamma_\mathrm{inf}$ is a phenomenological term describing the decay of the inflaton field into standard model particles, as we will see shortly. In this thesis we are interested in the epoch after the inflaton starts oscillating and decays into standard model particles. This epoch is called reheating. 
+If we multiply eq. \eqref{eq:inflaton_field_eq} with $\dot{\phi}$ and average over one oscillation, we obtain 
 the equation for reheating:
 \begin{equation}
 	\dot{\rho}_\mathrm{inf} + 3 H \rho_\mathrm{inf} = - \Gamma_\mathrm{inf} \rho_\mathrm{inf}
@@ -300,6 +319,7 @@ The corresponding equation for the radiation energy density reads
 	\dot{\rho}_\mathrm{rad} + 4 H \rho_\mathrm{rad} = + \Gamma_\mathrm{inf} \rho_\mathrm{inf}
 \end{equation}
 The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay.
+These equations togher with the Friedmann equation, describe the background cosmology for our later computations.
 
 
 \section{Baryogenesis}
@@ -537,28 +557,26 @@ Derivative part:
 % \section{Properties and Analytical Results}
 
 \chapter{Motion of the Axion Field}
+\label{sec:motion_of_the_axion_field}
 
-Overview: \cite{MarshAxionCosmo}
-
-Action of (multiple) scalar field(s):
-
+In this chapter we will discuss the models for axion-like fields and their cosmological dynamics.
+An overview of cosmological axion fields can be found in \cite{MarshAxionCosmo}.
+First let us discuss some generalities common to all models.
+We start from the action of (multiple) scalar fields $\phi_i$ on some background with metric $g$:
 \begin{equation}
-	S[\phi] = \int \mathrm{d}^4 x \sqrt{-g} \left[- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right]
+	S[\phi] = \int \mathrm{d}^4 x \sqrt{-g} \left[- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right].
 \end{equation}
-
-
-Lagrange equation:
-
+The corresponding equation of motion reads:
 \begin{equation}
-	\Box \phi \equiv \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
+	\label{eq:klein_gordon_general_background}
+	\Box \phi \equiv \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}.
 \end{equation}
-
-Determinant of the metric:
+Now we are only interessted in the FLRW metric discussed in section \ref{sec:dynamics_of_the_examsion_of_the_universe}.
+Let us compute the determinant of the metric
 \begin{equation}
 	g = \det g_{\mu \nu} = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta = - a(t)^6 f(\mathbf{x})
 \end{equation}
-
-Computing the box operator for the metric:
+as well as the box operator defined in eq. \eqref{eq:klein_gordon_general_background} for the metric:
 \begin{align}
 	    \Box \phi 
 	    &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
@@ -567,24 +585,19 @@ Computing the box operator for the metric:
 	    = - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
 	    = - 3H \dot{\phi} - \ddot{\phi}.
 \end{align}
-
-Klein Gordon equation on FLRW background:
+This gives us the equation of motion for scalar fields in an expanding universe:
 \begin{equation}
-	\ddot{\phi} + 3 H \dot{\phi} - \nabla^2 \phi + V'(\phi) = 0.
+	\ddot{\phi} + 3 H \dot{\phi} - \nabla^2 \phi / a(t)^2 + V'(\phi) = 0.
 \end{equation}
 In this thesis we assume that all fields are homogeneous after inflation and hence neglect the spacial derivatives of the Laplacian. 
 
-
-
 \section{ALP Realignment}
-
-generic scalar field with mass $m_a$:
+This model is the simplest model possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
 \begin{equation}
-	\mathcal{L} = \frac{1}{2} \left( \partial_\mu \phi \right)^2 - \frac{1}{2} m_a^2 \phi^2
+	\mathcal{L} = \frac{1}{2} \left( \partial_\mu \phi \right)^2 - \frac{1}{2} m_a^2 \phi^2.
 	\label{eq:L_alp}
 \end{equation}
-
-The resulting eom:
+The resulting equation of motion reads:
 \begin{equation}
 	\ddot{\phi} + 3 H \dot{\phi} + m_a^2 \phi = 0 
 \end{equation}
@@ -677,9 +690,9 @@ We are interested in the low energy theory. For this we want to decompose the fi
 \begin{equation}
 	\varphi(x, y) = \tan(\theta(x, y) / 2).
 \end{equation}
-\begin{ equation}
+\begin{equation}
 	\theta(x, y) = \sum_{n = 0}^\infty f_n(y) \chi_n(x)
-\end{ equation}
+\end{equation}
 We call the $f_n(y)$ the mode functions. 
 
  
@@ -733,12 +746,11 @@ From this we can derive the equations of motion
 
 $\operatorname{sc}[\cdot | \cdot]$ is a Jacobi elliptic function
 
+\footnote{
 See \url{https://en.wikipedia.org/wiki/Jacobi_elliptic_functions} for an overview.
-
 \begin{equation}
 	u = \int_0^\varphi \mathrm{d} \theta \frac{1}{\sqrt{1 - m \sin^2 \theta}}
 \end{equation}
-
 \begin{align}
 	\operatorname{am}(u, m) &\equiv \varphi \\
 	\operatorname{sn}(u, m) &\equiv \sin \operatorname{am}(u, m) \\
@@ -746,28 +758,21 @@ See \url{https://en.wikipedia.org/wiki/Jacobi_elliptic_functions} for an overvie
 	\operatorname{dn}(u, m) &\equiv \frac{\mathrm{d}}{\mathrm{d} u} \operatorname{am}(u, m) \\
 	\operatorname{sc}(u, m) &\equiv \tan \operatorname{am}(u, m)
 \end{align}
-
-
 \begin{equation}
 	2 \pi f_\mathrm{eff} \equiv 4 f K(1 - \varepsilon^2)
 \end{equation}
-
-$K(\cdot)$ is the complete elliptic integral of the first
-kind
-
+$K(\cdot)$ is the complete elliptic integral of the first kind
 \begin{equation}
 	K(k) \equiv \int_0^1 \mathrm{d}t \frac{1}{\sqrt{(1 - t^2)((1 - k^2t^2))}}
 \end{equation}
-
+$F( \cdot | \cdot )$ is the incomplete elliptic integral of the first kind:
+\begin{equation}
+	F(\phi | k^2) \equiv \int_0^\varphi \mathrm{d} \theta \frac{1}{\sqrt{1 - k^2 \sin^2 \theta}} 
+\end{equation}
+}
 
 \begin{equation}
 	\phi \approx \frac{\pi f_\mathrm{eff}}{\varepsilon} \frac{F(\theta/2 | - 1 / \varepsilon^2)}{K(1 - \varepsilon^2)} = \frac{2}{\varepsilon} f F(\theta / 2 | - 1 / \varepsilon^2)
-\end{equation}
-
-$F( \cdot | \cdot )$ is the incomplete elliptic integral of the first kind:
-
-\begin{equation}
-	F(\phi | k^2) \equiv \int_0^\varphi \mathrm{d} \theta \frac{1}{\sqrt{1 - k^2 \sin^2 \theta}} 
 \end{equation}
 
 \begin{equation}
