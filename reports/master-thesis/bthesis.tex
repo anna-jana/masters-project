@@ -25,8 +25,9 @@
 %               final,          %% Endversion; draft fuer schnelles Kompilieren
                ]{GAUBM}
 
+\usepackage{babel}[ngerman]
 \usepackage{setspace}  %% Zur Setzung des Zeilenabstandes
-\usepackage{babel}     %% Sprachen-Unterstuetzung
+%\usepackage{babel}     %% Sprachen-Unterstuetzung
 \usepackage{calc}      %% ermoeglicht Rechnen mit Laengen und Zaehlern
 \usepackage[T1]{fontenc}       %% Unterstutzung von Umlauten etc.
 %\usepackage[latin1]{inputenc}  %%
@@ -180,7 +181,7 @@ We assume the cosmological assumption that the universe is homogeneous and isotr
 	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right].
 \end{equation}
 The quatitiy $a$ is called the scale factor and has to be determined by the Einstein field-equations.
-The parameter $k$ fixes the topology of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission ?????.
+The parameter $k$ fixes the topology of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission \cite{planck2018}.
 On the overhand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
 \begin{equation}
 	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P),
@@ -249,7 +250,7 @@ The pressure:
 \begin{equation}
 	p = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p \frac{p^2}{3E(\mathbf{p})} f(\mathbf{p})
 \end{equation}
-These integrals can be evaluated in the relativistic limit where $T \ll m$:
+These integrals can be evaluated in the relativistic limit where $m \ll T$:
 \begin{equation}
 	\rho = \begin{cases} 
 		\frac{\pi^2}{30} g T^4 & \text{Bosons} \\
@@ -318,27 +319,61 @@ The corresponding equation for the radiation energy density reads
 \begin{equation}
 	\dot{\rho}_\mathrm{rad} + 4 H \rho_\mathrm{rad} = + \Gamma_\mathrm{inf} \rho_\mathrm{inf}
 \end{equation}
-The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay.
-These equations togher with the Friedmann equation, describe the background cosmology for our later computations.
-
+The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay. Here one can see the effect of the $\Gamma_{\mathrm{inf}}$: it creates an effective decay term in the rate equations.
+These equations together with the Friedmann equation, describe the background cosmology for our later computations.
 
 \section{Baryogenesis}
-\begin{itemize}
-	\item asymmetry parameter
-	\item dings da conditions
-	\item B - L in the SM
-	\item quik overview of mechanism 
-\end{itemize}
+In this section we will introduce the problem for which this thesis investigates a possible solution.
+The problem of baryogenesis can be expressed as follows: Why does the universe contain so much baryonic-matter? Or more precise: The universe as observed today, is made up of matter with very little antimatter, while in earlier times both were present in high numbers being in chemical equilibrium. As the universe cooled down, most of matter and antimatter annihilated into photons. Therefore it is reasonable to express the amount of matter-antimatter asymmetry by the ratio of the effective baryon number and the number of photons:
+\begin{equation}
+	\eta_B = \frac{n_+ - n_-}{n_\gamma},
+\end{equation}
+with
+\begin{equation}
+	n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3.
+\end{equation}
+The dependence on the expansion in $\eta_b$ cancels out.
+Only a comparatively small number of baryons survived in the end.
+For lower energies we know that baryon number is a conserved quantity. Hence the creation of the asymmetry needs to happen at high energies.
+Note that during annihilation of baryons and antibaryons ??? the comoving number of photons changes, hence over this epoch the asymmetry $\eta_B$ is not conversed. A better quantifier for the baryon-asymmetry 
+is the ratio with the entropy density:
+\begin{equation}
+	\label{eq:baryon_abundance}
+	Y_B := \frac{n_B}{s}.
+\end{equation}
+The present-day asymmetry in relation to the photons number density can be expressed as \footnote{
+One can derive this by considering $\frac{\eta_B}{Y_B} = \frac{\pi^4}{45 \zeta(3)} g_{*, s}(T)$.
+In the standard model one finds $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mathrm{Gev}} = 427/4$ \cite[sec. 3.4]{the_early_universe_kolb_and_turner}.
+}
+\begin{equation}
+	\eta_B^0 = \frac{g_{*,s}^0}{g_{*, s}^{\gg 1 \, \mathrm{Gev}}} \eta_B^{\gg 1 \, \mathrm{Gev}}.
+\end{equation}
 
+\subsection{Sakharov Conditions}
+Andrei Sakharov formulated in 1967 three necessary conditions required for baryogenesis \cite{Sakharov_1991}.
+The first is that baryon number has to be violated in the process. We start from the assumption that the initial baryon asymmetry was vanishing as it was diluted by inflation.
+Hence the baryon number as to the violated in a dynamical process.
+The second one is less obvious: C and CP symmetries have to be broken.
+This is required as only if
+reactions exists that actually biased toward the creation of baryons not anti-baryons an effective asymmetry can be produced.
+For this to happen the reactions need to distinguish between matter and antimatter i.e. C and CP symmetries have a be broken.
+Finally the process of baryogenesis has to happen out-of-equilibrium. This is because
+in equilibrium the number densities only depend on the mass of the particles, which is the same of particles and their anti-partners.
+
+
+\subsection{Baryogenesis in the Standard Model}
+Let us investigate these conditions in the known physics of the standard model (SM).
+In the standard model, the baryon and the lepton numbers are violated by the follwing nonperturbutive term:
 \begin{equation}
 	\label{eq:B_and_L_current_equations}
-	\partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a,
+	\partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a.
 \end{equation}
-
+It can be written as the divergence of the Chern-Simons current:
 \begin{equation}
 	\label{eq:chern_simons_current}
-	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right),
+	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right).
 \end{equation}
+
 
 \begin{equation}
 	A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U
