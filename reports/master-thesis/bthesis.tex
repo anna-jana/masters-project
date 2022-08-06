@@ -322,6 +322,16 @@ The corresponding equation for the radiation energy density reads
 The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay. Here one can see the effect of the $\Gamma_{\mathrm{inf}}$: it creates an effective decay term in the rate equations.
 These equations together with the Friedmann equation, describe the background cosmology for our later computations.
 
+\section{Axions}
+TODO: do we need this paragraph????
+In this section we will review axion-like particles, starting and considering QCD-axions as our example. For this we will follow the review \cite{Di_Luzio_2020_Landscape_of_QCD_Axion_models}.
+The theory of QCD contains a term call the theta term:
+
+
+
+
+
+
 \section{Baryogenesis}
 In this section we will introduce the problem for which this thesis investigates a possible solution.
 The problem of baryogenesis can be expressed as follows: Why does the universe contain so much baryonic-matter? Or more precise: The universe as observed today, is made up of matter with very little antimatter, while in earlier times both were present in high numbers being in chemical equilibrium. As the universe cooled down, most of matter and antimatter annihilated into photons. Therefore it is reasonable to express the amount of matter-antimatter asymmetry by the ratio of the effective baryon number and the number of photons:
@@ -362,42 +372,46 @@ in equilibrium the number densities only depend on the mass of the particles, wh
 
 
 \subsection{Baryogenesis in the Standard Model}
-Let us investigate these conditions in the known physics of the standard model (SM).
-In the standard model, the baryon and the lepton numbers are violated by the follwing nonperturbutive term:
+\label{sec:baryogenesis_in_the_standard_model}
+
+Let us investigate these conditions in the known physics of the standard model (SM). While non-equilibrium and C / CP violation are know parts of the standard model, baryon number violation do not appear in the Feynman rules of SM interaction. In the standard model, the baryon and the lepton numbers are violated by the following non-perturbative term:
 \begin{equation}
 	\label{eq:B_and_L_current_equations}
-	\partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a.
+	\partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a,
 \end{equation}
+where $g_2$ is the SU(2) coupling constant, $N_f$ the number of fermions, $F$ the SU(2) field strength tensor and $\tilde{F}$ its dual.
 It can be written as the divergence of the Chern-Simons current:
 \begin{equation}
 	\label{eq:chern_simons_current}
-	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right).
+	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right),
 \end{equation}
-
-
-\begin{equation}
-	A_\mu = \frac{i}{g_2} U^{-1} \partial_\mu U
-\end{equation}
-
-\begin{equation}
-	\label{eq:chern_simons_number}
-	\frac{g_2^3}{32 \pi^2} \int \mathrm{d}^4 x \, \partial_\mu K^\mu =
-	\frac{g_2^3}{32 \pi^2} \int \mathrm{d}^3 \sigma_\mu K_\mu
-	=: N_{\mathrm{CS}}.
-\end{equation}
-
+where $f^{abc}$ are the SU(2) structure constants, $A$ the SU(2) gauge field.  
+This shows that the term on the right hand side of \eqref{eq:B_and_L_current_equations} is a topological quantity as we can define a winding-number type quantity:
 \begin{equation}
 	N_{\mathrm{CS}} := \int \mathrm{d}^3 x \, K^0.
 \end{equation}
-
+Using the temporal gauge defined by $A_0 = 0$, where $K_i = 0$,
+we can write the change of Chern-Simons number between $t_i$ and $t_f$ as
 \begin{equation}
 	\int \mathrm{d}^4 x \partial_\mu K^\mu = \int \mathrm{d} t \, \partial_t \int \mathrm{d}^3 x \, K^0 =
 	N_{\mathrm{CS}}(t_f) - N_{\mathrm{CS}}(t_i) = \Delta N_{\mathrm{CS}}(t_i, t_f)
 \end{equation}
-
+If the field configurations at $t_i$ and $_f$ are so called pure gauges i.e. configurations with vanishing energy-density (vaccum configurations) and hence vanishing field strength of the form
 \begin{equation}
-	\Gamma_{\mathrm{sph}} \sim \left( \frac{E_{\mathrm{sph}}}{T} \right)^3 \left( \frac{m_W(T)}{T} \right)^4 T^4 e^{- E_{\mathrm{sph}} / T}.
+	A_\mu = U^{-1} A_\mu U + \frac{i}{g_2} U^{-1} \partial_\mu U,
 \end{equation}
+then the Chern-Simons number is an integer.
+Hence one can not deform such vacuum configurations into each other without leaving the set of vacuum configurations.
+The change between them is hence a quantum tunneling process called an instanton \footnote{TODO: explain formal defintion of instanton}. See figure \ref{fig:sphaleron_cartoon} for an illustration.
+Its rate is too low to have any significant effect, although this changes once we consider thermal processes i.e. so called sphalerons \footnote{TODO: explain sphaleron configurations}. 
+Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vaccua vanishes above the phase transition. Here the transition rate is given by 
+\begin{align}
+	\Gamma_{\mathrm{sph}} &= (0.21 \pm 0.01) \left(\frac{N_c g^2 T}{m_D^2} \right) \left(\ln \left(\frac{m_D}{\gamma} \right) + 3.0410 \right) \frac{N_c^2 - 1}{N_c^2} (N_c \sqrt{2 \pi g})^5 T^4 \\
+	\gamma &= \frac{N_c g^2 T}{4 \pi} \left(\ln \left(\frac{m_D}{\gamma}\right) + 3.0410 \right) \nonumber \\
+	m_D^2 &= \frac{2N_c + N_f}{6} g^2 T^2 \nonumber,
+\end{align}
+where $N_c$ the number of ``colors'' ($N_c = 2$ for the weak SU(2) theory) and $g = g_2$ the coupling constant.
+These processes give us the rate of conversion of lepton and baryon numbers. 
 
 \begin{figure}[H]
 	\centering
@@ -424,30 +438,44 @@ It can be written as the divergence of the Chern-Simons current:
 \end{figure}
 
 
-
-\section{Axions}
-\begin{itemize}
-	\item $\theta$ parameter
-	\item PQ symmetry
-	\item goldstone boson 
-\end{itemize}
-
-use \cite{Di_Luzio_2020_Landscape_of_QCD_Axion_models}
-for this section
-
-
 \chapter{Spontaneous Baryogenesis}
+In this chapter we will discuss a possible mechanism which could implement baryogenesis. This mechanism is call spontaneous baryogenesis and is the topic of the rest of this thesis.
 
 \section{Mechanism of Spontaneous Baryogenesis}
 
-Original papers: \cite{COHEN1987251} and \cite{COHEN1988913}
-General mechanism: \cite{Domcke:2020kcp_Generic_Couplings}
-
+The mechanism of spontaneous baryogenesis was propose by Andreq Cohen and David Kapla in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
+Their idea was to couple a scalar field $\phi$ to the baryon current $J_B$:
 \begin{equation}
-	\mu \to \mu_\mathrm{eff} = \mu + \frac{\dot{\phi}}{f}
+	\mathcal{L} = \frac{1}{2} (\partial \phi)^2 - V(\phi) - \frac{1}{f} \partial_\mu \phi J_B^\mu.
 \end{equation}
+If one considers the corresponding path-integral for the thermal theory, the time derivative in this coupling appears as a modification of the baryon chemical potential:
+\begin{equation}
+	\mu \to \mu_\mathrm{eff} = \mu + \frac{\dot{\phi}}{f}.
+\end{equation}
+This in turn modifies the equilibrium abundance of baryons, depending on the sign of $\dot{\phi}$.
+In a cosmological setting, a scalar field is frozen until its mass exceeds the Hubble-friction (see \ref{sec:motion_of_the_axion_field} for details on this). The initial fast-roll motion creates baryons. Then the successive oscillations create baryons and antibaryons in alternation canceling each other, without creating a net baryon number. 
+There are different ways to create an concrete implementation of spontaneous baryogenesis. 
+The one we will look at in this thesis is using axions. 
+Axions have couplings the topological terms like 
+\begin{equation}
+	 \sim \phi(t) F \tilde{F}.
+\end{equation}
+From eq. \eqref{eq:B_and_L_current_equations} we can see that this creates a direct coupling to the lepton current. 
+Then, by the means of sphalerons (see section \ref{sec:baryogenesis_in_the_standard_model}), the leptons are converted into baryons.
 
-\section{Transport Equation}
+In ref. \cite{Domcke:2020kcp_Generic_Couplings} the authors pointed out that a direct coupling to the lepton or baryon current is not necessary for successful baryogenesis.
+Instead the creation of some charge X deviating from the equilibrium value, leeds to a non-vanishing baryon number if the reactions which equilibrate the charge X back, are violating baryon number. Hence in the process a net baryon number is created.
+Let us discuss this on an abstract example in more detail.
+	
+	
+	
+
+
+
+
+
+
+\section{Transport Equation I: Derivation}
 
 Based on \cite{Domcke:2020kcp_Generic_Couplings}
 
@@ -587,6 +615,8 @@ Derivative part:
 \begin{table}
 	content...
 \end{table}
+
+\section{Transport Equation II: Behavior}
 
 
 % \section{Properties and Analytical Results}
