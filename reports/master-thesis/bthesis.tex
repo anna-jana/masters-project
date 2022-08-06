@@ -464,7 +464,7 @@ From eq. \eqref{eq:B_and_L_current_equations} we can see that this creates a dir
 Then, by the means of sphalerons (see section \ref{sec:baryogenesis_in_the_standard_model}), the leptons are converted into baryons.
 
 In ref. \cite{Domcke:2020kcp_Generic_Couplings} the authors pointed out that a direct coupling to the lepton or baryon current is not necessary for successful baryogenesis.
-Instead the creation of some charge X deviating from the equilibrium value, leeds to a non-vanishing baryon number if the reactions which equilibrate the charge X back, are violating baryon number. Hence in the process a net baryon number is created.
+Instead the creation of some charge X deviating from the equilibrium value, leeds to a non-vanishing baryon number if the reactions which equilibrate the charge X back, are violating baryon number. Hence in the process a net baryon number is created. 
 Let us discuss this on an abstract example in more detail.
 We are considering two charges $Q_1$ and $Q_2$. The baryon number is given by the linear combination
 \begin{equation}
@@ -484,17 +484,27 @@ This coupling biases the value of $Q_2 - Q_1$ away from the previous vanishing e
 At the same time, the the operator $O_2$ will lead to a relaxation of $Q_1$ toward its vanishing equilibrium value. In doing so it will violate also $B = Q_1 + Q_2$ as it doesn't change $Q_2$. Once this reaction freezes out, $B$ is conserved. Then $O_2$ will lead $Q_2 - Q_1$ to obtain its new vanishing equilibrium value with a non-vanishing $B$. 
 A cartoon of this process is shown in fig. ????? TODO
 
-Finally we have a find a way
+Why is this process called \emph{spontaneous} baryogenesis?
+This is because the amount and also if baryons or antibaryons are generated depends on the initial value of the scalar field.
+If in the UV-completion this scalar araises as the (pseudo-)Goldstone boson of the sponatneous symmetry breaking (SSB) of a complex field $\Phi$, then the initial values of $\phi$ are distributed evenly from the SSB, hence the name spontaneous baryogenesis.
 
-
-
-	
-	
-
-
-
-
-
+Finally we have to find a way to compute the final asymmetry. 
+A simple approach is using Boltzmann equations. For example if we couple
+the axion field directly to the lepton current and we have lepton number violating interaction in the thermal plasma mediated by the Weinberg operator
+\begin{equation}
+	???????
+\end{equation}
+then the Boltzmann equation reads:
+\begin{equation}
+	??????
+\end{equation}
+This equation was used in ref. \cite{Kusenko_2015_Axion_Leptogenesis}.
+However we would like to have a complete set of equations considering all standard model charges. The equation above assumes that these charges are all in equilibrium. 
+Moreover this approach has the problem that it depends on the field basis.
+This problem was pointed out by ref. \cite{Shi_2015_Basis_Invariance_chemical_equilibrium}.
+If we would start with an axion coupling to the weak sphaleron $a F \tilde{F}$, this Boltzmann equation is not correct. As this coupling is not directly modifying the lepton chemical potential. For this one needs a coupling to the lepton current.
+To introduce a coupling to the lepton current from this coupling, one needs to do a field redefinition depending on the axion field. This would also change the fields in the Weinberg operator, introducing a coupling within the Weinberg operator, modifying its rate. While one could compute a rate for the Weinberg operator including the axion dependence and solve for the asymmetry correctly, its more fruitful to use a set of basis independent equations. 
+This was done in .ref \cite{Domcke:2020kcp_Generic_Couplings}, where the authors developed a formalism based on linear-response theory which can describe the equilibration of charges by interaction and generation of charges from coupling to an axion field in a basis independent way for generic couplings. We will now recap their derivation.
 
 \section{Transport Equation I: Derivation}
 
