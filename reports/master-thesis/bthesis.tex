@@ -486,7 +486,7 @@ A cartoon of this process is shown in fig. ????? TODO
 
 Why is this process called \emph{spontaneous} baryogenesis?
 This is because the amount and also if baryons or antibaryons are generated depends on the initial value of the scalar field.
-If in the UV-completion this scalar araises as the (pseudo-)Goldstone boson of the sponatneous symmetry breaking (SSB) of a complex field $\Phi$, then the initial values of $\phi$ are distributed evenly from the SSB, hence the name spontaneous baryogenesis.
+If in the UV-completion this scalar arises as the (pseudo-)Goldstone boson of the spontaneous symmetry breaking (SSB) of a complex field $\Phi$, then the initial values of $\phi$ are distributed evenly from the SSB, hence the name spontaneous baryogenesis.
 
 Finally we have to find a way to compute the final asymmetry. 
 A simple approach is using Boltzmann equations. For example if we couple
@@ -505,25 +505,29 @@ This problem was pointed out by ref. \cite{Shi_2015_Basis_Invariance_chemical_eq
 If we would start with an axion coupling to the weak sphaleron $a F \tilde{F}$, this Boltzmann equation is not correct. As this coupling is not directly modifying the lepton chemical potential. For this one needs a coupling to the lepton current.
 To introduce a coupling to the lepton current from this coupling, one needs to do a field redefinition depending on the axion field. This would also change the fields in the Weinberg operator, introducing a coupling within the Weinberg operator, modifying its rate. While one could compute a rate for the Weinberg operator including the axion dependence and solve for the asymmetry correctly, its more fruitful to use a set of basis independent equations. 
 This was done in .ref \cite{Domcke:2020kcp_Generic_Couplings}, where the authors developed a formalism based on linear-response theory which can describe the equilibration of charges by interaction and generation of charges from coupling to an axion field in a basis independent way for generic couplings. We will now recap their derivation.
-
+ 
 \section{Transport Equation I: Derivation}
+The following derivation of the transport equation is taken from  \cite[appendix B]{Domcke:2020kcp_Generic_Couplings}.
 
-Based on \cite{Domcke:2020kcp_Generic_Couplings}
-
-Current (continuity) equation for the charge $i$:
+We start from the current (continuity) equation for the charges $Q_i$ with current $J_i^\mu$. These charges are changed by interaction $O_\alpha$ by $n_i^\alpha$:
 \begin{equation}
 	\partial_\mu J_i^\mu = \sum_\alpha n_i^\alpha O_\alpha
 \end{equation}
-
-Taking the expectation value in the grand-canonical ensemble:
+This equation is directly derived from the Lagrangian of the system and should be taken as an operator valued equation in the context of finite temperature QFT. We are working in the Heisenberg picture, where the states and the density matrix do not evolve with time but the observables do.
+We want to take the expectation value in the grand-canonical ensemble as particle numbers are not conserved:
 \begin{equation}
 	\partial_t \langle J_i^0 \rangle_{\mathrm{GC}} = \sum_\alpha n_i^\alpha \langle O_\alpha \rangle_{\mathrm{GC}}
 \end{equation}
-
-which has the density matrix operator:
+The density matrix operator for the grand-canonical ensemble is given by
 \begin{equation}
-	\rho_\mathrm{GC} = \frac{e^{- (H - \sum_i \mu_i Q_i) / T}}{\operatorname{Tr} \left[ e^{- (H - \sum_i \mu_i Q_i) / T} \right] }
+	\rho_\mathrm{GC} = \frac{e^{- (H - \sum_i \mu_i Q_i) / T}}{\operatorname{Tr} \left[ e^{- (H - \sum_i \mu_i Q_i) / T} \right] }.
 \end{equation}
+In order to evaluated these expectation values we have to use a trick.
+We want to find a density matrix such that the expectation value with it vanishes for the charges $Q_i$:
+\begin{equation}
+	\langle Q_\alpha \rangle = 0
+\end{equation}
+and this 
 
 \begin{align}
 	\mathcal{H}(t, \mathbf{x}) &= \varepsilon \int_{- \infty}^t \, \mathrm{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \nonumber \\
@@ -547,9 +551,7 @@ Pertubative expansion of $\rho$ in a series of $X$:
 	\rho \approx \left[ 1 + T \int_0^{1/T} \, \mathrm{d} \tau e^{-(H - \sum_i \mu_i Q_i) \tau} X e^{(H - \sum_i \mu_i Q_i) \tau} - \langle X \rangle_\mathrm{GC}  \right] \rho_\mathrm{GC} 
 \end{equation}
 
-\begin{equation}
-	\langle Q_\alpha \rangle = 0
-\end{equation}
+
 
 \begin{equation}
 	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n_j^\beta \frac{\mu_j}{T} \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon (t' - t)} T \int_{0}^{1/T} \, \mathrm{d} \tau I
