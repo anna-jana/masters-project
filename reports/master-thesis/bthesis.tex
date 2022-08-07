@@ -520,10 +520,6 @@ We want to take the expectation value in the grand-canonical ensemble as particl
 	\label{eq:current_eq_expectation_value}
 	\partial_t \langle J_i^0 \rangle_{\mathrm{GC}} = \sum_\alpha n_i^\alpha \langle O_\alpha \rangle_{\mathrm{GC}}
 \end{equation}
-%The density matrix operator for the grand-canonical ensemble is given by
-%\begin{equation}
-%	\rho_\mathrm{GC} = \frac{e^{- (H - \sum_i \mu_i Q_i) / T}}{\operatorname{Tr} \left[ e^{- (H - \sum_i \mu_i Q_i) / T} \right] }.
-%\end{equation}
 We are going to evaluate these expectation values in linear-response theory.
 For this we take $H_s \equiv \sum_i \mu_i Q_i$ as a perturbation to the Hamiltonian of the system.
 Here the $\mu_i$ are the sources, which change slowly compared to the charges $Q_i$.
@@ -538,6 +534,7 @@ The interaction-picture time-evolution operator $U(t)$ is given by
 \end{equation}
 We now evaluate an arbitrary observable $A_i$ with this density matrix in linear order of perturbation theory:
 \begin{align}
+	\label{eq:linear_response}
     \langle A_i \rangle &= \operatorname{Tr} \left[ \rho(t) A_i(t) \right] \nonumber \\
     &= \operatorname{Tr} \left[ U(t) \rho_0 U^{-1}(t) A_i(t) \right] \nonumber \\
     &= \operatorname{Tr} \left[ \rho_0 U^{-1}(t) A_i(t) U(t) \right] \nonumber \\
@@ -567,146 +564,58 @@ and insert a dummy integration to write the equation in terms of the time deriva
 	&= i \sum_j \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x'  \mu_j(t') \langle [\int^{t'}_{-\infty} \ \mathrm{d} t'' \sum_\beta n^\beta_j O_\beta(t'', x'), O_\alpha(t, x)] \rangle_c \nonumber \\
 	&= i \sum_{j, \beta} \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' \mu_j(t') n^\beta_j \langle [ O_\beta(t'', x'), O_\alpha(t)] \rangle_c
 \end{align}
-Finally we use the fact that the chemical potential changes slowly compared to the charges
+Finally we use the assumption that the chemical potentials change slowly compared to the charges
 \begin{equation}
 	\langle O_\alpha(t, x) \rangle = i \sum_{j, \beta} \mu_j(t) n^\beta_j  \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' \langle [ O_\beta(t'', x'), O_\alpha(t, x)] \rangle_c.
 \end{equation}
-This equation can now be expressed in terms of the spectral functions 
+This equation can now be expressed in terms of the spectral functions
 \begin{equation}
-	G_{\alpha \beta}(t - t', x - x') = \langle [ O_\alpha(t, x), O_\beta(t', x')] \rangle_{c}
+	G_{\alpha \beta}(t - t', x - x') \equiv \langle [ O_\alpha(t, x), O_\beta(t', x')] \rangle_{c}
 \end{equation}
-\begin{equation}G_{\alpha \beta}(\omega, p) = \int \mathrm{d}^4 x \, e^{i \omega t - i p \cdot x} G_{\alpha, \beta}(t, x)
+\begin{equation}G_{\alpha \beta}(\omega, p) \equiv \int \mathrm{d}^3 x \, \mathrm{d} t \, e^{i \omega t - i p \cdot x} G_{\alpha, \beta}(t, x)
 \end{equation}
-\begin{equation}G_{\alpha \beta}(t, x) = \int \frac{\mathrm{d}^3 x \, \mathrm{d} t}{2 \pi} \, e^{- i \omega t + i p \cdot x} G_{\alpha \beta}(\omega, p)
+\begin{equation}G_{\alpha \beta}(t, x) = \int \frac{\mathrm{d}^3 p \, \mathrm{d} \omega}{2 \pi} \, e^{- i \omega t + i p \cdot x} G_{\alpha \beta}(\omega, p).
 \end{equation}
-%
+as
+\begin{equation}
+	\langle O_\alpha(t, x) \rangle = i \sum_{j, \beta} \mu_j(t) n^\beta_j  \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' G_{\alpha \beta}(t - t'', x - x')
+\end{equation}
+\begin{equation}
+	\langle O_\alpha(t) \rangle = i \sum_{j, \beta} \mu_j(t) n^\beta_j  \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' 
+	\int \frac{\mathrm{d}^3 p \, \mathrm{d} \omega}{2 \pi} \, e^{- i \omega (t - t'') + i p \cdot x'} G_{\alpha \beta}(\omega, p). 
+\end{equation}
+We are now going to evaluate most of the integrals in this expression. Here we are commiting some crimes against maths! First we use the cancellations between the $x$ and the $p$ integrals and then isolate and finally solve the $t$ integrals:
+\begin{align}
+	& \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' 
+	\int \frac{\mathrm{d}^3 p \, \mathrm{d} \omega}{2 \pi} \, e^{- i \omega (t - t'') + i p \cdot x'} G_{\alpha \beta}(\omega, p) \nonumber \\
+	= & \int \frac{\mathrm{d} \omega}{2 \pi} G_{\alpha \beta}(\omega, 0) \int_{-\infty}^t \mathrm{d} t' \int^{t'}_{-\infty} \ \mathrm{d} t'' 
+	\, e^{- i \omega (t - t'')}  \nonumber \\
+	= & - \int \frac{\mathrm{d} \omega}{2 \pi} \frac{G_{\alpha \beta}(\omega, 0)} {\omega^2} 
+\end{align}
+Plugging this back into the expression for the expectation value yields:
+\begin{equation}
+	\langle O_\alpha(t) \rangle = \sum_{j, \beta} \mu_j(t) n^\beta_j \int \frac{\mathrm{d} \omega}{2 \pi} \frac{G_{\alpha \beta}(\omega, 0)} { \omega (\omega + i \epsilon)} =  \sum_{j} \mu_j(t) n^\alpha_j \frac{G_{\alpha \alpha}(\omega, 0)}{2 \omega} \Big|_{w = 0}.
+\end{equation}
 
+Now we turn to the source from the axion field $a(t)$.
+This time our perturbation Hamiltonian reads
+\begin{equation}
+	H_s(t) = \frac{a(t)}{f_a} \int \mathrm{d}^3 x \, O_\beta(t, x).
+\end{equation}
+We again use eq. \eqref{eq:linear_response} to obtain the linear response result
+\begin{equation}
+	\langle O_\alpha(t) \rangle_{GC, a \ne 0} = \langle O_\alpha \rangle_{GC, a = 0} + i \int_{-\infty}^t \mathrm{d}^4 x' \frac{a(t')}{f_a} \langle [ O_\beta(x'), O_\alpha(x)] \rangle_c.
+\end{equation}
+Note that the expectation values with the GC (grand-canonical ensemble) subscript are taken using the linear response result with the chemical potentials.
+Finally we use the assumption that the axion field changes slowly compared to the charges. In this case we are allowed to expand the axion field 
+around time $t$ as
+\begin{equation}
+	a(t') = a(t) + \dot{a}(t)(t' - t).
+\end{equation}
+This yields:
+ 
 
-% THIS IS FROM THE PAPER WHICH I DONT UNDERSTAND
-% \begin{align}
-% 	\mathcal{H}(t, \mathbf{x}) &= \varepsilon \int_{- \infty}^t \, \mathrm{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \nonumber \\
-% 	&= \sum_i \mu_i J_i^0(t, \mathbf{x}) - \int_{- \infty}^t \, \mathbf{d} t' e^{\varepsilon (t' - t)} \sum_i \mu_i \sum_\alpha n_i^\alpha O_\alpha(t' , \mathbf{x})
-% \end{align}
-%
-% \begin{align}
-% 	\frac{\mathrm{d}}{\mathrm{d} t} \mathcal{H} = \varepsilon \sum_i \mu_i J_i^0(t, \mathbf{x}) - \varepsilon^2 \int_{- \infty}^t \, \mathrm{d}t' e^{\varepsilon (t' - t)} \sum_i \mu_i J_i^0(t', \mathbf{x}) \to 0
-% \end{align}
-%
-% \begin{align}
-% 	\rho \sim e^{- (H - \int \mathrm{d}^3 x \mathcal{H}) / T} = e^{-(H - \sum_i \mu_i Q_i) / T + X}
-% \end{align}
-%
-% \begin{equation}
-% 	X = - \sum_{i, \alpha} \frac{\mu_i}{T} n_i^\alpha \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon(t' - t)} O_\alpha(x')
-% \end{equation}
-%
-% Pertubative expansion of $\rho$ in a series of $X$:
-% \begin{equation}
-% 	\rho \approx \left[ 1 + T \int_0^{1/T} \, \mathrm{d} \tau e^{-(H - \sum_i \mu_i Q_i) \tau} X e^{(H - \sum_i \mu_i Q_i) \tau} - \langle X \rangle_\mathrm{GC}  \right] \rho_\mathrm{GC}
-% \end{equation}
-%
-% \begin{equation}
-% 	\langle Q_\alpha \rangle = 0
-% \end{equation}
-%
-%
-% \begin{equation}
-% 	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n_j^\beta \frac{\mu_j}{T} \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon (t' - t)} T \int_{0}^{1/T} \, \mathrm{d} \tau I
-% \end{equation}
-%
-% \begin{align}
-% 	I &= \left\langle O_\alpha(x) \left( e^{-(H - \sum_i \mu_i Q_i) \tau} O_\beta(x') e^{(H - \sum_i \mu_i Q_i) \tau} - \langle O_\beta(x') \rangle_\mathrm{GC} \right)  \right\rangle_{\mathrm{GC}} \nonumber \\
-% 	&= \left\langle O_\alpha(x) \left( O_\beta(t' + i \tau, \mathbf{x}') - \langle O_\beta(x') \rangle_\mathrm{C} \right) \right\rangle_\mathrm{C} \nonumber \\
-% 	&= \int_{- \infty}^{t'} \, \mathrm{d} t'' \left\langle O_\alpha(x) \frac{\mathrm{d}}{\mathrm{d} t''} O_\beta(t'' + i \tau, \mathbf{x}') \right\rangle_{\mathrm{C}}
-% \end{align}
-%
-% \begin{equation}
-% 	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n_i^\beta \mu_j \int_{- \infty}^t \, \mathrm{d}^4 x' e^{\varepsilon(t' - t)} \int_{- \infty}^{t'} \, \mathrm{d} t'' i \langle [ O_\alpha(x), O_\beta(t'', \mathbf{x}')] \rangle_\mathrm{C}
-% \end{equation}
-%
-% Kubo-Martin-Schwinger Relation:
-%
-% \begin{align}
-% 	\langle O_\alpha(x) O_\beta(t'' + i/T, \mathbf{x}') \rangle &= \operatorname{Tr} [ \rho_C O_\alpha(x) e^{- H / T} O_\beta(t'', \mathbf{x}') e^{+ H / T}] \nonumber \\ &= \langle O_\beta(t'', \mathbf{x}') O_\alpha(x) \rangle_{\mathrm{C}}
-% \end{align}
-%
-% Definition spectral function:
-% \begin{equation}
-% 	G^\rho_{\alpha, \beta}(x - x') = \langle [ O_\alpha(x), O_\beta(x')] \rangle_{\mathrm{C}}
-% \end{equation}
-%
-% Fourier transform of the real space spectral function:
-% \begin{equation}
-% 	G^\rho_{\alpha, \beta}(\omega, \mathbf{p}) = \int \mathrm{d}^4 x \, e^{i \omega t - i \mathbf{p} \cdot \mathbf{x}} G^\rho_{\alpha, \beta}(x)
-% \end{equation}
-%
-% \begin{equation}
-% 	\langle O_\alpha \rangle_\mathrm{GC} = \sum_{j, \beta} n^\beta_j \mu_j \lim_{\varepsilon \searrow 0} \int \frac{\mathrm{d} \omega}{\omega} \frac{1}{\omega - i \varepsilon} \frac{1}{i \varepsilon} G^\rho_{\alpha, \beta}(\omega, \mathbf{0}) = \sum_{j, \beta} n^\beta_j \frac{\mu_j}{T} \frac{T G^\rho_\alpha(\omega, \mathbf{0})}{2\omega} \big|_{\omega = 0}
-% \end{equation}
-%
-% \begin{equation}
-% 	\dot{q}_i = - \sum_j \sum_\alpha \Gamma_\alpha n_i^\alpha n_j^\alpha \frac{\mu_j}{T}
-% \end{equation}
-%
-% Axion source term:
-%
-% \begin{equation}
-% 	\mathcal{L}_{\mathrm{int}, \beta} = - \frac{a}{f} O_\beta
-% \end{equation}
-%
-% \begin{equation}
-% 	H(t) \to \tilde{H}(t) = H(t) + \frac{a(t)}{f} \int \mathrm{d}^3 x  O_\beta(t, \mathbf{x})
-% \end{equation}
-%
-% \begin{equation}
-% 	O_\alpha(t, \mathbf{x})|_{a/f} - O_\alpha(t_0, \mathbf{x}) = i \int_{t_0}^{t} \mathrm{d} t' [\tilde{H}(t'), O_\alpha(t', \mathbf{x})|_{a / f}]
-% \end{equation}
-%
-% \begin{equation}
-% 	\langle O_\alpha(t, \mathbf{x})|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}} = i \int_{t_0}^{t} \mathrm{d} t' \langle [\tilde{H}(t'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{GC}}
-% \end{equation}
-%
-%
-% \begin{align}
-% 	& \langle O_\alpha(t, \mathbf{x})|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}} = \nonumber \\  & i \int_{t_0}^{t} \mathrm{d} t' \langle [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{GC}} + \frac{a(t')}{f} i \int_{t_0}^{t} \mathrm{d} t' \langle [O_\beta(t', \mathbf{x}'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{GC}}
-% \end{align}
-%
-% \begin{align}
-% 	i \int_{t_0}^{t} \mathrm{d} t' [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] &\approxeq i \int_{t_0}^{t} \mathrm{d} t' \langle [H(t'), O_\alpha(t', \mathbf{x})] \rangle_{\mathrm{GC}} + i \int_{t_0}^{t} \mathrm{d} t' \langle [H(t'), O_\alpha(t', \mathbf{x})|_{a / f}] \rangle_{\mathrm{C}} \nonumber \\ &= \langle O_\alpha(x) \rangle_{\mathrm{GC}} - \langle O_\alpha(t_0, \mathbf{x}) \rangle_{\mathrm{GC}}
-% \end{align}
-%
-% \begin{align}
-% 	\langle O_\alpha(x)|_{a/f} \rangle_{\mathrm{GC}} - \langle O_\alpha(t, \mathbf{x}) \rangle_{\mathrm{GC}} &\approxeq - i \int_{-  \infty}^t \mathrm{d}^4 x' \langle [ O_\alpha(x), O_\beta(x') ] \rangle_{\mathrm{C}} \frac{a(t')}{f} \nonumber \\ &= - i \int_{-  \infty}^t \mathrm{d}^4 x' G^\rho_{\alpha \beta}(x - x') \frac{a(t')}{f}
-% \end{align}
-%
-% Axion moves slowly compared to reaction rates in the thermal plasma:
-% \begin{equation}
-% 	a(t') \approx a(t) + \dot{a}(t) (t' - t)
-% \end{equation}
-%
-% Constant part:
-% \begin{equation}
-% 	- i \frac{a_0}{f} \int_{-  \infty}^t \mathrm{d}^4 x' G^\rho_{\alpha \beta}(x - x') = - i \frac{a_0}{f} \operatorname{Pv} \int \frac{\mathrm{d} \omega}{2\pi} \frac{1}{\omega} G^\rho_{\alpha \beta} (\omega, \mathbf{0})
-% \end{equation}
-%
-% Derivative part:
-% \begin{align}
-% 	- i \frac{\dot{a}}{f} \int_{-  \infty}^t \mathrm{d}^4 x' G^\rho_{\alpha \beta}(x - x') &= - i \frac{\dot{a}}{f} \int_{-  \infty}^t \mathrm{d} t' \int \frac{\mathrm{d} \omega}{2\pi} e^{- i \omega (t - t')} \partial_\omega G^\rho_{\alpha \beta}(\omega, \mathbf{0}) \nonumber \\
-% 	&= - i \frac{\dot{a}}{f} \lim_{\varepsilon \searrow 0} \int \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega - i \varepsilon} \partial_\omega G^\rho_{\alpha \beta}(\omega, \mathbf{0}) \nonumber \\
-% 	&= \frac{\dot{a} / f}{T} \Gamma_\alpha \delta_{\alpha \beta}
-% \end{align}
-
-
-\begin{table}[h]
-	content...
-\end{table}
-
-
-\begin{table}
-	content...
-\end{table}
-
-\section{Transport Equation II: Dynamics}
+%\section{Transport Equation II: Dynamics}
 
 
 % \section{Properties and Analytical Results}
