@@ -721,7 +721,7 @@ We can write it in term of Goldstone bosons $\theta_i$ with $U_i = e^{i \theta_i
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} \sum_i (\partial \theta_i)^2 - \frac{m^2}{2} \sum_i (\theta_i - q \theta_{i + 1})^2 + O(\theta^4).
 \end{equation}
-A natural step for a theory with many fields like this is to take the continuum limit and replace the field index with a coordinate $y$ of an extra-dimension.
+A natural next step for a theory with many fields like this is to take the continuum limit and replace the field index with a coordinate $y$ of an extra-dimension.
 We compactify the extra-dimension in our case on a $S^1 / \mathbb{Z}_2$ orbifold. Here $S^1$ is the circle and $\mathbb{Z}_2 = \{+1, -1\}$. This compactification has two fixpoints at $y = 0$ and $y = \pi R$. We live on the $y = 0$ brane.
 Taking the continuum limit of the mass term yields
 \begin{equation}
@@ -781,118 +781,96 @@ Now we rewrite the action back into $\theta(x) \equiv \theta(x, 0)$ using $\tan(
 	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{\cos(\theta) - \coth(\pi mR)}
 \end{align}
 
-We now want to find a canonically normalized field 
+The Lagrangian of this field $\theta(x)$ has the form
 \begin{equation}
-	\phi(x) \equiv f \int_0^{\theta(x)} \mathrm{d} \theta \sqrt{Z(\theta)}
+	\mathcal{L} = \frac{f^2}{2} Z(\theta) (\partial_\mu \theta)^2 - V(\theta),
 \end{equation}
-
+where $V(\theta)$ is a potential which we have omitted so for. 
+To understand the cosmological dynamics of this system, it is more convenient to deal with a canonical kinetic term. Therefore we will defined a canonical field $\phi(x)$. Note that this is a different field than the $\phi$ used before which was just an intermediate auxiliary variable.
+The canonical field is given by
 \begin{equation}
-	\mathcal{L} = \frac{f^2}{2} Z(\theta) (\partial_\mu \theta)^2 - \Lambda^4 U(\theta)
+	\phi \equiv f \int_0^\theta \mathrm{d} \theta' \sqrt{Z(\theta')}
 \end{equation}
-
-
-
+such that the Lagrangian reads
 \begin{equation}
-	\ddot{\phi} + 3 H \dot{\phi} + \frac{\partial V}{\partial \phi}
+	\mathcal{L} = \frac{1}{2} (\partial \phi)^2 - V(\theta(\phi)).
 \end{equation}
-
+Note that now the potential is modified by the conversion from the $\phi$ to the $\theta$ field. To later on understand the dynamics we have to analyze this `deformed' potential. 
+But first we compute $\phi$ explicitly:
+\begin{align}
+	\phi &= f \int_0^\theta \mathrm{d} \theta' \frac{1}{\sqrt{\coth(\pi mR) - \cos(\theta')}} \nonumber \\
+	&= f \int_0^\theta \mathrm{d} \theta' \frac{1}{\sqrt{\coth(\pi mR) - 1 + \sin^2(\theta'/2)}} \nonumber \\
+	&= \frac{2 f}{\sqrt{\coth(\pi mR) - 1}} \int_0^{\theta/2} \mathrm{d} z \frac{1}{\sqrt{1 + \frac{1}{\coth(\pi mR) - 1} \sin^2(z)}} \nonumber \\
+	&= \frac{2 f}{\sqrt{\coth(\pi mR) - 1}} F\big(\theta / 2 \big| \frac{1}{\coth(\pi mR) - 1}\big),
+\end{align}
+where $F(x|y)$ is the incomplete Jacobi elliptic integral defined to be the solution to the last integral in this calculation.
+At this point we approximate the $\coth$ to express our equations with an explicit small parameter 
 \begin{equation}
-	V(\phi) = \Lambda^4 U[\theta(\phi)]
+	\epsilon \equiv e^{-\pi m R},
 \end{equation}
-
+such that
+\begin{equation}
+	\coth(\pi m R) \approx 1 + 2 \epsilon^2 + O(\epsilon^4).
+\end{equation}
+Using this we find that: (2 or sqrt 3 in numerotro???)
+\begin{equation}
+	\phi = \frac{2 f}{\epsilon} F\big(\theta / 2 \big| - \epsilon^{-2} \big).
+\end{equation}
+Let us take the inverse of this equation to obtain $\theta(\phi)$, required to calculate the potential:
+\begin{equation}
+	\theta = 2 \operatorname{am}(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2}),
+\end{equation} 
+where $\operatorname{am}$ is the Jacobi elliptic amplitude define as the inverse of $F$ in the first argument.
+Furthermore let us defined a helper function 
+\begin{equation}
+	\tan(\theta / 2) = u(\phi),
+\end{equation}
+which is given explicitly by
+\begin{equation}
+	u(\theta) = \operatorname{sc}(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2}),
+\end{equation}
+where $\operatorname{sc}$ is the Jacobi elliptic function defined as the tangent of $\operatorname{am}$. 
+Now we can compute the potential for $\phi$:
+\begin{align}
+	V(\phi) &= V(\theta(\phi)) = \Lambda^4 (1 - \cos (\theta(\phi)))
+	= \Lambda^4 ( 1 - \cos (2 \operatorname{am} ( \frac{\epsilon \phi}{2 f} | - \epsilon^{-2}) )) \nonumber \\
+	&= \Lambda^4 ( 1 - (1 - 2 \sin^2( \operatorname{am}(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2})))) \nonumber \\
+	&= 2 \Lambda^4 \operatorname{sn}^2 ( \frac{\epsilon \phi}{2 f} | - \epsilon^{-2} ) \nonumber \\
+	&= \frac{2 \Lambda^4}{1 + \frac{1}{u^2(\phi)}}.
+\end{align}
+In the last line we have used that $\sin^2(x) = \frac{1}{1 + \frac{1}{\tan^2(x)}}$. The function $\operatorname{sc}$ is the sine of $\operatorname{am}$.
+We also go thour the algebra of computing the first and second derivative of the potential for $\phi$ but skip intermediate steps:
 \begin{equation}
 	\frac{\partial V}{\partial \phi} = \frac{1}{\sqrt{Z}} \frac{\Lambda^4}{f} \frac{\partial U}{\partial \theta}
 \end{equation}
-
 \begin{equation}
 	\frac{\partial^2 V}{\partial \phi^2} = \frac{\Lambda^4}{f^2} \frac{1}{Z} \left( \frac{\partial^2 U}{\partial \theta^2} - \frac{1}{2 Z} \frac{\partial Z}{\partial \theta} \frac{\partial U}{\partial \theta} \right)
 \end{equation}
-
-
-
-
-
-
-
-
-
-
-\begin{equation}
-	f^2 = f_5^3 (1 - \varepsilon^2) / (2m)
-\end{equation}
-
-\begin{equation}
-	V = \frac{2 \Lambda^4}{1 + \frac{1}{u^2[\phi]}}
-\end{equation}
-
-\begin{equation}
-	\varepsilon \equiv e^{- \pi m R}
-\end{equation}
-
 \begin{equation}
 	M \equiv \frac{\Lambda^2}{f}
 \end{equation}
-
-\begin{equation}
-	u[\phi] = e^{-\pi mR} \operatorname{sc} \big[ \frac{\phi}{2f} \big| 1 - \varepsilon^2 \big]
-\end{equation}
-
-$\operatorname{sc}[\cdot | \cdot]$ is a Jacobi elliptic function
-
-\footnote{
-See \url{https://en.wikipedia.org/wiki/Jacobi_elliptic_functions} for an overview.
-\begin{equation}
-	u = \int_0^\varphi \mathrm{d} \theta \frac{1}{\sqrt{1 - m \sin^2 \theta}}
-\end{equation}
-\begin{align}
-	\operatorname{am}(u, m) &\equiv \varphi \\
-	\operatorname{sn}(u, m) &\equiv \sin \operatorname{am}(u, m) \\
-	\operatorname{cn}(u, m) &\equiv \cos \operatorname{am}(u, m) \\
-	\operatorname{dn}(u, m) &\equiv \frac{\mathrm{d}}{\mathrm{d} u} \operatorname{am}(u, m) \\
-	\operatorname{sc}(u, m) &\equiv \tan \operatorname{am}(u, m)
-\end{align}
-\begin{equation}
-	2 \pi f_\mathrm{eff} \equiv 4 f K(1 - \varepsilon^2)
-\end{equation}
-$K(\cdot)$ is the complete elliptic integral of the first kind
-\begin{equation}
-	K(k) \equiv \int_0^1 \mathrm{d}t \frac{1}{\sqrt{(1 - t^2)((1 - k^2t^2))}}
-\end{equation}
-$F( \cdot | \cdot )$ is the incomplete elliptic integral of the first kind:
-\begin{equation}
-	F(\phi | k^2) \equiv \int_0^\varphi \mathrm{d} \theta \frac{1}{\sqrt{1 - k^2 \sin^2 \theta}}
-\end{equation}
-}
-
-\begin{equation}
-	\phi \approx \frac{\pi f_\mathrm{eff}}{\varepsilon} \frac{F(\theta/2 | - 1 / \varepsilon^2)}{K(1 - \varepsilon^2)} = \frac{2}{\varepsilon} f F(\theta / 2 | - 1 / \varepsilon^2)
-\end{equation}
-
 \begin{equation}
 	\frac{\partial V}{\partial \phi} = 4 \frac{\Lambda^4}{f^2} \frac{\frac{\partial u}{\partial \phi} f}{u^3(1 + 1/u^2)^2}
 \end{equation}
-
 \begin{equation}
 	\frac{\partial u}{\partial \phi} = \epsilon \frac{1}{2 f} \frac{\operatorname{dn}[\phi/2f|1 - \varepsilon^2]}{(\operatorname{cn}[\phi/2f|1 - \varepsilon^2])^2}
 \end{equation}
-
 \begin{equation}
 	\dot{\theta} = \frac{\frac{1}{2M^2} \left| \frac{\partial V}{\partial \phi} \right| \dot{\phi} / f}{\left(\left(1 - \frac{V/f^2}{2M^2}\right) \frac{V / f^2}{2 M^2} \right)^{1/2}}
 \end{equation}
-
 \begin{equation}
 	\frac{\partial^2 V}{\partial \phi^2} = 4 M^2 \left[ f^2 \frac{\partial^2 u}{\partial \phi^2} \frac{1}{u^3(1 + 1/u^2)^2} + f^2 \left( \frac{\partial u}{\partial \phi} \right)^2 \frac{4(1 + 1/u^2) - 3u^2(1 + 1/u^2)^2}{\left( u^3(1 + 1/u^2)^2 \right)^2} \right]
 \end{equation}
-
 \begin{equation}
 	\frac{\partial^2 u}{\partial \phi^2} = \frac{\varepsilon}{4 f^2} \left[ 2 \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-3} \operatorname{dn}(\phi/2f|1 - \varepsilon^2)^2 - (1 - \varepsilon^2) \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-1} \right] \operatorname{sn}(\phi/2f|1 - \varepsilon^2)
 \end{equation}
-
-
-TODO:
-
-
-\begin{figure}[h]
+The resulting potential $V(\phi)$ is plotted in figure \ref{fig:clockwork_pot_plot}. As one can see, potentials with hight values of $mR$ i.e. lower $\epsilon$ are deformed stronger as they are very steep for lager field values and flattened towards zero. 
+This will strongly impact the dynamics of the field, as will discussed in the next section.
+TODO: derivation of boundary potentails, derivation of feff
+put defintion of all used jacobi functions back in.
+some citations 
+\begin{figure}[H]
+	\label{fig:clockwork_pot_plot}
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_potential.pdf}
     \caption{Plot of the deformed potentials of the clockwork axion model. On the x-axis the value of the canonical normalized field $\phi$ over the effective axion decay constant $f_\mathrm{eff}$ in the angular range $[-\pi, +\pi]$ is shown on a linear-scale. On the y-axis the value of the potential over the energy scale of the confining sector $2 \Lambda^4$ is show. The potential is shown for different values of the size of the extra dimension $mR$ indicated by the color of the plot lines. The corresponding value of $mR$ is shown on a colorbar on the right hand side.}
 \end{figure}
