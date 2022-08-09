@@ -553,14 +553,14 @@ Hence the linear response equations reads
 	\langle O_\alpha(t, x) \rangle = i \sum_j \int_{-\infty}^t \mathrm{d} t' \mu_j(t') \langle [Q_j(t'), O_\alpha(t, x)] \rangle_c.
 \end{equation}
 Here we have used that $\langle O_\alpha(t) \rangle_c = 0$.
-Now the are going to insert the charges in terms of the time component of the four-current:
+Now we are going to insert the charges in terms of the time component of the four-current:
 \begin{equation}
 	Q_i(t) = \int \mathrm{d}^3 x J^0_i(t, x)
 \end{equation}
 and insert a dummy integration to write the equation in terms of the time derivative of the charge density $\dot{J^0_i}$ and finally replace it with the right-hand-side of the current eq. \eqref{eq:current_eq}:
 \begin{align}
 	\langle O_\alpha(t, x) \rangle &= i \sum_j \int_{-\infty}^t \mathrm{d} t' \mu_j(t') \langle [\int \mathrm{d}^3 x' J^0_j(t', x'), O_\alpha(t, x)] \rangle_c \nonumber \\
-	&= i \sum_j \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x'  \mu_j(t') \langle [\int^{t'}_{-\infty} \ \mathrm{d} t'' \frac{\partial}{\partial t''} J^0_j(t'', x'), O_\alpha(t, x)] \rangle_c \nonumber \\	
+	&= i \sum_j \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x'  \mu_j(t') \langle [\int^{t'}_{-\infty} \ \mathrm{d} t'' \frac{\partial}{\partial t''} J^0_j(t'', x'), O_\alpha(t, x)] \rangle_c \nonumber \\
 	&= i \sum_j \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x'  \mu_j(t') \langle [\int^{t'}_{-\infty} \ \mathrm{d} t'' \sum_\beta n^\beta_j O_\beta(t'', x'), O_\alpha(t, x)] \rangle_c \nonumber \\
 	&= i \sum_{j, \beta} \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' \mu_j(t') n^\beta_j \langle [ O_\beta(t'', x'), O_\alpha(t)] \rangle_c
 \end{align}
@@ -581,16 +581,16 @@ as
 	\langle O_\alpha(t, x) \rangle = i \sum_{j, \beta} \mu_j(t) n^\beta_j  \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' G_{\alpha \beta}(t - t'', x - x')
 \end{equation}
 \begin{equation}
-	\langle O_\alpha(t) \rangle = i \sum_{j, \beta} \mu_j(t) n^\beta_j  \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' 
-	\int \frac{\mathrm{d}^3 p \, \mathrm{d} \omega}{2 \pi} \, e^{- i \omega (t - t'') + i p \cdot x'} G_{\alpha \beta}(\omega, p). 
+	\langle O_\alpha(t) \rangle = i \sum_{j, \beta} \mu_j(t) n^\beta_j  \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t''
+	\int \frac{\mathrm{d}^3 p \, \mathrm{d} \omega}{2 \pi} \, e^{- i \omega (t - t'') + i p \cdot x'} G_{\alpha \beta}(\omega, p).
 \end{equation}
 We are now going to evaluate most of the integrals in this expression. Here we are commiting some crimes against maths! First we use the cancellations between the $x$ and the $p$ integrals and then isolate and finally solve the $t$ integrals:
 \begin{align}
-	& \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t'' 
+	& \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d}^3 x' \int^{t'}_{-\infty} \ \mathrm{d} t''
 	\int \frac{\mathrm{d}^3 p \, \mathrm{d} \omega}{2 \pi} \, e^{- i \omega (t - t'') + i p \cdot x'} G_{\alpha \beta}(\omega, p) \nonumber \\
-	= & \int \frac{\mathrm{d} \omega}{2 \pi} G_{\alpha \beta}(\omega, 0) \int_{-\infty}^t \mathrm{d} t' \int^{t'}_{-\infty} \ \mathrm{d} t'' 
+	= & \int \frac{\mathrm{d} \omega}{2 \pi} G_{\alpha \beta}(\omega, 0) \int_{-\infty}^t \mathrm{d} t' \int^{t'}_{-\infty} \ \mathrm{d} t''
 	\, e^{- i \omega (t - t'')}  \nonumber \\
-	= & - \int \frac{\mathrm{d} \omega}{2 \pi} \frac{G_{\alpha \beta}(\omega, 0)} {\omega^2} 
+	= & - \int \frac{\mathrm{d} \omega}{2 \pi} \frac{G_{\alpha \beta}(\omega, 0)} {\omega^2}
 \end{align}
 Plugging this back into the expression for the expectation value yields:
 \begin{equation}
@@ -607,13 +607,13 @@ We again use eq. \eqref{eq:linear_response} to obtain the linear response result
 	\langle O_\alpha(t) \rangle_{GC, a \ne 0} = \langle O_\alpha \rangle_{GC, a = 0} + i \int_{-\infty}^t \mathrm{d}^4 x' \frac{a(t')}{f_a} \langle [ O_\beta(x'), O_\alpha(x)] \rangle_c.
 \end{equation}
 Note that the expectation values with the GC (grand-canonical ensemble) subscript are taken using the linear response result with the chemical potentials.
-Finally we use the assumption that the axion field changes slowly compared to the charges. In this case we are allowed to expand the axion field 
+Finally we use the assumption that the axion field changes slowly compared to the charges. In this case we are allowed to expand the axion field
 around time $t$ as
 \begin{equation}
 	a(t') = a(t) + \dot{a}(t)(t' - t).
 \end{equation}
 This yields:
- 
+
 
 %\section{Transport Equation II: Dynamics}
 
@@ -713,14 +713,84 @@ Once this condition is violated ($H \ll H_\mathrm{osc}$) we obtain a WKB-like so
 
 Based on \cite{Deformed_potential_Bae_2019}
 Details of derivation of the clockwork potential are from \cite{general_cont_clockwork_Choi_2018}.
+We start from  $U(1)^N$ symmetric theory. It is broken spontaneously at scale $f$ and explicitly by a mass term with charges of the form $\delta_{ij} - q \delta_{i,j+1}$. Hence the low-energy Lagrangian reads
+\begin{equation}
+	\mathcal{L} = \frac{f^2}{2} \sum_i (\partial U_i)^2 - \frac{m^2 f^2}{2} \sum_{i = 0}^{N - 1} (U_j^\dagger U^q_{j + 1} + \mathrm{h.c.}).
+\end{equation}
+We can write it in term of Goldstone bosons $\theta_i$ with $U_i = e^{i \theta_i/ f}$:
+\begin{equation}
+	\mathcal{L} = \frac{1}{2} \sum_i (\partial \theta_i)^2 - \frac{m^2}{2} \sum_i (\theta_i - q \theta_{i + 1})^2 + O(\theta^4).
+\end{equation}
+A natural step for a theory with many fields like this is to take the continuum limit and replace the field index with a coordinate $y$ of an extra-dimension.
+We compactify the extra-dimension in our case on a $S^1 / \mathbb{Z}_2$ orbifold. Here $S^1$ is the circle and $\mathbb{Z}_2 = \{+1, -1\}$. This compactification has two fixpoints at $y = 0$ and $y = \pi R$. We live on the $y = 0$ brane.
+Taking the continuum limit of the mass term yields
+\begin{equation}
+	\sum_i (\theta_i(x) - q \theta_{i + 1}(x))^2 \to \int \mathrm{d} y (\partial_y \theta(x, y) - m \theta(x, y) ).
+\end{equation}
+As we are taking $\theta$ to be an angular field, we make the replacement $m \theta(x, y) \to m \sin \theta(x, y)$.
+Hence the action reads:
+\begin{equation}
+	S = \int \mathrm{d}^4 x \mathrm{d} y \left[ (\partial_\mu \theta(x, y))^2 + (\partial_y \theta(x, y) - m \sin \theta(x, y))^2 \right].
+\end{equation}
+Now we will derive the low-energy four-dimensional theory for this action.
+First we do a field redefinition
+\begin{equation}
+	\varphi = \tan ( \theta / 2 ).
+\end{equation}
+After computing the derivative (same for derivatives with respect to $x^\mu$):
+\begin{align}
+	\frac{\partial \varphi}{\partial y} &= \frac{1}{2} (\varphi^2 + 1) \frac{\partial \theta}{\partial y} \nonumber \\
+	\frac{\partial \theta}{\partial y} &= 2 \frac{\frac{\partial \varphi}{\partial y}}{\varphi^2 + 1} 
+\end{align}
+and using the identity
+\begin{equation}
+	\sin(2 \arctan(\varphi)) = \frac{2 \varphi}{\varphi^2 + 1}
+\end{equation}
+we find
+\begin{align}
+    S &= \int \mathrm{d}^4 x \mathrm{d} y \left[
+    \left(2 \frac{\partial_\mu \varphi}{\varphi^2 + 1} \right)^2 + 
+    \left(2 \frac{\partial_y \varphi}{\varphi^2 + 1} + m \frac{2 \varphi}{\varphi^2 + 1} \right) \right] \nonumber \\
+    &= \int \mathrm{d}^4 x \mathrm{d} y  \frac{4}{(\varphi^2 + 1)^2}
+    \left[ (\partial_\mu \varphi)^2 + (\partial_y \varphi - m \varphi)^2 \right]
+\end{align}
+We see that if we choose 
+\begin{equation}
+	\partial_y \varphi = m \varphi
+\end{equation}
+then the mass-term in the action above vanishes and we obtain the action for a mass-less mode. Furthermore there is also no kinetic term for the $y$ coordinate anymore, hence the field is localized at $y = 0$.
+We obtain
+\begin{equation}
+	\varphi_{\mathrm{massless}} = e^{my} \phi(x) 
+\end{equation}
+Inserting this back into the action and solving the $y$ integral explicitly \footnote{We are dropping constant prefactors of the action within calculations.}:
+\begin{align}
+	S &= \int \mathrm{d}^4 x \mathrm{d} y  \frac{(\partial_\mu \varphi_{\mathrm{massless}})^2}{(\varphi_{\mathrm{massless}}^2 + 1)^2} \nonumber \\
+	&= \int \mathrm{d}^4 x \mathrm{d} y  \frac{(\partial_\mu \phi)^2 e^{2my}}{(e^{2my} \phi^2 + 1)^2} \nonumber \\
+	&= \int \mathrm{d}^4 x\frac{1}{(\phi^2 + 1)(\phi^2 e^{2\pi m R} + 1)}
+\end{align}
+Now we rewrite the action back into $\theta(x) \equiv \theta(x, 0)$ using $\tan(\theta(x)/2) = \phi(x)$:
+\begin{align}
+	 S &= \int \mathrm{d}^4 x \frac{(\partial_\mu \tan(\theta / 2))^2}{(\tan^2(\theta / 2) + 1)(\tan^2(\theta / 2) e^{2\pi m R} + 1)} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{\cos^4(\theta/2)(\tan^2(\theta / 2) + 1)(\tan^2(\theta / 2) e^{2\pi m R} + 1)} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{(\sin^2(\theta / 2) + \cos^2(\theta/2))(\sin^2(\theta / 2) e^{2\pi m R} + \cos^2(\theta / 2))} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{\sin^2(\theta / 2) e^{2\pi m R} + \cos^2(\theta / 2)} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{(1 - \cos \theta) / 2 e^{2\pi m R} + (\cos \theta + 1) / 2} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{\cos(\theta)(1 - e^{2\pi mR}) + 1 + e^{2\pi mR}} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{\cos \theta + \frac{1 + e^{2\pi mR}}{1 - e^{2\pi mR}}} \nonumber \\
+	 &= \int \mathrm{d}^4 x \frac{(\partial_\mu \theta)^2}{\cos(\theta) - \coth(\pi mR)}
+\end{align}
+
+We now want to find a canonically normalized field 
+\begin{equation}
+	\phi(x) \equiv f \int_0^{\theta(x)} \mathrm{d} \theta \sqrt{Z(\theta)}
+\end{equation}
 
 \begin{equation}
 	\mathcal{L} = \frac{f^2}{2} Z(\theta) (\partial_\mu \theta)^2 - \Lambda^4 U(\theta)
 \end{equation}
 
-\begin{equation}
-	\phi(x) \equiv f \int_0^{\theta(x)} \mathrm{d} \theta \sqrt{Z(\theta)}
-\end{equation}
+
 
 \begin{equation}
 	\ddot{\phi} + 3 H \dot{\phi} + \frac{\partial V}{\partial \phi}
@@ -740,43 +810,6 @@ Details of derivation of the clockwork potential are from \cite{general_cont_clo
 
 
 
-We start by assuming a flat and compactified extra-dimension with a coordinate $y$. The compactification is on $S_1 / \mathbb{Z}_2$ with fixed points $y = 0$ and $y = mR$ \footnote{In ref. \cite{general_cont_clockwork_Choi_2018} a general dilaton background is considered and our calculations correspond to $k_1 = k_2 = k_3 = 0$.}.
-On this space-time we introduce an angular field $\theta(x, y)$.
-\begin{equation}
-	S = \frac{f_5^3}{2} \int \mathrm{d} x^4 \mathrm{d} y \left[ (\partial_\mu \theta)^2 - (\partial_y \theta - m \sin(\theta))^2 \right]
-\end{equation}
-The equation of motion is obtained by varying $\theta \to \theta + \delta \theta$. In particular we need to keep track of the term linear in $\partial_y$ as it
-creates boundary terms while the other terms behave like in regular Euler-Lagrange equations:
-\begin{equation}
-	\partial_\mu \partial^\mu \theta + \partial_y^2 \theta + m^2 \cos \theta m \sin(\theta) (\delta(y) - \delta(y - \pi R)).
-\end{equation}
-We are interested in the low energy theory. For this we want to decompose the field into separation of variables Ansatz. Because the potential introduces a non-linearity into the equations, we do a field redefinition
-\begin{equation}
-	\varphi(x, y) = \tan(\theta(x, y) / 2).
-\end{equation}
-\begin{equation}
-	\theta(x, y) = \sum_{n = 0}^\infty f_n(y) \chi_n(x)
-\end{equation}
-We call the $f_n(y)$ the mode functions.
-
-
-
-
-
-We now do a field redefinition
-\begin{equation}
-	\varphi(x, y) = \tan(\theta(x, y) / 2)
-\end{equation}
-and the action reads
-\begin{equation}
-	S = - \frac{f_5^3}{2} \int \mathrm{d}^5 x \frac{4}{(1 + \varphi^2)^2} \left[ (\partial_\mu \varphi)^2 + (\partial_y \varphi - m \varphi)^2 \right].
-\end{equation}
-From this we can derive the equations of motion
-
-
-\begin{equation}
-	k_1 = k_2 = 0
-\end{equation}
 
 
 
@@ -786,10 +819,6 @@ From this we can derive the equations of motion
 
 \begin{equation}
 	f^2 = f_5^3 (1 - \varepsilon^2) / (2m)
-\end{equation}
-
-\begin{equation}
-	Z = \frac{1}{\coth(\pi m R) - \cos(\theta)} \approx \frac{2}{1 + 2\varepsilon^2 - \cos(\theta)}
 \end{equation}
 
 \begin{equation}
