@@ -626,6 +626,11 @@ This yields:
 In this chapter we will discuss the models for axion-like fields and their cosmological dynamics.
 An overview of cosmological axion fields can be found in \cite{MarshAxionCosmo}.
 First let us discuss some generalities common to all models.
+
+
+\section{Generalities}
+
+\subsection{Equation of Motion for Cosmological Scalar Fields}
 We start from the action of (multiple) scalar fields $\phi_i$ on some background with metric $g$:
 \begin{equation}
 	S[\phi] = \int \mathrm{d}^4 x \sqrt{-g} \left[- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right].
@@ -635,12 +640,12 @@ The corresponding equation of motion reads:
 	\label{eq:klein_gordon_general_background}
 	\Box \phi \equiv \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}.
 \end{equation}
-Now we are only interessted in the FLRW metric discussed in section \ref{sec:dynamics_of_the_examsion_of_the_universe}.
-Let us compute the determinant of the metric
+Now we are only interested in the FLRW metric discussed in section \ref{sec:dynamics_of_the_examsion_of_the_universe}.
+Let us compute the determinant of this metric
 \begin{equation}
 	g = \det g_{\mu \nu} = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta = - a(t)^6 f(\mathbf{x})
 \end{equation}
-as well as the box operator defined in eq. \eqref{eq:klein_gordon_general_background} for the metric:
+as well as the box operator defined in eq. \eqref{eq:klein_gordon_general_background} for this metric:
 \begin{align}
 	    \Box \phi
 	    &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
@@ -654,6 +659,8 @@ This gives us the equation of motion for scalar fields in an expanding universe:
 	\ddot{\phi} + 3 H \dot{\phi} - \nabla^2 \phi / a(t)^2 + V'(\phi) = 0.
 \end{equation}
 In this thesis we assume that all fields are homogeneous after inflation and hence neglect the spacial derivatives of the Laplacian.
+
+\subsection{Some General Aspects of Scalar Field Dynamics}
 
 \section{ALP Realignment}
 This model is the simplest model possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
@@ -710,10 +717,12 @@ Once this condition is violated ($H \ll H_\mathrm{osc}$) we obtain a WKB-like so
 \end{figure}
 
 \section{Clockwork Theory Axions and Deformed Potentials}
+The clockwork model has introduced to solve the hierarchy problem in particle physics i.e. the question why the Higgs and Planck masses are so different. In this work, we will explore the possibility that axions arising from this clockwork theory (so called clockwork axions), could potentially explain both the baryon asymmmetry and dark matter as suggested in  \cite{Deformed_potential_Bae_2019}. First we will derive the equations of motion for the clockwork axion and the then discuss the particularities of the dynamics of the cosmological clockwork axion evolution.
 
-Based on \cite{Deformed_potential_Bae_2019}
-Details of derivation of the clockwork potential are from \cite{general_cont_clockwork_Choi_2018}.
-We start from  $U(1)^N$ symmetric theory. It is broken spontaneously at scale $f$ and explicitly by a mass term with charges of the form $\delta_{ij} - q \delta_{i,j+1}$. Hence the low-energy Lagrangian reads
+\subsection{Derivation}
+This derivation is based on the model used in \cite{Deformed_potential_Bae_2019}. This work relied on \cite{general_cont_clockwork_Choi_2018} for its formalism and so do we.
+
+We start from $U(1)^N$ symmetric theory. It is broken spontaneously at scale $f$ and explicitly by a mass term with charges of the form $\delta_{ij} - q \delta_{i,j+1}$. Hence the low-energy Lagrangian reads
 \begin{equation}
 	\mathcal{L} = \frac{f^2}{2} \sum_i (\partial U_i)^2 - \frac{m^2 f^2}{2} \sum_{i = 0}^{N - 1} (U_j^\dagger U^q_{j + 1} + \mathrm{h.c.}).
 \end{equation}
@@ -875,7 +884,8 @@ some citations
     \caption{Plot of the deformed potentials of the clockwork axion model. On the x-axis the value of the canonical normalized field $\phi$ over the effective axion decay constant $f_\mathrm{eff}$ in the angular range $[-\pi, +\pi]$ is shown on a linear-scale. On the y-axis the value of the potential over the energy scale of the confining sector $2 \Lambda^4$ is show. The potential is shown for different values of the size of the extra dimension $mR$ indicated by the color of the plot lines. The corresponding value of $mR$ is shown on a colorbar on the right hand side.}
 \end{figure}
 
-\begin{figure}[h]
+\subsection{Dynamics}
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_field_evolution.pdf}
     \caption{Plot of the evolution of the clockwork axion field as a function of time on the x-axis in units for the inverse mass scale $1/M$ on a log-scale. The canonical field is shown on the y-axis in units of the decay constant $f$. The different epochs of the field evolution described in the main text are annotated and the final epoch of oscillations are shown as an inset plot.}
 \end{figure}
@@ -915,8 +925,8 @@ some citations
 \end{figure}
 
 
-
-
+\chapter{Implementation of the Numerical Simulations}
+TODO: architecture of the code, details to used ode solvers, used programming language and libraries
 
 
 \chapter{Results}
@@ -1000,7 +1010,8 @@ some citations
 \bibliography{bthesis_datenbank}
 
 \chapter*{Acknowledgment}
-I thank Doddy Marsh and Laura Covi for the supervison and the possibility to take half a year off for a health break. Also I thank my doctors and friends. You saved my life. Finally I thank .... for finding a lot of typos, grammar and spelling mistakes.
+I thank Doddy Marsh and Laura Covi for the supervison and the possibility to take half a year off for a health break. 
+I also thank Charlie, Joe, Marian, Melina, Mo*e, Resa, Sara, Yuri for helping me in difficult times.
 
 \end{otherlanguage}
 %% Dieser Befehl MUSS am Ende stehen und erzeugt die Erklaerung ueber die
