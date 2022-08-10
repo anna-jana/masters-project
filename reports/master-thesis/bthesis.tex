@@ -696,9 +696,41 @@ for a universe dominated by a fluid by an equation of state $w$ (see sec. \ref{s
 	c = 3 +\frac{3(w + 1)}{2} - \frac{V''}{c H^2}.
 \end{equation}
 This result shows that $c$ is indeed a constant as along as 
-$\left| \frac{V''}{c H^2} \right| \ll 1 $ holds.
-The Hubble parameter at which this condition is saturated is called $H_\mathrm{osc}$.
+\begin{equation}
+	\label{eq:slow_roll_condition}
+	\left| \frac{V''}{c H^2} \right| \ll 1
+\end{equation}
+holds.
 
+\subsection{WKB Approximation to Oscillations}
+\label{sec:wkb_approximation}
+
+In this section we want to derive the opposite approximation to the one derived in the last section.
+This time we consider late times, where the axion potential dominates over the Hubble friction.
+We will also assume that the potential is approximately harmonic i.e.
+\begin{equation}
+	V \approx \frac{1}{2} m_a^2 \phi^2.
+\end{equation}
+Formally our assumption here is that $H \ll V'' \Rightarrow \epsilon \sim H / m_a \ll 1$. Here $\epsilon$ is some auxillery small parameter.
+Our Ansatz is of the WKB type and reads
+\begin{equation}
+	\phi(t) = A(t) \cos(\omega t + \delta),
+\end{equation}
+where $\delta$ is some phase, $\omega$ the oscillation frequency (consider to be constant for our proposes). The envelope function $A(t)$ varies slowly compared to the oscillation. The time-scale for the oscillation is $1/m_a$ and the time-scale for the envelope function is $A / \dot{A}$. Hence the condition on $A$ is $\epsilon \sim \dot{A} / (A m_a) \ll 1$.
+Inserting this Ansatz into the equation of motion leads to
+\begin{equation}
+	\ddot{A} c - 2 m_a \dot{A} s - m_a^2 A c + 3 H \dot{A} c - 3 H m_a A s + m_a^2 A c = 0,
+\end{equation}
+where we used the abbreviations $c = \cos(m_a t + \delta)$ and $s = \sin(m_a t + \delta)$.
+Canceling the $m_a^2$ terms and dividing by $A m_a^2$ leads to
+\begin{equation}
+	\frac{\ddot{A}}{m_a^2 A} c - \frac{\dot{A}}{m_a A} 2 s + \frac{\dot{A}}{m_a} \frac{H}{m_a} 3 c - \frac{H}{m_a} 3 s = 0.
+\end{equation} 
+Dropping all quadratic terms in $\epsilon$ yields:
+\begin{equation}
+	 - 2 m_a \dot{A} s - 3 H m_a A s = 0 \Rightarrow \frac{\dot{A}}{A} = - \frac{3}{2} H = - \frac{3}{2} \frac{\dot{a}}{a}.
+\end{equation}
+From this we can see directly that $A \sim a^{-3/2}$.
 
 \section{ALP Realignment}
 This model is the simplest possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
@@ -710,15 +742,48 @@ The resulting equation of motion reads:
 \begin{equation}
 	\ddot{\phi} + 3 H \dot{\phi} + m_a^2 \phi = 0
 \end{equation}
+We call this unspecific particle an axion-like-particle (ALP) and due to its dynamics the ALP realignment model.
 The dynamics of this model are as follows:
-First the field is frozen due to Hubble friction. For this one can use the approximation found in sec. \ref{sec:slow_roll_approximation}. One can even approximate it as $\phi = \phi(t_\mathrm{init})$.
-Once the condition in eq. 
-
-
+First the field is frozen due to Hubble friction. For this one can use the approximation found in sec. \ref{sec:slow_roll_approximation}. One can even approximate it as $\phi = \phi_\mathrm{initial}$.
+When the condition in \eqref{eq:slow_roll_condition} is saturated, the field begin to move and enters the fast-roll epoch. The condition \eqref{eq:slow_roll_condition} in this case reads
+\begin{equation}
+	c \frac{m_a^2}{H^2} \ll 1 \Rightarrow H_\mathrm{osc} \equiv \sqrt{c} m_a.
+\end{equation}
+Here $H_\mathrm{osc}$ denotes the Hubble parameter where the axion field enters the fast-roll epoch and starts to oscillate (hence the name).
+This will be the main epoch for asymmetry production. 
+Then we field oscillates, which can described by the WKB approximation from section \ref{sec:wkb_approximation} as
+\begin{equation}
+	\phi(t) = \phi(t_0) a(t)^{-3/2} \cos(m_a t).
+\end{equation}
+An example numerical solution for the field evolution of this model together with annotations for the different epochs, can be found in fig. \ref{fig:alp_realignment_time_evolution}.
 \begin{figure}[H]
+	\label{fig:alp_realignment_time_evolution}
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_realignment_field_evolution.pdf}
     \caption{Evolution of the axion field for standard misalignment of an ALP with the Lagrangian in eq. \eqref{eq:L_alp}. On the x-axis time is shown in units of the axion mass $m_a$ on a log-scale. On the y-axis the misalignment angle $\theta$ is shown. Different epochs of the evolution are annotated.}
 \end{figure}
+Since a coupling to standard model particles exits as this is required for baryogenesis, the ALP has a decay rate into SM particles. If we couple to the weak $SU(2)$ sphaleron, then the decay rate is given by \cite[eq. 15]{Kusenko_2015_Axion_Leptogenesis}:
+\begin{equation}
+	\Gamma_a = \frac{\alpha^2}{64\pi^2} \frac{m_a^3}{f_a^2},
+\end{equation}
+where $f_a$ is the axion decay constant. 
+TODO: this is wrong in the code. All couplings use the same decay rate rate namely this one!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+As the mass of this model has to be quite large in order to start moving at the required temperatures, the decay rate is also quite large.
+At the same time the axion might dominate the energy density due to is large mass. This means that we have to deal with entropy production by the decay of the axion.
+For this we use a system of equations similar to the reheating equations for the inflaton field. We equations for the axion decay read:
+\begin{align}
+	&\dot{\rho}_a + 3 H \rho_a = - \Gamma_a \nonumber \\
+	&\dot{\rho}_\mathrm{rad} + 4 H \rho_\mathrm{rad} = + \Gamma_a \nonumber \\
+	&3 M_\mathrm{pl}^3 H^2 = \rho_a + \rho_\mathrm{rad},
+\end{align}
+where $\rho_a = \frac{1}{2} \dot{\phi} + \frac{1}{2} m_a^2 \phi^2$ is the axion energy density for this model and $\rho_\mathrm{rad}$ the radiation energy density.
+This system of equations has to be solve while computing the dilution factor as
+\begin{align}
+	d &\equiv \frac{\eta(t_\mathrm{after-decay})}{\eta(t_\mathrm{before-decay})} = \frac{n(t_\mathrm{after-decay}) / n_\gamma(t_\mathrm{after-decay})}{n(t_\mathrm{before-decay}) / n_\gamma(t_\mathrm{before-decay})} \nonumber \\
+	&= \frac{a(t_\mathrm{after-decay})^{-3} / T^3(t_\mathrm{after-decay})}{a(t_\mathrm{before-decay})^{-3} / T^3(t_\mathrm{before-decay})} \nonumber \\
+	&= \left( \frac{T(t_\mathrm{before-decay})}{T(t_\mathrm{after-decay})} \right)^3 a^{-3}(t_\mathrm{after-decay}),
+\end{align}
+where the scale-factor $a$ is computed by integrating $H = \dot{a} / a$ with an initial condition of $a(t_\mathrm{before-decay}) = 1$.
+As all of these ALPs with the masses required for baryogenesis, decay in the early universe, they do not contribute to the dark matter density.
 
 \section{Clockwork Theory Axions and Deformed Potentials}
 The clockwork model has introduced to solve the hierarchy problem in particle physics i.e. the question why the Higgs and Planck masses are so different. In this work, we will explore the possibility that axions arising from this clockwork theory (so called clockwork axions), could potentially explain both the baryon asymmmetry and dark matter as suggested in  \cite{Deformed_potential_Bae_2019}. First we will derive the equations of motion for the clockwork axion and the then discuss the particularities of the dynamics of the cosmological clockwork axion evolution.
