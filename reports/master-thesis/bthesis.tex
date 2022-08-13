@@ -1006,6 +1006,44 @@ some citations
 \end{figure}
 
 \subsection{Dynamics}
+Now we are ready to discuss the dynamics of the clockwork axion.
+We follow the discussion of \cite{Deformed_potential_Bae_2019} but restrict ourselves to the case applicable to the clockwork axion.
+To do this, we will approximate the wavefunction $Z(\theta)$ such that it is easier to handle: \\
+For $\theta \simeq O(1) \to \pi$ we find that
+\begin{equation}
+	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 - (-1)} \sim \mathcal{O}(1).
+\end{equation}
+For $|\theta| \lesssim \epsilon$ we find that
+\begin{equation}
+	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 - 1 + \theta^2/2} \sim \epsilon^{-2}.
+\end{equation}
+For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
+\begin{equation}
+	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 + 1 - \theta^2/2} \sim \theta^{-2}.
+\end{equation}
+From this we can find expressions for $\phi(\theta)$: \\
+For $\theta \simeq O(1) \to \pi$ we find that
+\begin{equation}
+	\phi(\theta) = f \theta
+\end{equation}
+For $|\theta| \lesssim \epsilon$ we find that
+\begin{equation}
+	\phi(\theta) = f \epsilon^{-2} \theta
+\end{equation}
+For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
+\begin{equation}
+	\phi(\theta) = f \int_1^\theta \mathrm{d} \theta' \frac{1}{\theta'} = f \log(\theta')
+\end{equation}
+Finally we obtain the approximations for the potential for the canonical field $\phi$ in each of the three cases.
+
+\subsection*{Slow-Roll}
+
+\subsection*{Fast-Roll}
+
+\subsection*{Tracking}
+
+\subsection*{Harmonic Oscillations}
+
 \begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_field_evolution.pdf}
     \caption{Plot of the evolution of the clockwork axion field as a function of time on the x-axis in units for the inverse mass scale $1/M$ on a log-scale. The canonical field is shown on the y-axis in units of the decay constant $f$. The different epochs of the field evolution described in the main text are annotated and the final epoch of oscillations are shown as an inset plot.}
