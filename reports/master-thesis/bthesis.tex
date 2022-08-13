@@ -784,6 +784,8 @@ Dropping all quadratic terms in $\epsilon$ yields:
 \end{equation}
 From this we can see directly that $A \sim a^{-3/2}$.
 
+\subsection{Tracking Fields}
+
 \section{ALP Realignment}
 This model is the simplest possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
 \begin{equation}
@@ -1006,6 +1008,7 @@ some citations
 \end{figure}
 
 \subsection{Dynamics}
+TODO vielleicht umschreiben sodass alle formeln zu einer epche zusammen sind und nicht alle formeln eines typs zusammen sind??????
 Now we are ready to discuss the dynamics of the clockwork axion.
 We follow the discussion of \cite{Deformed_potential_Bae_2019} but restrict ourselves to the case applicable to the clockwork axion.
 To do this, we will approximate the wavefunction $Z(\theta)$ such that it is easier to handle: \\
@@ -1032,17 +1035,28 @@ For $|\theta| \lesssim \epsilon$ we find that
 \end{equation}
 For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
 \begin{equation}
-	\phi(\theta) = f \int_1^\theta \mathrm{d} \theta' \frac{1}{\theta'} = f \log(\theta')
+	\phi(\theta) = f \int_0^\epsilon \mathrm{d} \theta' \sqrt{\epsilon^{-2}} + f \int_\epsilon^\theta \mathrm{d} \theta' \sqrt{ (\theta')^{-2}} = f \frac{1}{\epsilon} \epsilon + f \log \theta - f \log \epsilon = f \left(1 - \log \frac{\theta}{\epsilon}\right)
 \end{equation}
-Finally we obtain the approximations for the potential for the canonical field $\phi$ in each of the three cases.
+Finally we obtain the approximations for the potential of the canonical field $\phi$ in each of the three cases. The potential for $\theta$ is given by 
+\begin{equation}
+	V(\theta) = \Lambda^4(1 - \cos \theta).
+\end{equation}
+The potential in the three cases is: \\
+For $\theta \simeq O(1) \to \pi$ we find that
+\begin{equation}
+	V(\theta) \approx \Lambda^4\left(1 - \frac{\theta^2}{2}\right) \approx \Lambda^4\left(1 - \frac{1}{f^2} \frac{\phi^2}{2}\right).
+\end{equation}
+For $|\theta| \lesssim \epsilon$ we find that
+\begin{equation}
+	V(\theta) \approx \Lambda^4 \frac{1}{2} \theta^2 \approx \frac{\Lambda^4}{2 f^2} \phi^2.
+\end{equation}
+For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
+\begin{equation}
+	\phi(\theta) \approx \frac{\Lambda^4}{2} \theta^2 \approx \frac{\Lambda^4}{2} \epsilon^2 \exp \left[ 2 ( | \phi | / f - 1 ) \right]
+\end{equation}
+From these approximations to the potential, we can derive the dynamics. 
+First we start with a field 
 
-\subsection*{Slow-Roll}
-
-\subsection*{Fast-Roll}
-
-\subsection*{Tracking}
-
-\subsection*{Harmonic Oscillations}
 
 \begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_field_evolution.pdf}
