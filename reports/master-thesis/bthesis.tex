@@ -595,7 +595,13 @@ We are now going to evaluate most of the integrals in this expression. Here we a
 Plugging this back into the expression for the expectation value yields:
 \begin{equation}
 	\langle O_\alpha(t) \rangle = \sum_{j, \beta} \mu_j(t) n^\beta_j \int \frac{\mathrm{d} \omega}{2 \pi} \frac{G_{\alpha \beta}(\omega, 0)} { \omega (\omega + i \epsilon)} =  \sum_{j} \mu_j(t) n^\alpha_j \frac{G_{\alpha \alpha}(\omega, 0)}{2 \omega} \Big|_{w = 0}.
+	\label{eq:chemical_potentials_linear_response}
 \end{equation}
+Here we have used that 
+\begin{equation}
+	\int_{-\infty}^{+\infty} \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega^2} G_{\alpha \beta}(\omega, 0) = \frac{1}{2} \int_l \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega} \frac{G_{\alpha \beta}(\omega, 0)}{\omega} = \frac{G_{\alpha \beta}(\omega, 0)}{2 \omega} \Big|_{\omega = 0} \underbrace{\operatorname{Res}_{\omega = 0} \frac{1}{\omega}}_{= 1},
+\end{equation}
+where $l$ is the contour from $+\infty$ to zero and back.
 
 Now we turn to the source from the axion field $a(t)$.
 This time our perturbation Hamiltonian reads
@@ -613,6 +619,52 @@ around time $t$ as
 	a(t') = a(t) + \dot{a}(t)(t' - t).
 \end{equation}
 This yields:
+\begin{align}
+	 &\langle O_\alpha(t) \rangle_{GC, a \ne 0} - \langle O_\alpha  \rangle_{GC, a = 0} = - i \frac{a_0}{f_a} \int_{-\infty}^t \mathrm{d}^4 x' G_{\alpha \beta}(x') - i \frac{\dot{a}}{f_a} \int_{-\infty}^t \mathrm{d}^4 x' G_{\alpha \beta}(x') (t - t')
+	 \nonumber \\ 
+	 &= - \frac{a_0}{f_a} \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d} \omega \frac{e^{i \omega (t - t') - i p x'}}{(2\pi)^4} G_{\alpha \beta}(\omega, 0)
+	 -i \frac{\dot{a}_0}{f_a} \int_{-\infty}^t \mathrm{d} t' \underbrace{\int \frac{\mathrm{d} \omega}{2 \pi} G_{\alpha \beta}(\omega, 0) \underbrace{(t - t') e^{i \omega (t - t')}}_{= -i \partial_\omega e^{i \omega (t - t')}}}_{= - \int \mathrm{d} \omega \partial_\omega G_{\alpha \beta}(\omega, 0) e^{i \omega (t - t')}}
+	 \nonumber \\
+	 &= - \frac{a_0}{f_a} \int \mathrm{d} \omega \frac{1}{2 \pi \omega} G_{\alpha \beta}(\omega, 0) - i \frac{\dot{a}_0}{f_a} \int \mathrm{d} \omega \underbrace{\partial_\omega \frac{1}{\omega}}_{= - \frac{1}{\omega^2}} G_{\alpha \beta}(\omega, 0) \nonumber \\
+	 &= - \frac{a_0}{f_a} \int \frac{\mathrm{d} \omega}{2 \pi} \frac{1}{\omega} G_{\alpha \beta}(\omega, 0) - \frac{\dot{a}_0}{f_a} \frac{G_{\alpha \alpha}}{2 \omega} \Big|_{\omega = 0}.
+	 \label{eq:axion_source_term_linear_response}
+\end{align}
+As ref. \cite{Domcke:2020kcp_Generic_Couplings} we neglect the first term.
+
+Finally we can put all of these things together.
+For this we define the rate for the interaction $O_\alpha$ as 
+\begin{equation}
+	\Gamma_\alpha \equiv - \frac{T G_\alpha(\omega, 0)}{2\omega} \Big|_{\omega = 0}.
+\end{equation} 
+When we substitute the expectation value for the perturbation from chemical potentials into the expectation value for the perturbation from the axion field, find that
+\begin{equation}
+	\langle O_\alpha(x) \rangle_{GC, a \ne 0} = - \Gamma_\alpha \left[ \sum_j n_j^\alpha \frac{\mu_j}{T} + n_S^\alpha \frac{\dot{a}}{f_a T} \right].
+\end{equation}
+Here the source-vector $n_S^\alpha$ is one if the axion couples to operator $O_\alpha$ and zero if not. 
+Inserting this into the expectation value of the current equation \eqref{eq:current_eq_expectation_value} yields 
+\begin{equation}
+	\label{eq:transport_eq_1}
+	\dot{q}_i = - \sum_\alpha n^\alpha_i \Gamma_\alpha \left[ \sum_j n_j^\alpha \frac{\mu_j}{T} + n_S^\alpha \frac{\dot{a}}{f_a T} \right].
+\end{equation}
+Furthermore we can express the charge densities $q_i$ in terms of the chemical potentials
+\begin{equation}
+	q_i = g_i \mu_i \frac{T^2}{6},
+\end{equation}
+where $g_i$ is the number of degrees of freedom of the particle associated with charge $i$.
+Also we want to work on a FLRW background and hence change the time-derivative to
+\begin{equation}
+	\frac{\mathrm{d}}{\mathrm{d} t} \to \frac{\mathrm{d}}{\mathrm{d} t} + 3 H.
+\end{equation}
+Then the left-hand-side of \eqref{eq:transport_eq_1} reads
+\begin{equation}
+	\dot{q}_i + 3 H q_i = \frac{\mathrm{d}}{\mathrm{d} t} \left( g_i \mu_i \frac{T^2}{6} \right) + 3 H g_i \mu_i \frac{T^2}{6} = \frac{g_i}{6} \left[ \frac{\mathrm{d}}{\mathrm{d} t} \left( \frac{\mu_i}{T} \right) T^3 + \frac{\mu_i}{T} \dot{T} 3 T^2 + 3 H \left( \frac{\mu_i}{T} \right) T^3 \right].
+\end{equation}
+Using this and dividing by $g_i / 6 T^3$ yields our final form of the transport. We obtain
+\begin{equation}
+	\boxed{
+	\frac{\mathrm{d}}{\mathrm{d} t} \left( \frac{\mu_i}{T} \right) = - \frac{1}{g_i} \sum_\alpha n^\alpha_i \frac{\Gamma_\alpha}{T^3 / 6} \left[ \sum_j n_j^\alpha \left( \frac{\mu_j}{T} \right) + n_S^\alpha \frac{\dot{a}}{f_a T} \right] - 3 \left( \frac{\mu_i}{T} \right) \left[ \frac{\dot{T}}{T} + H \right].
+	}
+\end{equation}
 
 
 %\section{Transport Equation II: Dynamics}
