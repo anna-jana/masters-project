@@ -785,6 +785,34 @@ Dropping all quadratic terms in $\epsilon$ yields:
 From this we can see directly that $A \sim a^{-3/2}$.
 
 \subsection{Tracking Fields}
+Here we follow \cite[appendix A]{Deformed_potential_Bae_2019}.
+A tracking solution is a attractor solution to the equation of motion of a scalar field which converges to a constant equation of state
+\begin{equation}
+	w_\phi = \frac{P}{\rho} = \frac{\frac{1}{2} \dot{\phi}^2 - V(\phi)}{\frac{1}{2} \dot{\phi}^2 + V(\phi)}.
+\end{equation}
+Hence a tracking solution should also have a constant 
+\begin{equation}
+	x = \frac{\frac{1}{2} \dot{\phi}^2}{V(\phi)} = \frac{1 + w_\phi}{1 - w_\phi}.
+\end{equation}
+We can write a derivative of x as
+\begin{align}
+	\frac{1}{6} \frac{\mathrm{d} \log x}{\mathrm{d} \log a}
+	&= \frac{1}{6} \frac{1}{H} \frac{1}{x} \frac{\mathrm{d} x}{\mathrm{d} t}
+	= \frac{1}{6 H} \frac{V}{\frac{1}{2} \dot{\phi}^2} \frac{\ddot{\phi} \dot{\phi} V(\phi) - \frac{1}{2} \dot{\phi}^2 \dot{\phi} V'(\phi)}{V^2(\phi)} \nonumber \\
+	&= - \frac{V'}{V} \frac{1}{3 H} \left( \frac{V}{\dot{\phi}} + \frac{1}{2} \dot{\phi} \right) - 1 
+	= \frac{1}{3 H} \sqrt{ \frac{ \frac{1}{2} \dot{\phi}^2 + V(\phi) }{1 + w_\phi}} \nonumber \\
+	&= \sqrt{ \frac{ M_\mathrm{pl} \frac{ \frac{1}{2} \dot{\phi}^2 + V(\phi) } {3 H^2 M_\mathrm{pl}^2} }{3(1 + w_\phi)}} \frac{V'}{V} - 1
+	= M_\mathrm{pl} \sqrt{ \frac{\Omega_\phi}{3(1 + w_\phi)}} \frac{V'}{V} - 1.
+\end{align}
+From the first equation sign we see why this is a useful derivative everything is normalized to the corresponding time-scales.
+This derivative is required to be approximately vanishing for tracking solutions. Therefore we find that we require
+\begin{equation}
+	\frac{V'(\phi)}{V(\phi)} \approx \frac{1}{M_\mathrm{pl}} \sqrt{\frac{3(1 + w_\phi)}{\Omega_phi}}	
+\end{equation}
+for tracking solutions to exist.
+In order for the field to maintain a tracking solution, also the derivative of this requirement has to hold:
+
+
 
 \section{ALP Realignment}
 This model is the simplest possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
@@ -1008,54 +1036,78 @@ some citations
 \end{figure}
 
 \subsection{Dynamics}
-TODO vielleicht umschreiben sodass alle formeln zu einer epche zusammen sind und nicht alle formeln eines typs zusammen sind??????
 Now we are ready to discuss the dynamics of the clockwork axion.
 We follow the discussion of \cite{Deformed_potential_Bae_2019} but restrict ourselves to the case applicable to the clockwork axion.
-To do this, we will approximate the wavefunction $Z(\theta)$ such that it is easier to handle: \\
-For $\theta \simeq O(1) \to \pi$ we find that
-\begin{equation}
-	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 - (-1)} \sim \mathcal{O}(1).
-\end{equation}
+To do this, we will approximate the wavefunction $Z(\theta)$ such that it is easier to handle. We will do this in different field ranges corresponding to different epoch of the field time-evolution.
+
 For $|\theta| \lesssim \epsilon$ we find that
 \begin{equation}
 	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 - 1 + \theta^2/2} \sim \epsilon^{-2}.
 \end{equation}
-For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
-\begin{equation}
-	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 + 1 - \theta^2/2} \sim \theta^{-2}.
-\end{equation}
 From this we can find expressions for $\phi(\theta)$: \\
-For $\theta \simeq O(1) \to \pi$ we find that
-\begin{equation}
-	\phi(\theta) = f \theta
-\end{equation}
 For $|\theta| \lesssim \epsilon$ we find that
 \begin{equation}
 	\phi(\theta) = f \epsilon^{-2} \theta
-\end{equation}
-For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
-\begin{equation}
-	\phi(\theta) = f \int_0^\epsilon \mathrm{d} \theta' \sqrt{\epsilon^{-2}} + f \int_\epsilon^\theta \mathrm{d} \theta' \sqrt{ (\theta')^{-2}} = f \frac{1}{\epsilon} \epsilon + f \log \theta - f \log \epsilon = f \left(1 - \log \frac{\theta}{\epsilon}\right)
 \end{equation}
 Finally we obtain the approximations for the potential of the canonical field $\phi$ in each of the three cases. The potential for $\theta$ is given by 
 \begin{equation}
 	V(\theta) = \Lambda^4(1 - \cos \theta).
 \end{equation}
 The potential in the three cases is: \\
-For $\theta \simeq O(1) \to \pi$ we find that
-\begin{equation}
-	V(\theta) \approx \Lambda^4\left(1 - \frac{\theta^2}{2}\right) \approx \Lambda^4\left(1 - \frac{1}{f^2} \frac{\phi^2}{2}\right).
-\end{equation}
 For $|\theta| \lesssim \epsilon$ we find that
 \begin{equation}
 	V(\theta) \approx \Lambda^4 \frac{1}{2} \theta^2 \approx \frac{\Lambda^4}{2 f^2} \phi^2.
 \end{equation}
+
+
+First we start with an initial field value of $\phi(t_i) = \phi_i = \mathcal{O}(1)$.
+In this regime we find that
+\begin{equation}
+	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 - (-1)} \sim \mathcal{O}(1)
+\end{equation}
+and hence
+\begin{equation}
+	\phi(\theta) = f \theta.
+\end{equation}
+This gives a harmonic potential:
+\begin{equation}
+	V(\theta) \approx \Lambda^4\left(1 - \frac{\theta^2}{2}\right) \approx \Lambda^4\left(1 - \frac{1}{f^2} \frac{\phi^2}{2}\right).
+\end{equation}
+In this early period the Hubble parameter is sufficiently large such that the slow-roll condition (eq. \eqref{eq:slow_roll_condition}) is fulfilled
+\begin{equation}
+	H \gg \frac{\Lambda^2}{f}.
+\end{equation}
+The dynamics in this epoch is described by the slow-roll equation (see eq. \eqref{eq:slow_roll_approx_eom}):
+\begin{equation}
+	\dot{\phi} \approx - \frac{1}{c H} \frac{\Lambda^4}{f^2} \phi.
+\end{equation}
+Once the Hubble parameter saturates the slow-roll condition 
+\begin{equation}
+	H \approx \frac{1}{\sqrt{c}} \frac{\Lambda^2}{f},
+\end{equation}
+the field enters the fast-roll period.
+Here we find that the field reaches a time derivative of 
+\begin{equation}
+	\dot{\phi} \approx - \frac{1}{c} \sqrt{c} \frac{f}{\Lambda^2} \phi \frac{\Lambda^4}{f^2} \approx - \frac{\Lambda^2}{\sqrt{c}}.
+\end{equation}
+As this is the larges time derivative reached over the field-evolution, this is where is source for SBG the largest. 
+Hence it is important that this happens at sufficiently high temperatures i.e. that $\Lambda^2/f$ is only slightly lower than the Hubble parameter after inflation $H_\mathrm{inf}$.
+
+Once the field value of $\theta$ falls below $\mathcal{O}(1)$ values, the deformation of the potential kicks in.
 For $\epsilon \lesssim |\theta| \lesssim \mathcal{O}(1)$ we find that
 \begin{equation}
-	\phi(\theta) \approx \frac{\Lambda^4}{2} \theta^2 \approx \frac{\Lambda^4}{2} \epsilon^2 \exp \left[ 2 ( | \phi | / f - 1 ) \right]
+	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 + 1 - \theta^2/2} \sim \theta^{-2}.
 \end{equation}
-From these approximations to the potential, we can derive the dynamics. 
-First we start with a field 
+and hence
+\begin{equation}
+	\phi(\theta) = f \int_0^\epsilon \mathrm{d} \theta' \sqrt{\epsilon^{-2}} + f \int_\epsilon^\theta \mathrm{d} \theta' \sqrt{ (\theta')^{-2}} = f \frac{1}{\epsilon} \epsilon + f \log \theta - f \log \epsilon = f \left(1 - \log \frac{\theta}{\epsilon}\right).
+\end{equation}
+This gives us an exponential potential:
+\begin{equation}
+	\phi(\theta) \approx \frac{\Lambda^4}{2} \theta^2 \approx \frac{\Lambda^4}{2} \epsilon^2 \exp \left[ 2 ( | \phi | / f - 1 ) \right].
+\end{equation}
+Such a potential fulfills the conditions for a tracking potential ???????????
+
 
 
 \begin{figure}[H]
