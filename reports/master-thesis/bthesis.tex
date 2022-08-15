@@ -784,7 +784,7 @@ Dropping all quadratic terms in $\epsilon$ yields:
 \end{equation}
 From this we can see directly that $A \sim a^{-3/2}$.
 
-\subsection{Tracking Fields}
+\subsection{Tracking Solutions}
 Here we follow \cite[appendix A]{Deformed_potential_Bae_2019}.
 A tracking solution is a attractor solution to the equation of motion of a scalar field which converges to a constant equation of state
 \begin{equation}
@@ -796,6 +796,7 @@ Hence a tracking solution should also have a constant
 \end{equation}
 We can write a derivative of x as
 \begin{align}
+	\label{eq:tracking_eom}
 	\frac{1}{6} \frac{\mathrm{d} \log x}{\mathrm{d} \log a}
 	&= \frac{1}{6} \frac{1}{H} \frac{1}{x} \frac{\mathrm{d} x}{\mathrm{d} t}
 	= \frac{1}{6 H} \frac{V}{\frac{1}{2} \dot{\phi}^2} \frac{\ddot{\phi} \dot{\phi} V(\phi) - \frac{1}{2} \dot{\phi}^2 \dot{\phi} V'(\phi)}{V^2(\phi)} \nonumber \\
@@ -807,10 +808,20 @@ We can write a derivative of x as
 From the first equation sign we see why this is a useful derivative everything is normalized to the corresponding time-scales.
 This derivative is required to be approximately vanishing for tracking solutions. Therefore we find that we require
 \begin{equation}
-	\frac{V'(\phi)}{V(\phi)} \approx \frac{1}{M_\mathrm{pl}} \sqrt{\frac{3(1 + w_\phi)}{\Omega_phi}}	
+	\label{eq:const_x}
+	\frac{V'(\phi)}{V(\phi)} \approx \frac{1}{M_\mathrm{pl}} \sqrt{\frac{3(1 + w_\phi)}{\Omega_\phi}} = \frac{\dot{\phi}}{H} \frac{1}{3(1 + w_\phi)}
 \end{equation}
 for tracking solutions to exist.
-In order for the field to maintain a tracking solution, also the derivative of this requirement has to hold:
+In order for the field to maintain a tracking solution this condition needs to be invariant under the time-evolution. Hence if the take the derivative of the equation of motion (in the form of eq. \eqref{eq:tracking_eom}) with respect to the field $\phi$ while also assuming a constant $x$ (eq. \eqref{eq:const_x}) we obtain a necessary condition for a stable tracking solution:
+\begin{align}
+	&0 = M_\mathrm{pl}  (3(1 + w_\phi))^2 \left( \sqrt{\Omega_\phi} \frac{V'' V - (V')^2}{V^2} + \frac{V'}{V} \frac{H}{\dot{\phi}} \left( - \frac{3}{2} (w_\phi - w) \right) \sqrt{\Omega_\phi} \right) \nonumber \\
+	&\frac{V'' V}{(V')^2} = 1 + \frac{V}{V'} \frac{H}{\dot{\phi}} \frac{3}{2} (w_\phi - w) \nonumber \\
+	& \Gamma \equiv \frac{V'' V}{(V')^2} = 1 + \frac{w_\phi - w}{2(1 + w_\phi)}.
+\end{align}
+Note that the quantity $\Gamma$ is a property of the potential only.
+If $\Gamma$ is constant or at least doesn't vary significantly over the field range, then the right hand side is constant and hence can we find a stable tracking solution.
+Furthermore it is also necessary that the solution is stable under small perturbations of $w_\phi$.
+
 
 
 
