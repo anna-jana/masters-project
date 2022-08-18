@@ -820,9 +820,15 @@ In order for the field to maintain a tracking solution this condition needs to b
 	& \Gamma \equiv \frac{V'' V}{(V')^2} = 1 + \frac{w_\phi - w}{2(1 + w_\phi)}.
 	\label{eq:tracking_condition}
 \end{align}
+Here $w$ is the equation of state of the dominating energy component of the universe (the background).
 Note that the quantity $\Gamma$ is a property of the potential only.
 If $\Gamma$ is constant or at least doesn't vary significantly over the field range, then the right hand side is constant and hence can we find a stable tracking solution.
-Furthermore it is also necessary that the solution is stable under small perturbations of $w_\phi$, $w_\phi \to w'_\phi = w_\phi + \delta w_\phi$. This requires quite a bit of algebra and we will postpone this for now (todo). 
+From this we can find the equation of state which the tracking solution has in terms of $\Gamma$:
+\begin{equation}
+	\label{eq:tracking_equation_of_state}
+	w_\phi \approx \frac{w - 2(\Lambda - 1)}{1 + 2(\Lambda - 1)}.
+\end{equation} 
+Furthermore it is also necessary that the solution is stable under small perturbations of $w_\phi$, $w_\phi \to w'_\phi = w_\phi + \delta w_\phi$. This requires quite a bit of algebra and we will ????????
 
 \section{ALP Realignment}
 This model is the simplest possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
@@ -1106,6 +1112,12 @@ Such a potential fulfills the conditions for a tracking potential \eqref{eq:trac
 	\Gamma = \frac{V'' V}{(V')} = \frac{(2/f)^2 \exp(2(|\phi| / f - 1)) \exp(2(|\phi| / f - 1))}{(2/f \exp(2(|\phi| / f - 1)))^2} = 1 = \mathrm{const}
 \end{equation}
 holds.
+In this epoch we find from eq. \eqref{eq:tracking_equation_of_state} that the equation of state of the clockwork axion fied is
+\begin{equation}
+	w_\phi = w.
+\end{equation} 
+Hence the energy density of the field tracks the dominant energy density i.e. radiation.
+Also this means that the density parameter will be approximately constant as both the energy density of the axion field and the critical density evolve with the same power-law. 
 
 The clockwork axion field will stay on the tracking attractor as long as its potential has the exponential form.
 Once $\theta \lesssim \epsilon$ however, the wavefunction $Z$ has the form
