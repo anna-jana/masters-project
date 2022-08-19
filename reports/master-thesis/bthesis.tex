@@ -525,6 +525,8 @@ We are going to evaluate these expectation values in linear-response theory.
 For this we take $H_s \equiv \sum_i \mu_i Q_i$ as a perturbation to the Hamiltonian of the system.
 Here the $\mu_i$ are the sources, which change slowly compared to the charges $Q_i$.
 Let us first derive the equation for linear perturbation theory in general and then apply is first to the perturbation by chemical potentials $\mu_i$ and then to the perturbation by the classical axions field $a(t)$.
+
+\subsection{Quantum Linear Response Theory}
 We work in the interaction-picture, where the time-evolution of the density matrix $\rho(t)$ of the system is given by
 \begin{equation}
     \rho(t) = U(t) \rho_0 U^{-1}(t).
@@ -546,6 +548,7 @@ We now evaluate an arbitrary observable $A_i$ with this density matrix in linear
     &= \langle A_i \rangle_c + i \sum_j \int_{-\infty}^t \mathrm{d} t' \phi_j(t') \langle [A_j(t'), A_i(t)] \rangle_c
 \end{align}
 
+\subsection{Perturbation by Small Chemical Potentials}
 Now we can apply this to the chemical potentials.
 We want to take the exception values of the interaction operators $O_\alpha$ in eq. \eqref{eq:current_eq_expectation_value}.
 Here the chemical potentials $\mu_i$ are the sources and they are coupled to the charges $Q_i$.
@@ -604,6 +607,7 @@ Here we have used that
 \end{equation}
 where $l$ is the contour from $+\infty$ to zero and back.
 
+\subsection{Source from Classical Axion Field}
 Now we turn to the source from the axion field $a(t)$.
 This time our perturbation Hamiltonian reads
 \begin{equation}
@@ -632,6 +636,7 @@ This yields:
 \end{align}
 As ref. \cite{Domcke:2020kcp_Generic_Couplings} we neglect the first term.
 
+\subsection{Putting Everything Together}
 Finally we can put all of these things together.
 For this we define the rate for the interaction $O_\alpha$ as 
 \begin{equation}
@@ -687,72 +692,128 @@ The current coupling acts as discussed before like a chemical potential. Hence
 \end{equation}
 We see immediately that this is the same as $n_S^\alpha$ for the linear combination of operators.
 
+
 \section{Charges and Rates in the Standard Model}
 So far we have derived the transport equation of a general set of charges $q_i$ and interactions $O_\alpha$. In this section we will specify these quantities for the standard model, which we will use later to compute the baryon asymmetry.
 We take these from \cite[sec. 3.1]{Domcke:2020kcp_Generic_Couplings}
 
+First let us summaries all charges present in the standard model: 
 \begin{table}[H]
 	\label{tab:charges_of_the_sm}
-	\title{Charges of the Standard Model}
 	\begin{center}
 		\begin{tabular}{lll}
 			Name & Symbol & dof. $g_i$ \\ \hline \hline \hline
 			left-handed first lepton generation lepton (electron) doublet & $L_1 = \begin{pmatrix}
 				\nu^e_L \\
 				e_L
-			\end{pmatrix}$ &  \\
+			\end{pmatrix}$ & 2 \\
 			left-handed second lepton generation (muon) doublet & $L_2 = \begin{pmatrix}
 				\nu^\mu_L \\
 				\mu_L
-			\end{pmatrix}$ & \\
+			\end{pmatrix}$ & 2 \\
 			left-handed third lepton generation (tau) doublet & $L_3 = \begin{pmatrix}
 				\nu^\tau_L \\
 				\tau_L
-			\end{pmatrix}$ & \\
+			\end{pmatrix}$ & 2 \\
 			\hline
-			right-handed first lepton generation (electron) singlet & $R_1 = R_e$ & \\
-			right-handed second lepton generation (muon) singlet & $R_2 = R_\mu$ & \\
-			right-handed third lepton generation (tau) singlet & $R_3 = R_\tau$ & \\
+			right-handed first lepton generation (electron) singlet & $R_1 = R_e$ & 1 \\
+			right-handed second lepton generation (muon) singlet & $R_2 = R_\mu$ & 1 \\
+			right-handed third lepton generation (tau) singlet & $R_3 = R_\tau$ & 1 \\
 			\hline \hline
 			left-handed first generation quarks (up, down) & $Q_1 = \begin{pmatrix}
 				u_L \\
 				d_L
-			\end{pmatrix} $ & \\
+			\end{pmatrix} $ & 6 \\
 			left-handed second generation quarks (charm, strange) & $Q_1 = \begin{pmatrix}
 				c_L \\
 				s_L
-			\end{pmatrix} $ & \\
+			\end{pmatrix} $ & 6 \\
 		    left-handed third generation quarks (top, bottom) & $Q_1 = \begin{pmatrix}
 		    	t_L \\
 		    	b_L
-		    \end{pmatrix} $ & \\
+		    \end{pmatrix} $ & 6 \\
 	    	\hline
-	    	right-handed first generation up-type quark (up) & $u_R$ & \\
-	    	right-handed second generation up-type quark (charm) & $c_R$ & \\
-	    	right-handed third generation up-type quark (top) & $t_R$ & \\
-	    	right-handed first generation down-type quark (down) & $d_R$ & \\
-	    	right-handed second generation down-type quark (strange) & $s_R$ & \\
-	    	right-handed third generation down-type quark (bottom) & $b_R$ & \\
+	    	right-handed first generation up-type quark (up) & $u_R$ & 3 \\
+	    	right-handed second generation up-type quark (charm) & $c_R$ & 3 \\
+	    	right-handed third generation up-type quark (top) & $t_R$ & 3 \\
+	    	right-handed first generation down-type quark (down) & $d_R$ & 3 \\
+	    	right-handed second generation down-type quark (strange) & $s_R$ & 3 \\
+	    	right-handed third generation down-type quark (bottom) & $b_R$ & 3 \\
 	    	\hline \hline
 	    	Higgs doublet & $H = \frac{1}{\sqrt{2}} \begin{pmatrix}
 	    		\phi_+ \\
 	    		\phi_0
-	    	\end{pmatrix}$ & \\
+	    	\end{pmatrix}$ & 4 \\
     		\hline
 		\end{tabular}
 	\end{center}
 \end{table}
-
+These charges can change by sphalerons and Yukawa couplings. As in ref. \cite{Domcke:2020kcp_Generic_Couplings}, we neglect flavor changing Yukawa interactions.
+The processes are:
 \begin{table}[H]
 	\label{tab:interactions_in_the_sm}
-	\title{Interactions in the Standard Model}
 	\begin{center}
 		\begin{tabular}{llll}
-			Name & Symbol & Rate & Equilibration Temperature \\
-			\hline 
+			Name & Symbol & Rate & Charge Vector \\
+			\hline
+			Electro-Weak Sphaleron & WS & $\Gamma_\mathrm{WS} = \frac{\kappa_\mathrm{WS}}{2} \alpha_2^5 T^4$ & $\sum_i n_i^\mathrm{WS} \mu_i = \sum_f (\mu_{L_f} + 3 \mu_{Q_f})$ \\
+			Strong Sphaleron & SS & $\Gamma_\mathrm{WS} = \frac{\kappa_\mathrm{SS}}{2} \alpha_3^5 T^4$ & $\sum_i n_i^\mathrm{SS} \mu_i = \sum_f (2\mu_{Q_f} - \mu_{u_f} - \mu_{d_f})$ \\
+			Lepton Yukawa & $Y_l^{ff}$ & $\Gamma_{Y_l^{ff}} = \kappa_{Y_e}(\alpha_2) y_{e_f} T^4$ & $\sum_i n_i^{Y_l^{ff}} \mu_i = - \mu_{e_f} + \mu_{L_f} - \mu_H$ \\
+			Quark Yukawa up-type & $Y_u^{ff}$ & $\Gamma_{Y_u^{ff}} = \kappa_{Y_u}(\alpha_2, \alpha_3) y_{u_f}^2 T^4$ & $ \sum_i n_i^{Y_u^{ff}} \mu_i = - \mu_{u_f} + \mu_{Q_f} + \mu_H$ \\
+			Quark Yukawa down-type & $Y_d^{ff}$ & $\Gamma_{Y_d^{ff}} = \kappa_{Y_d}(\alpha_2, \alpha_3) y_{d_f}^2 T^4$ & $ \sum_i n_i^{Y_d^{ff}} \mu_i = - \mu_{d_f} + \mu_{Q_f} - \mu_H$ \\
 		\end{tabular}
 	\end{center}
 \end{table}
+where the parameters in the reaction rates are given by:
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{l}
+			$\kappa_\mathrm{WS} \approx 24$ for $T \approx 10^{12} \, \mathrm{GeV}$ \\
+			$\kappa_\mathrm{SS} \approx 2.7 \times 10^2$ for $T \approx 10^{13} \, \mathrm{GeV}$ \\
+			$\kappa_{Y_l} \approx 1.7 \times 10^{-3}$ \\
+			$\kappa_{Y_u} \approx 1.0 \times 10^{-2}$ for $T \approx 10^{12} \, \mathrm{GeV}$ \\
+			$\kappa_{Y_d} \approx \kappa_{Y_u}$ \\
+			SU(2) feinstructure constant $\alpha_2 \approx $ \\
+			SU(3) feinstructure constant $\alpha_3 \approx $ \\
+			lepton Yukawa coupling $y_{l^f} \approx $ \\
+			up-type quark Yukawa coupling $y_{u^f} \approx $ \\
+			down-type quark Yukawa coupling $y_{d^f} \approx $ \\ 
+		\end{tabular}
+	\end{center}
+\end{table}
+Finally we can simplify the charges for the hight temperature regime of $T > 10^{12} \, \mathrm{GeV}$. Here first and second generation leptons and quarks are indistinguishable as their yukawa couplings are small compared to the temperature 
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{lll}
+			Symbol & Defintion & dof. $g_i$ \\
+			\hline
+			$\tau$ & &1  \\
+			$L_{12}$ & & 4 \\
+			$L_3$ & & 2 \\
+			$q_{12}$ & & 12 \\
+			$t$ & & 3 \\
+			$b$ & & 3 \\
+			$Q_{12}$ & & 12 \\
+			$Q_3$ & & 6 \\
+			$H$ & & 4 \\
+		\end{tabular}
+	\end{center}
+\end{table}
+In this basis the charge vectors for the interaction read
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{ll}
+			Interaction Name & Charge Vector $n^\alpha_i$ \\
+			\hline
+			weak sphaleron & $(0,2,1,0,0,0,6,3,0)$ \\
+			strong sphaleron & $(0,0,0,-4,-1,-1,4,2,0)$ \\
+			tau Yukawa & $(-1,0,1,0,0,0,0,0,1)$ \\
+			top Yukawa & $(0,0,0,0,-1,0,0,1,1)$ \\
+			bottom Yukawa & $(0,0,0,0,0,-1,0,1,-1)$ \\
+		\end{tabular}
+	\end{center}
+\end{table}
+
 
 \section{Lepton Number Violation from Weinberg Operator}
 
@@ -796,7 +857,9 @@ In this thesis we assume that all fields are homogeneous after inflation and hen
 This gives us the equation of motion for scalar fields in an expanding universe:
 \begin{equation}
 	\label{eq:scalar_field_eom}
+	\boxed{
 	\ddot{\phi_i} + 3 H \dot{\phi_i} + V'(\{\phi\}) = 0.
+	}
 \end{equation}
 
 \subsection{Slow Roll Approximation}
