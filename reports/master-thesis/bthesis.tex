@@ -191,7 +191,10 @@ Plugging these assumption into the Einstein field-equations yields the Friedmann
 A useful compact form of the Friedmann equation for $k = 0$ and $M_\mathrm{pl} = 1 / \sqrt{8 \pi G}$ is $3 M_\mathrm{pl} H^2 = \rho$
 }:
 \begin{equation}
+	\label{eq:friedmann_equation}
+	\boxed{
 	\left( \frac{\dot{a}}{a} \right)^2 = \frac{8 \pi G}{3} \rho - \frac{k}{a^2}
+	}
 \end{equation}
 as well as the acceleration equation (second order e.o.m., from the trace of $T$)
 \begin{equation}
@@ -313,11 +316,17 @@ The term $\Gamma_\mathrm{inf}$ is a phenomenological term describing the decay o
 If we multiply eq. \eqref{eq:inflaton_field_eq} with $\dot{\phi}$ and average over one oscillation, we obtain
 the equation for reheating:
 \begin{equation}
+	\label{eq:cont_eq_inf}
+	\boxed{
 	\dot{\rho}_\mathrm{inf} + 3 H \rho_\mathrm{inf} = - \Gamma_\mathrm{inf} \rho_\mathrm{inf}
+	}
 \end{equation}
 The corresponding equation for the radiation energy density reads
 \begin{equation}
+	\label{eq:cont_eq_rad}
+	\boxed{
 	\dot{\rho}_\mathrm{rad} + 4 H \rho_\mathrm{rad} = + \Gamma_\mathrm{inf} \rho_\mathrm{inf}
+	}
 \end{equation}
 The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay. Here one can see the effect of the $\Gamma_{\mathrm{inf}}$: it creates an effective decay term in the rate equations.
 These equations together with the Friedmann equation, describe the background cosmology for our later computations.
@@ -491,14 +500,12 @@ If in the UV-completion this scalar arises as the (pseudo-)Goldstone boson of th
 
 Finally we have to find a way to compute the final asymmetry.
 A simple approach is using Boltzmann equations. For example if we couple
-the axion field directly to the lepton current and we have lepton number violating interaction in the thermal plasma mediated by the Weinberg operator
-\begin{equation}
-	???????
-\end{equation}
+the axion field directly to the lepton current and we have lepton number violating interaction in the thermal plasma mediated by the Weinberg operator (see sec. \ref{sec:lepton_number_violation_from_weinberg_operator})
 then the Boltzmann equation reads:
 \begin{equation}
-	??????
+	\dot{n}_L + 3 H n_L = - \Gamma_L (n_L - n_L^\mathrm{eq}),
 \end{equation}
+where $\Gamma_L$ is the rate for the Weinberg interaction. 
 This equation was used in ref. \cite{Kusenko_2015_Axion_Leptogenesis}.
 However we would like to have a complete set of equations considering all standard model charges. The equation above assumes that these charges are all in equilibrium.
 Moreover this approach has the problem that it depends on the field basis.
@@ -694,6 +701,7 @@ We see immediately that this is the same as $n_S^\alpha$ for the linear combinat
 
 
 \section{Charges and Rates in the Standard Model}
+\label{sec:charges_and_rates_in_the_standard_model}
 So far we have derived the transport equation of a general set of charges $q_i$ and interactions $O_\alpha$. In this section we will specify these quantities for the standard model, which we will use later to compute the baryon asymmetry.
 We take these from \cite[sec. 3.1]{Domcke:2020kcp_Generic_Couplings}
 
@@ -773,11 +781,11 @@ where the parameters in the reaction rates are given by:
 			$\kappa_{Y_l} \approx 1.7 \times 10^{-3}$ \\
 			$\kappa_{Y_u} \approx 1.0 \times 10^{-2}$ for $T \approx 10^{12} \, \mathrm{GeV}$ \\
 			$\kappa_{Y_d} \approx \kappa_{Y_u}$ \\
-			SU(2) feinstructure constant $\alpha_2 \approx $ \\
-			SU(3) feinstructure constant $\alpha_3 \approx $ \\
-			lepton Yukawa coupling $y_{l^f} \approx $ \\
-			up-type quark Yukawa coupling $y_{u^f} \approx $ \\
-			down-type quark Yukawa coupling $y_{d^f} \approx $ \\ 
+			$Y_\tau = 1 \times 10^{-2}$ \\
+			$Y_\mathrm{top} = 0.49$ \\
+			$Y_\mathrm{bottom} = 6.8 \times 10^{-3}$ \\
+			SU(2) feinstructure constant $\alpha_2 \approx 0.024$ \\
+			SU(3) feinstructure constant $\alpha_3 \approx 0.028$ \\
 		\end{tabular}
 	\end{center}
 \end{table}
@@ -816,6 +824,9 @@ In this basis the charge vectors for the interaction read
 
 
 \section{Lepton Number Violation from Weinberg Operator}
+\label{sec:lepton_number_violation_from_weinberg_operator}
+
+The Weinberg operator it the lowest-order operator, which is introduced in an effective field theory approach to the standard model.
 
 
 
@@ -1336,7 +1347,55 @@ The field starts to oscillate and behaves like matter. Hence it is a dark matter
 
 
 \chapter{Implementation of the Numerical Simulations}
-TODO: architecture of the code, details to used ode solvers, used programming language and libraries
+In this section we will briefly look at the program which was written for this thesis project in order to compute the baryon asymmetry.
+
+\section{Used Equations}
+Let us start by summarizing the dynamical equation used.
+First the background the covered by the equations for reheating namely the continuity equation for the inflaton field (eq. \eqref{eq:cont_eq_inf}) and for the radiation bath (eq. \eqref{eq:cont_eq_rad}) as well as the Friedmann (eq. \eqref{eq:friedmann_equation}):
+\begin{align}
+	&\dot{\rho}_\mathrm{inf} + 3 H \rho_\mathrm{inf} = - \Gamma_\mathrm{inf} \nonumber \\
+	&\dot{\rho}_\mathrm{rad} + 4 H \rho_\mathrm{rad} = + \Gamma_\mathrm{inf} \nonumber \\
+	& 3 M_\mathrm{pl}^2 H^2 = \rho_\mathrm{inf} + \rho_\mathrm{rad}
+\end{align}
+Second the motion of the axion field is described by the Klein-Gordon equation on an FLRW background (eq. \eqref{eq:scalar_field_eom})
+\begin{equation}
+	\ddot{\phi_i} + 3 H \dot{\phi_i} + V'(\{\phi\}) = 0.
+\end{equation}
+Finally the evolution of the standard model charges is given by the transport equation (eq. \eqref{eq:transport_equation})
+\begin{equation}
+	\frac{\mathrm{d}}{\mathrm{d} t} \left( \frac{\mu_i}{T} \right) = - \frac{1}{g_i} \sum_\alpha n^\alpha_i \frac{\Gamma_\alpha}{T^3 / 6} \left[ \sum_j n_j^\alpha \left( \frac{\mu_j}{T} \right) + n_S^\alpha \frac{\dot{a}}{f_a T} \right] - 3 \left( \frac{\mu_i}{T} \right) \left[ \frac{\dot{T}}{T} + H \right].
+\end{equation}
+Here we use the charges and interaction given in sec. \ref{sec:charges_and_rates_in_the_standard_model}.
+
+In order to solve these equation on a computer it is useful to de-dimensionalize them.
+This makes the numerical integration more stable as the variables involved are not too big or small and can more accurately be represented by floating point number avoiding round-off errors. 
+We choose $t_\mathrm{RH}$ as the time unit for the background, $1 / m_a$ as the time unit for the axion and $1 / \Gamma_\mathrm{inf}$ for the transport equation.
+Furthermore we use $\rho_{\mathrm{inf}, \mathrm{rad}} / \rho_{\mathrm{inf}, \mathrm{rad}}(t_\mathrm{RH})$ to integrate the background, $a / f_a$ to integrate the axion and the $(\mu_i / T) / (\mu_i^\mathrm{equilibrium} / T)$ to integrate the standard model charges.
+
+\section{Program Structure}
+The program is structured as follows.
+We solve the equations from the previous section one after the other as there are to a good approximation on backreactions to the previous one (e.g. there is no backreaction of the axion to the background cosmology).
+This allows the numerical solvers to take time-steps appropriate to the equation, not being forced to take the smallest required time-steps for all equations. 
+For this we utilize the feature of continuous output from ODE solvers. The solver returns a callable object, which behaves as the function which solves the given ODE. The solver has more information than just a time-series of solution, as it also knows about the derivatives from the ODE.
+
+\section{Numerical Methods}
+The this system of equations is implemented in the python programming language using the numpy, scipy and matplotlib libraries.
+The following solvers from the solve\_ivp function from scipy.integrate are used for the different equations:
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{lll}
+			Equation & Solver & Tolerances \\
+			\hline 
+			 Background & RK45 & \\
+			 Axion & Radau & \\
+			 Transport Eq. & BDF & \\
+		\end{tabular}
+	\end{center}
+\end{table}
+These solvers were selected by try and error regarding performance and stability. Note that the axion and the transport eq. exhibit stiff behavior, hence the choice of implicit methods while the background equations behave as power-laws for the different parts of the background evolution hence a (faster) explicit method is sufficient.
+
+\section{Convergence Checks}
+We start by solving 
 
 
 \chapter{Results}
