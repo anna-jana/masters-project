@@ -77,7 +77,7 @@
 %% Hier den eigenen Namen einsetzen
 \ThesisAuthor{Anna-Jana}{Riess}
 %% Hier den Geburtsort einsetzen
-\PlaceOfBirth{Hamburg}
+ \PlaceOfBirth{Hamburg}
 %% Titel Arbeit. Das erste Argument ist der deutsche, das zweite der
 %% englische Titel.
 \ThesisTitle{Spontane Axion-Leptogenese mit Generischen Kopplungen in ALP Realignment, Clockwork Axion und Multi Axion Modellen}{Spontaneous Axion-Leptogenesis with Generic Couplings in ALP Realignment, Clockwork Axion and Multi Axion Models}
@@ -442,6 +442,7 @@ These processes give us the rate of conversion of lepton and baryon numbers.
 In this chapter we will discuss a possible mechanism which could implement baryogenesis. This mechanism is call spontaneous baryogenesis and is the topic of the rest of this thesis.
 
 \section{Mechanism of Spontaneous Baryogenesis}
+\label{sec:sbg}
 
 The mechanism of spontaneous baryogenesis was propose by Andreq Cohen and David Kapla in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
 Their idea was to couple a scalar field $\phi$ to the baryon current $J_B$:
@@ -506,7 +507,7 @@ If we would start with an axion coupling to the weak sphaleron $a F \tilde{F}$, 
 To introduce a coupling to the lepton current from this coupling, one needs to do a field redefinition depending on the axion field. This would also change the fields in the Weinberg operator, introducing a coupling within the Weinberg operator, modifying its rate. While one could compute a rate for the Weinberg operator including the axion dependence and solve for the asymmetry correctly, its more fruitful to use a set of basis independent equations.
 This was done in .ref \cite{Domcke:2020kcp_Generic_Couplings}, where the authors developed a formalism based on linear-response theory which can describe the equilibration of charges by interaction and generation of charges from coupling to an axion field in a basis independent way for generic couplings. We will now recap their derivation.
 
-\section{Transport Equation I: Derivation}
+\section{Derivation of Transport Equation}
 The following derivation of the transport equation is taken from  \cite[appendix B]{Domcke:2020kcp_Generic_Couplings}.
 
 We start from the current (continuity) equation for the charges $Q_i$ with current $J_i^\mu$. These charges are changed by interaction $O_\alpha$ by $n_i^\alpha$:
@@ -661,16 +662,101 @@ Then the left-hand-side of \eqref{eq:transport_eq_1} reads
 \end{equation}
 Using this and dividing by $g_i / 6 T^3$ yields our final form of the transport. We obtain
 \begin{equation}
+	\label{eq:transport_equation}
 	\boxed{
 	\frac{\mathrm{d}}{\mathrm{d} t} \left( \frac{\mu_i}{T} \right) = - \frac{1}{g_i} \sum_\alpha n^\alpha_i \frac{\Gamma_\alpha}{T^3 / 6} \left[ \sum_j n_j^\alpha \left( \frac{\mu_j}{T} \right) + n_S^\alpha \frac{\dot{a}}{f_a T} \right] - 3 \left( \frac{\mu_i}{T} \right) \left[ \frac{\dot{T}}{T} + H \right].
 	}
 \end{equation}
 
+\section{Basis Independence of the Transport Equation}
 
-%\section{Transport Equation II: Dynamics}
+In section \ref{sec:sbg} we claimed that the transport equation will give us a description for the dynamics of charges independent of the field basis.
+Let's prove that this is actually the case.
+For this we follow \cite[sec. 2.2 ]{Domcke:2020kcp_Generic_Couplings}.
+We consider the source term of eq. \eqref{eq:transport_equation} 
+\begin{equation}
+	S_i := \frac{1}{g_i} \frac{\dot{a}}{f_a T} \sum_\alpha \frac{\Gamma_\alpha}{T^3 / 6} n_i^\alpha n_S^\alpha
+\end{equation}
+We start with a direct coupling to a current $J_k$ and rotated the fields such that
+\begin{equation}
+	- \frac{a}{f} \partial_\mu J^\mu_k \to - \frac{a}{f} \sum_\beta n_k^\beta O_\beta.
+\end{equation}
+The current coupling acts as discussed before like a chemical potential. Hence 
+\begin{equation}
+	n_S^\alpha = n_k^\alpha.
+\end{equation}
+We see immediately that this is the same as $n_S^\alpha$ for the linear combination of operators.
+
+\section{Charges and Rates in the Standard Model}
+So far we have derived the transport equation of a general set of charges $q_i$ and interactions $O_\alpha$. In this section we will specify these quantities for the standard model, which we will use later to compute the baryon asymmetry.
+We take these from \cite[sec. 3.1]{Domcke:2020kcp_Generic_Couplings}
+
+\begin{table}[H]
+	\label{tab:charges_of_the_sm}
+	\title{Charges of the Standard Model}
+	\begin{center}
+		\begin{tabular}{lll}
+			Name & Symbol & dof. $g_i$ \\ \hline \hline \hline
+			left-handed first lepton generation lepton (electron) doublet & $L_1 = \begin{pmatrix}
+				\nu^e_L \\
+				e_L
+			\end{pmatrix}$ &  \\
+			left-handed second lepton generation (muon) doublet & $L_2 = \begin{pmatrix}
+				\nu^\mu_L \\
+				\mu_L
+			\end{pmatrix}$ & \\
+			left-handed third lepton generation (tau) doublet & $L_3 = \begin{pmatrix}
+				\nu^\tau_L \\
+				\tau_L
+			\end{pmatrix}$ & \\
+			\hline
+			right-handed first lepton generation (electron) singlet & $R_1 = R_e$ & \\
+			right-handed second lepton generation (muon) singlet & $R_2 = R_\mu$ & \\
+			right-handed third lepton generation (tau) singlet & $R_3 = R_\tau$ & \\
+			\hline \hline
+			left-handed first generation quarks (up, down) & $Q_1 = \begin{pmatrix}
+				u_L \\
+				d_L
+			\end{pmatrix} $ & \\
+			left-handed second generation quarks (charm, strange) & $Q_1 = \begin{pmatrix}
+				c_L \\
+				s_L
+			\end{pmatrix} $ & \\
+		    left-handed third generation quarks (top, bottom) & $Q_1 = \begin{pmatrix}
+		    	t_L \\
+		    	b_L
+		    \end{pmatrix} $ & \\
+	    	\hline
+	    	right-handed first generation up-type quark (up) & $u_R$ & \\
+	    	right-handed second generation up-type quark (charm) & $c_R$ & \\
+	    	right-handed third generation up-type quark (top) & $t_R$ & \\
+	    	right-handed first generation down-type quark (down) & $d_R$ & \\
+	    	right-handed second generation down-type quark (strange) & $s_R$ & \\
+	    	right-handed third generation down-type quark (bottom) & $b_R$ & \\
+	    	\hline \hline
+	    	Higgs doublet & $H = \frac{1}{\sqrt{2}} \begin{pmatrix}
+	    		\phi_+ \\
+	    		\phi_0
+	    	\end{pmatrix}$ & \\
+    		\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+\begin{table}[H]
+	\label{tab:interactions_in_the_sm}
+	\title{Interactions in the Standard Model}
+	\begin{center}
+		\begin{tabular}{llll}
+			Name & Symbol & Rate & Equilibration Temperature \\
+			\hline 
+		\end{tabular}
+	\end{center}
+\end{table}
+
+\section{Lepton Number Violation from Weinberg Operator}
 
 
-% \section{Properties and Analytical Results}
 
 \chapter{Motion of the Axion Field}
 \label{sec:motion_of_the_axion_field}
