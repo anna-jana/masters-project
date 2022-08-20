@@ -39,6 +39,8 @@
 \usepackage{pgfplots}
 \usepackage{float}
 
+\newcommand{\todo}[1]{{\color{magenta}{#1}}}
+
 \begin{document}
 	
 \ThesisAuthor{Anna-Jana}{Riess}
@@ -628,7 +630,6 @@ We take these from \cite[sec. 3.1]{Domcke:2020kcp_Generic_Couplings}
 
 First let us summaries all charges present in the standard model: 
 \begin{table}[H]
-	\label{tab:charges_of_the_sm}
 	\begin{center}
 		\begin{tabular}{lll}
 			Name & Symbol & dof. $g_i$ \\ \hline \hline \hline
@@ -676,11 +677,11 @@ First let us summaries all charges present in the standard model:
     		\hline
 		\end{tabular}
 	\end{center}
+	\label{tab:charges_of_the_sm}
 \end{table}
 These charges can change by sphalerons and Yukawa couplings. As in ref. \cite{Domcke:2020kcp_Generic_Couplings}, we neglect flavor changing Yukawa interactions.
 The processes are:
 \begin{table}[H]
-	\label{tab:interactions_in_the_sm}
 	\begin{center}
 		\begin{tabular}{llll}
 			Name & Symbol & Rate & Charge Vector \\
@@ -692,6 +693,7 @@ The processes are:
 			Quark Yukawa down-type & $Y_d^{ff}$ & $\Gamma_{Y_d^{ff}} = \kappa_{Y_d}(\alpha_2, \alpha_3) y_{d_f}^2 T^4$ & $ \sum_i n_i^{Y_d^{ff}} \mu_i = - \mu_{d_f} + \mu_{Q_f} - \mu_H$ \\
 		\end{tabular}
 	\end{center}
+	\label{tab:interactions_in_the_sm}
 \end{table}
 where the parameters in the reaction rates are given by:
 \begin{table}[H]
@@ -1219,6 +1221,11 @@ If at this point the slow-roll condition is fulfilled then the field will be fro
 The mass of the canonical field $\phi$ in this epoch is suppressed by the small parameter $\epsilon$. Therefore this happens at later times and the relic density is not suppressed. 
 Furthermore this factor also appears then in the coupling of the canonical to standard model particles and suppresses the decay rate even more (compared to the suppression by the small mass). This makes the clockwork a stable particle and a valid dark matter candidate.
 
+\begin{figure}[H]
+	\label{fig:evolution_of_clockwork_axion_field}
+	\includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_field_evolution.pdf}
+	\caption{Plot of the evolution of the clockwork axion field as a function of time on the x-axis in units for the inverse mass scale $1/M$ on a log-scale. The canonical field is shown on the y-axis in units of the decay constant $f$. The different epochs of the field evolution described in the main text are annotated and the final epoch of oscillations are shown as an inset plot.}
+\end{figure}
 Let us summaries the findings of this section.
 First the clockwork axion is frozen by Hubble friction. At $\theta = O(1)$ field values, the mass of the field is quite hight and fast-roll begins at $H = \Lambda^2 / f$. In this epoch the temperatures are high enough such that the clockwork axion field sources spontaneous baryogenesis.
 It then enters a regime of the potential that it approximately exponential. 
@@ -1226,12 +1233,6 @@ Here it follows a tracking attractor and the relic density is conserved.
 Finally the potential is harmonic again at low field values and tracking stops.
 Here the mass it suppressed and the particle stable.
 The field starts to oscillate and behaves like matter. Hence it is a dark matter component. A numerical simulation of the full equation of motion and the different epochs is shown in fig. \ref{fig:evolution_of_clockwork_axion_field}.
-
-\begin{figure}[H]
-	\label{fig:evolution_of_clockwork_axion_field}
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_field_evolution.pdf}
-    \caption{Plot of the evolution of the clockwork axion field as a function of time on the x-axis in units for the inverse mass scale $1/M$ on a log-scale. The canonical field is shown on the y-axis in units of the decay constant $f$. The different epochs of the field evolution described in the main text are annotated and the final epoch of oscillations are shown as an inset plot.}
-\end{figure}
 
 
 \section{Multi Axion Systems}
@@ -1301,6 +1302,9 @@ We solve the equations from the previous section one after the other as there ar
 This allows the numerical solvers to take time-steps appropriate to the equation, not being forced to take the smallest required time-steps for all equations. 
 For this we utilize the feature of continuous output from ODE solvers. The solver returns a callable object, which behaves as the function which solves the given ODE. The solver has more information than just a time-series of solution, as it also knows about the derivatives from the ODE.
 
+Furthermore is program is written such a way that one can implement new axion models and couplings as classes.
+However the charges simulated and the background cosmology are hard-coded. 
+
 \section{Numerical Methods}
 The this system of equations is implemented in the python programming language using the numpy, scipy and matplotlib libraries.
 The following solvers from the solve\_ivp function from scipy.integrate are used for the different equations:
@@ -1319,46 +1323,89 @@ These solvers were selected by try and error regarding performance and stability
 
 \section{Convergence Checks}
 We start by solving all equations up until the time where $T \sim 10^{12} \, \mathrm{GeV}$.
-Then we check how large the relative change in the $B - L$ charge over this interval is. If its below $10^{-3}$  we stop the iterations. Otherwise we proceed to integrate about 10 unit of time in axion units. This allows us to obtain results within at least 3 digits of significance as is required to be compared to the observed value.
+Then we check how large the relative change in the $B - L$ charge over this interval is. If its below $10^{-3}$  we stop the iteration. Otherwise we proceed to integrate about 10 units of time in axion units. This allows us to obtain results within at least 3 digits of significance as is required to be compared to the observed value.
 
 The same kind of procedure is applied to the relic density for the clockwork axion and the dilution factor for the generic ALP model.
 
 \chapter{Results}
 \label{sec:results}
+In this chapter we finally present our results for the asymmetry computation in turn for the generic ALP realignment model, the clockwork model and the multi-axion model.
+Each section considers different couplings and the possible parameter-space of the model. 
 
 \section{ALP Realignment}
-
-\begin{figure}[h]
+The generic ALP realignment model has the following parameters:
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{ll}
+			Name & Symbol \\
+			\hline
+			Hubble parameter at the end of inflation & $H_\mathrm{inf}$ \\
+			Inflaton decay rate  & $\Gamma_\mathrm{inf}$ \\
+			Axion mass & $m_a$ \\
+			Axion decay constant & $f_a$ \\
+			Initial misalignment angle & $\theta_i$ \\
+		\end{tabular}
+	\end{center}
+\end{table}
+We fix the Hubble parameter at the end of inflation to the value of $H_\mathrm{inf} = 2.51 \times 10^{12} \, \mathrm{GeV}$ and the initial misalignment angle to $\theta_i = 1$ for simplicity.
+The inflaton decay rate $\Gamma_\mathrm{inf}$ has to less than the Hubble parameter at the end of inflation $H_\mathrm{inf}$ as the inflaton is only allowed to start to decay after the end of inflation. Otherwise the model is inconsistent. Also the axion mass has to be less than the Hubble parameter at the end of inflation $H_\mathrm{inf}$ because otherwise the axion would start to oscillate before the end of inflation. While this would be possible in principle, we can't simply set the initial condition to the $\dot{\theta} = 0$ and $\theta = \theta_i = 1$ at the end of inflation here. Hence we exclude this case.
+Finally also fix the axion decay constant to $f_a = 10^{13} \, \mathrm{GeV}$ for now.
+The resulting asymmetry is shown in fig. \ref{fig:alp_paramspace}. The correct asymmetry is indicated by a red line. Here we see already that a large part of the parameter space allows for successful baryogenesis for all couplings, including the coupling to the strong sphaleron which is not directly connected to the $B - L$ charge. 
+In each of the three couplings considered increasing the inflaton decay rate $\Gamma_\mathrm{inf}$ and the axion mass $m_a$ at the same time also increases the resulting baryon asymmetry. This is because high inflaton decay rates lead to higher temperatures and hence higher production rates. One has to increase the axion mass at the same time to ensure that the peak of the axion derivative $\dot{\theta}$ (which sources the asymmetry production) aligns with the high temperature phase as this phase happens earlier as the inflaton decay rate is increased. One can also see that at sufficiently high inflaton decay rates and low axion masses, the asymmetry becomes independent of the inflaton decay rate. This is because in this part of the parameter space, the asymmetry production happens after the decay of the inflaton in the ration dominated era. Here the Hubble parameter is given by the temperature and hence also the time when the axion enters fast-roll. Therefore the asymmetry is independent of the inflaton decay rate.
+The processes of asymmetry production are shown in figs. \ref{fig:alp_explorations_plot_aFF},  \ref{fig:alp_explorations_plot_aJ} and \ref{fig:alp_explorations_plot_aGG}.
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_paramspace.pdf}
-    \caption{Contour plots of the obtained baryon asymmetry  for the ALP model (shown as the decimal logarithm relative to the observed asymmetry) for the different couplings ($a\tilde{F}F)$ on the left, $a\partial J$ in the middle and $a \tilde{G} G$ on the right as a function of the axion mass $m_a$ in GeV on the x-axis on a log-scale and of the inflaton decay rate in GeV on the y-axis on a log-scale (shown on the left-most plot on the left-hand-side). The reheating temperature $T_\mathrm{RH}$ corresponding to the inflaton decay rate is shown on the right most plot on the right hand side in GeV also on a log-scale. A red line indicates the points where the observed asymmetry is reached. The values of the axion decay constant $f_a$ and Hubble scale a the end of inflation $H_\mathrm{inf}$ are given in the title. All contour plots share the same colorbar, shown below the plots.}
+    \caption{Contour plots of the obtained baryon asymmetry  for the ALP model (shown as the decimal logarithm relative to the observed asymmetry) for the different couplings ($a\tilde{F}F$ on the left, $a\partial J$ in the middle and $a \tilde{G} G$ on the right) as a function of the axion mass $m_a$ in GeV on the x-axis on a log-scale and of the inflaton decay rate in GeV on the y-axis on a log-scale (shown on the left-most plot on the left-hand-side). The reheating temperature $T_\mathrm{RH}$ corresponding to the inflaton decay rate is shown on the right most plot on the right hand side in GeV also on a log-scale. A red line indicates the points where the observed asymmetry is reached. The values of the axion decay constant $f_a$ and Hubble scale a the end of inflation $H_\mathrm{inf}$ are given in the title. All contour plots share the same colorbar, shown below the plots.}
+    \label{fig:alp_paramspace}
 \end{figure}
-
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_correct_f_a_curves.pdf}
-    \caption{The curves where the observed baryon asymmetry is reached for the ALP model for different values of the axion decay constant $f_a$ for the different couplings ($a \tilde{F} F$ on the left, $a \partial J$ in the middle and $a \tilde{G} G$ on the right). The curves are shown in the inflaton decay rate $\Gamma_\mathrm{inf}$ (shown on the y-axis on a log-scale in GeV on the left-most plot) and axion mass $m_a$ (shown on the x-axis on a log-scale in GeV). Also the reheating temperature $T_{\mathrm{RH}}$ in GeV on a log-scale corresponding to the inflaton decay rate is shown on the right-most plot.
-    Each curve is colored corresponding to the value of the axion decay rate used on a log-scale. The colorbar showing the corresponding $f_a$ value is displayed on the bottom.}
+Notice that in the model, the axion decay constant only appears in the dilution factor by the axion decay.
+This is because in this model the equation of motion for the axion is linear and hence the decay constant factors out. In the decay of the axion the decay constant appears in the decay rate into SU(2) bosons.
+Because of the structure of the parameter space higher dilution factors i.e. higher values of the axion decay constant $f_a$ push the curve of successful baryogensis to higher values of the axion mass $m_a$ and the inflaton decay rate $\Gamma_\mathrm{inf}$. This is shown in fig. \ref{fig:apl_correct_f_a_curves}.
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_correct_f_a_curves.pdf}
+	\caption{The curves where the observed baryon asymmetry is reached for the ALP model for different values of the axion decay constant $f_a$ for the different couplings ($a \tilde{F} F$ on the left, $a \partial J$ in the middle and $a \tilde{G} G$ on the right). The curves are shown in the inflaton decay rate $\Gamma_\mathrm{inf}$ (shown on the y-axis on a log-scale in GeV on the left-most plot) and axion mass $m_a$ (shown on the x-axis on a log-scale in GeV). Also the reheating temperature $T_{\mathrm{RH}}$ in GeV on a log-scale corresponding to the inflaton decay rate is shown on the right-most plot.
+		Each curve is colored corresponding to the value of the axion decay rate used on a log-scale. The colorbar showing the corresponding $f_a$ value is displayed on the bottom.}
+	\label{fig:apl_correct_f_a_curves}
 \end{figure}
-
-\begin{figure}[h]
+At a certain sufficiently low value of the axion decay constant $f_a$, the entropy dilution from the axion decay becomes inefficient i.e. the dilution factors becomes one. 
+Therefore at this value, the curve of successful baryogensis is at the lowest possible point in the $m_a, \Gamma_\mathrm{inf}$ plane. From this we obtain lower bounds on the axion mass $m_a$ and the inflaton decay rate $\Gamma_\mathrm{inf}$ for baryogenesis as
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{l|lll}
+			& $a F \tilde{F}$ & $a \partial J$ & $a G \tilde{G}$ \\
+			\hline
+			$m_a \ge$ & & & \\
+			$\Gamma_\mathrm{inf} \ge$ & & & \\ 
+		\end{tabular}
+	\end{center}
+\end{table}
+The lowest values of the axion mass $m_a$ and the inflaton decay rate $\Gamma_\mathrm{inf}$ on the curve of successful baryogenesis for different values of the axion decay constant $f_a$ are shown in fig. \ref{fig:alp_mimimal_possible_m_a_and_Gamma_inf_vals}.
+\begin{figure}[H]
+	\begin{center}
 	\includegraphics[width=0.6\linewidth]{../../transport_eq_in_time/plots/alp_minimal_possible_m_a_and_Gamma_inf_vals.pdf}
 	\caption{The minimal values of the axion mass $m_a$ (solid lines) and the inflaton decay rate  $\Gamma_\mathrm{inf}$ (dashed lines) in GeV where the observed baryon asymmetry is reached as a function of the axion decay constant $f_a$ in GeV which is shown on the x-axis in units of GeV and on a log-scale. The different couplings are shown in different colors ($a F \tilde{F}$ in blue, $a \partial J$ in orange, $a G \tilde{G}$ in green).}
+	\end{center}
+	\label{fig:alp_mimimal_possible_m_a_and_Gamma_inf_vals}
 \end{figure}
 
-\begin{figure}[h]
+Furthermore we analyze the dependence of the asymmetry on the Hubble value at the end of inflation $H_\mathrm{inf}$ and the initial misalignment angle $\theta_i$. 
+TODO TODO
+
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_exploration_plot0.pdf}
     \caption{The contour plot in the middle row shows the obtained baryon asymmetry for the ALP model for the $a \tilde{F} F$ coupling with the axion mass $m_a$ in GeV on the x-axis on a log-scale and the inflaton decay rate $\Gamma_\mathrm{inf}$ in GeV on the y-axis on a log-scale. The asymmetry is shown as the decimal logarithm relative to the observed asymmetry. A red line indicates where the observed asymmetry is reached. On the top and bottom rows the time evolution for a few example points in the parameter space of the contour plot are shown. The parameter values for of the examples are indicated by arrows into the contour plot. Each time evolution plot consists of a plot of the value of the chemical potential of the B-L charge on a log-scale as a function of time (black line). While on the bottom a plot of the reaction rate for the creation of B-L charges (blue line, log-scale, axis on the left) and of the source from the axion (orange line, linear-scale, axis on the right) is shown.
     	Both the top and the bottom plots use the same time-axis on a log-scale. On the bottom the time is shown in units of the inverse inflaton decay rate $1/\Gamma_\mathrm{inf}$ and on the top in units of the inverse axion mass $1/m_a$.}
     \label{fig:alp_explorations_plot_aFF}
 \end{figure}
-
-\begin{figure}[h]
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_exploration_plot1.pdf}
     \caption{Same as fig. \ref{fig:alp_explorations_plot_aFF} but for the $a \partial J$ coupling.}
+    \label{fig:alp_explorations_plot_aJ}
 \end{figure}
-
-\begin{figure}[h]
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_exploration_plot2.pdf}
     \caption{Same as fig. \ref{fig:alp_explorations_plot_aFF} but for the $a \tilde{G} G$ coupling.}
+    \label{fig:alp_explorations_plot_aGG}
 \end{figure}
 
 \section{Clockwork Theory Axions}
