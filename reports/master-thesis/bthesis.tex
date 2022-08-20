@@ -79,7 +79,7 @@ The basis idea behind this mechanism is that a classical cosmological field evol
 This time-derivative then biases some reactions in such a way that an asymmetry is produced.
 We will investiage the quantitative outcome of this process for different axion models for the cosmological field.
 Axions are group of proposed particles which extend the standard model. 
-They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are this wide class of particle models which are based on some kind of pseudo-scalar.
+They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are this wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar whos shift-symmetry is often broken by non-perturbatativ effects like instantons.
 For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation ????? TODO: reference?????
 Sometimes axions only refer to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to thesis kinds of standard model extension always as axions.
 Also we consider different coupling of these axion fields to standard model particles. For this, this thesis is based on the work of the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings}, who developed a formalism using a transport equation in linear response theory to compute the asymmetry for a number of couplings.
@@ -90,7 +90,6 @@ The next two chapter are technical derivations required for our later computatio
 After this we briefly comment on the implementation of the numerical model in chapter \ref{sec:implementation_of_the_numerical_simulations}.
 Finally we present our results for each model in chapter \ref{sec:results}
 and finish by summarizing the thesis and our results and looking at further possible directions of research. 
-
 
 \chapter{Fundamentals}
 \label{sec:fundermentals}
@@ -1310,17 +1309,19 @@ The following solvers from the solve\_ivp function from scipy.integrate are used
 		\begin{tabular}{lll}
 			Equation & Solver & Tolerances \\
 			\hline 
-			 Background & RK45 & \\
-			 Axion & Radau & \\
-			 Transport Eq. & BDF & \\
+			 Background & RK45 & $\mathrm{rtol} = 10^{-6}$ \\
+			 Axion & Radau & $\mathrm{rtol} = 10^{-10}$ \\
+			 Transport Eq. & BDF & $\mathrm{rtol} = 10^{-10}$ \\
 		\end{tabular}
 	\end{center}
 \end{table}
 These solvers were selected by try and error regarding performance and stability. Note that the axion and the transport eq. exhibit stiff behavior, hence the choice of implicit methods while the background equations behave as power-laws for the different parts of the background evolution hence a (faster) explicit method is sufficient.
 
 \section{Convergence Checks}
-We start by solving 
+We start by solving all equations up until the time where $T \sim 10^{12} \, \mathrm{GeV}$.
+Then we check how large the relative change in the $B - L$ charge over this interval is. If its below $10^{-3}$  we stop the iterations. Otherwise we proceed to integrate about 10 unit of time in axion units. This allows us to obtain results within at least 3 digits of significance as is required to be compared to the observed value.
 
+The same kind of procedure is applied to the relic density for the clockwork axion and the dilution factor for the generic ALP model.
 
 \chapter{Results}
 \label{sec:results}
