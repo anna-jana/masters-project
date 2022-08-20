@@ -42,7 +42,7 @@
 \newcommand{\todo}[1]{{\color{magenta}{#1}}}
 
 \begin{document}
-	
+
 \ThesisAuthor{Anna-Jana}{Riess}
 \PlaceOfBirth{Hamburg}
 \ThesisTitle{Spontane Axion-Leptogenese mit Generischen Kopplungen in ALP Realignment, Clockwork Axion und Multi Axion Modellen}{Spontaneous Axion-Leptogenesis with Generic Couplings in ALP Realignment, Clockwork Axion and Multi Axion Models}
@@ -55,7 +55,7 @@
 \maketitle
 \cleardoublepage
 \begin{otherlanguage}{english} % keep this for the hole thesis
-	
+
 \begin{abstract}
   Here the key results of the thesis may be presented in about
   half a page.
@@ -67,7 +67,7 @@
 \onehalfspacing
 \tableofcontents
 
-\mainmatter 
+\mainmatter
 
 \chapter{Introduction}
 
@@ -77,12 +77,12 @@ This asymmetry is necessary for more complicated structures in universe to exits
 On a fundamental level the two are almost mirror images of each other. The standard model does only very weakly distinguish between the two.
 Hence physics beyond the standard model is needed to explain the asymmetry.
 The mechanism we consider in this thesis is called \emph{spontaneous baryogenesis}, first proposed by Andreq Cohen and David Kapla in 1987 \cite{COHEN1987251} \cite{COHEN1988913}.
-The basis idea behind this mechanism is that a classical cosmological field evolves and hence was a non-vanishing time-derivative. 
+The basis idea behind this mechanism is that a classical cosmological field evolves and hence was a non-vanishing time-derivative.
 This time-derivative then biases some reactions in such a way that an asymmetry is produced.
 We will investiage the quantitative outcome of this process for different axion models for the cosmological field.
-Axions are group of proposed particles which extend the standard model. 
+Axions are group of proposed particles which extend the standard model.
 They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are this wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar whos shift-symmetry is often broken by non-perturbatativ effects like instantons.
-For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation ????? TODO: reference?????
+For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation \todo{????? TODO: reference?????}
 Sometimes axions only refer to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to thesis kinds of standard model extension always as axions.
 Also we consider different coupling of these axion fields to standard model particles. For this, this thesis is based on the work of the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings}, who developed a formalism using a transport equation in linear response theory to compute the asymmetry for a number of couplings.
 Let us now go over the structure of this thesis.
@@ -91,7 +91,7 @@ Then in chapter \ref{sec:spontaneous_baryogenesis} we talk about how spontanous 
 The next two chapter are technical derivations required for our later computations. First the transport equation for charges in chapter \ref{sec:transport_equation} and then the axion field models in chapter \ref{sec:motion_of_the_axion_field} are derived.
 After this we briefly comment on the implementation of the numerical model in chapter \ref{sec:implementation_of_the_numerical_simulations}.
 Finally we present our results for each model in chapter \ref{sec:results}
-and finish by summarizing the thesis and our results and looking at further possible directions of research. 
+and finish by summarizing the thesis and our results and looking at further possible directions of research.
 
 \chapter{Fundamentals}
 \label{sec:fundermentals}
@@ -103,7 +103,7 @@ A good reference and the source for this section is \cite{the_early_universe_kol
 \subsection{Dynamics of the Expansion of the Universe}
 \label{sec:dynamics_of_the_examsion_of_the_universe}
 The dynamics of the expanding universe is governed by Einsteins theory of general relativity. The Einstein field-equation connects geometry i.e. the curvature with the content i.e. the energy-momentum tensor $T$ of the universe \footnote{
-TODO: introduce all quantities????
+\todo{TODO: introduce all quantities????}
 }:
 \begin{equation}
 	R_{\mu \nu} - \frac{1}{2} R g_{\mu \nu} = 8 \pi G T_{\mu \nu}.
@@ -239,7 +239,7 @@ and standard model radiation:
 	\rho_\mathrm{inf} &= \frac{1}{2} \dot{\phi}^2 + \frac{1}{2} m_\mathrm{inf}^2 \phi^2 \\
 	\rho &= \rho_\mathrm{inf} + \rho_\mathrm{rad}.
 \end{align}
-TODO: describe initial condition for reheating
+\todo{TODO: describe initial condition for reheating}
 \begin{align}
 	\rho_\mathrm{inf}(t_\mathrm{inf}) &= 3 M_\mathrm{pl}^2 H_\mathrm{inf}^2 \nonumber \\
 	\rho_\mathrm{rad}(t_\mathrm{inf}) &= 0
@@ -333,8 +333,8 @@ If the field configurations at $t_i$ and $_f$ are so called pure gauges i.e. con
 \end{equation}
 then the Chern-Simons number is an integer.
 Hence one can not deform such vacuum configurations into each other without leaving the set of vacuum configurations.
-The change between them is hence a quantum tunneling process called an instanton \footnote{TODO: explain formal defintion of instanton}. See figure \ref{fig:sphaleron_cartoon} for an illustration.
-Its rate is too low to have any significant effect, although this changes once we consider thermal processes i.e. so called sphalerons \footnote{TODO: explain sphaleron configurations}.
+The change between them is hence a quantum tunneling process called an instanton \footnote{\todo{TODO: explain formal defintion of instanton}}. See figure \ref{fig:sphaleron_cartoon} for an illustration.
+Its rate is too low to have any significant effect, although this changes once we consider thermal processes i.e. so called sphalerons \footnote{\todo{TODO: explain sphaleron configurations}}.
 Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vaccua vanishes above the phase transition. Here the transition rate is given by
 \begin{align}
 	\Gamma_{\mathrm{sph}} &= (0.21 \pm 0.01) \left(\frac{N_c g^2 T}{m_D^2} \right) \left(\ln \left(\frac{m_D}{\gamma} \right) + 3.0410 \right) \frac{N_c^2 - 1}{N_c^2} (N_c \sqrt{2 \pi g})^5 T^4 \\
@@ -414,7 +414,7 @@ Hence the current equation for the baryon current reads
 The mechanism discussed so far would work by coupling the scalar field to the operator $O_2$, leading to a direct coupling of the scalar field to the baryon current. But in this example we couple it to $O_1$.
 This coupling biases the value of $Q_2 - Q_1$ away from the previous vanishing equilibrium value.
 At the same time, the the operator $O_2$ will lead to a relaxation of $Q_1$ toward its vanishing equilibrium value. In doing so it will violate also $B = Q_1 + Q_2$ as it doesn't change $Q_2$. Once this reaction freezes out, $B$ is conserved. Then $O_2$ will lead $Q_2 - Q_1$ to obtain its new vanishing equilibrium value with a non-vanishing $B$.
-A cartoon of this process is shown in fig. ????? TODO
+\todo{A cartoon of this process is shown in fig. ????? TODO}
 
 Why is this process called \emph{spontaneous} baryogenesis?
 This is because the amount and also if baryons or antibaryons are generated depends on the initial value of the scalar field.
@@ -427,7 +427,7 @@ then the Boltzmann equation reads:
 \begin{equation}
 	\dot{n}_L + 3 H n_L = - \Gamma_L (n_L - n_L^\mathrm{eq}),
 \end{equation}
-where $\Gamma_L$ is the rate for the Weinberg interaction. 
+where $\Gamma_L$ is the rate for the Weinberg interaction.
 This equation was used in ref. \cite{Kusenko_2015_Axion_Leptogenesis}.
 However we would like to have a complete set of equations considering all standard model charges. The equation above assumes that these charges are all in equilibrium.
 Moreover this approach has the problem that it depends on the field basis.
@@ -531,7 +531,7 @@ Plugging this back into the expression for the expectation value yields:
 	\langle O_\alpha(t) \rangle = \sum_{j, \beta} \mu_j(t) n^\beta_j \int \frac{\mathrm{d} \omega}{2 \pi} \frac{G_{\alpha \beta}(\omega, 0)} { \omega (\omega + i \epsilon)} =  \sum_{j} \mu_j(t) n^\alpha_j \frac{G_{\alpha \alpha}(\omega, 0)}{2 \omega} \Big|_{w = 0}.
 	\label{eq:chemical_potentials_linear_response}
 \end{equation}
-Here we have used that 
+Here we have used that
 \begin{equation}
 	\int_{-\infty}^{+\infty} \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega^2} G_{\alpha \beta}(\omega, 0) = \frac{1}{2} \int_l \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega} \frac{G_{\alpha \beta}(\omega, 0)}{\omega} = \frac{G_{\alpha \beta}(\omega, 0)}{2 \omega} \Big|_{\omega = 0} \underbrace{\operatorname{Res}_{\omega = 0} \frac{1}{\omega}}_{= 1},
 \end{equation}
@@ -556,7 +556,7 @@ around time $t$ as
 This yields:
 \begin{align}
 	 &\langle O_\alpha(t) \rangle_{GC, a \ne 0} - \langle O_\alpha  \rangle_{GC, a = 0} = - i \frac{a_0}{f_a} \int_{-\infty}^t \mathrm{d}^4 x' G_{\alpha \beta}(x') - i \frac{\dot{a}}{f_a} \int_{-\infty}^t \mathrm{d}^4 x' G_{\alpha \beta}(x') (t - t')
-	 \nonumber \\ 
+	 \nonumber \\
 	 &= - \frac{a_0}{f_a} \int_{-\infty}^t \mathrm{d} t' \int \mathrm{d} \omega \frac{e^{i \omega (t - t') - i p x'}}{(2\pi)^4} G_{\alpha \beta}(\omega, 0)
 	 -i \frac{\dot{a}_0}{f_a} \int_{-\infty}^t \mathrm{d} t' \underbrace{\int \frac{\mathrm{d} \omega}{2 \pi} G_{\alpha \beta}(\omega, 0) \underbrace{(t - t') e^{i \omega (t - t')}}_{= -i \partial_\omega e^{i \omega (t - t')}}}_{= - \int \mathrm{d} \omega \partial_\omega G_{\alpha \beta}(\omega, 0) e^{i \omega (t - t')}}
 	 \nonumber \\
@@ -568,16 +568,16 @@ As ref. \cite{Domcke:2020kcp_Generic_Couplings} we neglect the first term.
 
 \subsection{Putting Everything Together}
 Finally we can put all of these things together.
-For this we define the rate for the interaction $O_\alpha$ as 
+For this we define the rate for the interaction $O_\alpha$ as
 \begin{equation}
 	\Gamma_\alpha \equiv - \frac{T G_\alpha(\omega, 0)}{2\omega} \Big|_{\omega = 0}.
-\end{equation} 
+\end{equation}
 When we substitute the expectation value for the perturbation from chemical potentials into the expectation value for the perturbation from the axion field, find that
 \begin{equation}
 	\langle O_\alpha(x) \rangle_{GC, a \ne 0} = - \Gamma_\alpha \left[ \sum_j n_j^\alpha \frac{\mu_j}{T} + n_S^\alpha \frac{\dot{a}}{f_a T} \right].
 \end{equation}
-Here the source-vector $n_S^\alpha$ is one if the axion couples to operator $O_\alpha$ and zero if not. 
-Inserting this into the expectation value of the current equation \eqref{eq:current_eq_expectation_value} yields 
+Here the source-vector $n_S^\alpha$ is one if the axion couples to operator $O_\alpha$ and zero if not.
+Inserting this into the expectation value of the current equation \eqref{eq:current_eq_expectation_value} yields
 \begin{equation}
 	\label{eq:transport_eq_1}
 	\dot{q}_i = - \sum_\alpha n^\alpha_i \Gamma_\alpha \left[ \sum_j n_j^\alpha \frac{\mu_j}{T} + n_S^\alpha \frac{\dot{a}}{f_a T} \right].
@@ -608,7 +608,7 @@ Using this and dividing by $g_i / 6 T^3$ yields our final form of the transport.
 In section \ref{sec:sbg} we claimed that the transport equation will give us a description for the dynamics of charges independent of the field basis.
 Let's prove that this is actually the case.
 For this we follow \cite[sec. 2.2 ]{Domcke:2020kcp_Generic_Couplings}.
-We consider the source term of eq. \eqref{eq:transport_equation} 
+We consider the source term of eq. \eqref{eq:transport_equation}
 \begin{equation}
 	S_i := \frac{1}{g_i} \frac{\dot{a}}{f_a T} \sum_\alpha \frac{\Gamma_\alpha}{T^3 / 6} n_i^\alpha n_S^\alpha
 \end{equation}
@@ -616,7 +616,7 @@ We start with a direct coupling to a current $J_k$ and rotated the fields such t
 \begin{equation}
 	- \frac{a}{f} \partial_\mu J^\mu_k \to - \frac{a}{f} \sum_\beta n_k^\beta O_\beta.
 \end{equation}
-The current coupling acts as discussed before like a chemical potential. Hence 
+The current coupling acts as discussed before like a chemical potential. Hence
 \begin{equation}
 	n_S^\alpha = n_k^\alpha.
 \end{equation}
@@ -628,7 +628,7 @@ We see immediately that this is the same as $n_S^\alpha$ for the linear combinat
 So far we have derived the transport equation of a general set of charges $q_i$ and interactions $O_\alpha$. In this section we will specify these quantities for the standard model, which we will use later to compute the baryon asymmetry.
 We take these from \cite[sec. 3.1]{Domcke:2020kcp_Generic_Couplings}
 
-First let us summaries all charges present in the standard model: 
+First let us summaries all charges present in the standard model:
 \begin{table}[H]
 	\begin{center}
 		\begin{tabular}{lll}
@@ -712,7 +712,7 @@ where the parameters in the reaction rates are given by:
 		\end{tabular}
 	\end{center}
 \end{table}
-Finally we can simplify the charges for the hight temperature regime of $T > 10^{12} \, \mathrm{GeV}$. Here first and second generation leptons and quarks are indistinguishable as their yukawa couplings are small compared to the temperature 
+Finally we can simplify the charges for the hight temperature regime of $T > 10^{12} \, \mathrm{GeV}$. Here first and second generation leptons and quarks are indistinguishable as their yukawa couplings are small compared to the temperature
 \begin{table}[H]
 	\begin{center}
 		\begin{tabular}{lll}
@@ -827,11 +827,11 @@ Solving for $c$ and using that
 \begin{equation}
 	\frac{\dot{H}}{H^2} = - \frac{3(w + 1)}{2}
 \end{equation}
-for a universe dominated by a fluid by an equation of state $w$ (see sec. \ref{sec:dynamics_of_the_examsion_of_the_universe}), we find 
+for a universe dominated by a fluid by an equation of state $w$ (see sec. \ref{sec:dynamics_of_the_examsion_of_the_universe}), we find
 \begin{equation}
 	c = 3 +\frac{3(w + 1)}{2} - \frac{V''}{c H^2}.
 \end{equation}
-This result shows that $c$ is indeed a constant as along as 
+This result shows that $c$ is indeed a constant as along as
 \begin{equation}
 	\label{eq:slow_roll_condition}
 	\left| \frac{V''}{c H^2} \right| \ll 1
@@ -861,7 +861,7 @@ where we used the abbreviations $c = \cos(m_a t + \delta)$ and $s = \sin(m_a t +
 Canceling the $m_a^2$ terms and dividing by $A m_a^2$ leads to
 \begin{equation}
 	\frac{\ddot{A}}{m_a^2 A} c - \frac{\dot{A}}{m_a A} 2 s + \frac{\dot{A}}{m_a} \frac{H}{m_a} 3 c - \frac{H}{m_a} 3 s = 0.
-\end{equation} 
+\end{equation}
 Dropping all quadratic terms in $\epsilon$ yields:
 \begin{equation}
 	 - 2 m_a \dot{A} s - 3 H m_a A s = 0 \Rightarrow \frac{\dot{A}}{A} = - \frac{3}{2} H = - \frac{3}{2} \frac{\dot{a}}{a}.
@@ -875,7 +875,7 @@ A tracking solution is a attractor solution to the equation of motion of a scala
 \begin{equation}
 	w_\phi = \frac{P}{\rho} = \frac{\frac{1}{2} \dot{\phi}^2 - V(\phi)}{\frac{1}{2} \dot{\phi}^2 + V(\phi)}.
 \end{equation}
-Hence a tracking solution should also have a constant 
+Hence a tracking solution should also have a constant
 \begin{equation}
 	x = \frac{\frac{1}{2} \dot{\phi}^2}{V(\phi)} = \frac{1 + w_\phi}{1 - w_\phi}.
 \end{equation}
@@ -885,7 +885,7 @@ We can write a derivative of x as
 	\frac{1}{6} \frac{\mathrm{d} \log x}{\mathrm{d} \log a}
 	&= \frac{1}{6} \frac{1}{H} \frac{1}{x} \frac{\mathrm{d} x}{\mathrm{d} t}
 	= \frac{1}{6 H} \frac{V}{\frac{1}{2} \dot{\phi}^2} \frac{\ddot{\phi} \dot{\phi} V(\phi) - \frac{1}{2} \dot{\phi}^2 \dot{\phi} V'(\phi)}{V^2(\phi)} \nonumber \\
-	&= - \frac{V'}{V} \frac{1}{3 H} \left( \frac{V}{\dot{\phi}} + \frac{1}{2} \dot{\phi} \right) - 1 
+	&= - \frac{V'}{V} \frac{1}{3 H} \left( \frac{V}{\dot{\phi}} + \frac{1}{2} \dot{\phi} \right) - 1
 	= \frac{1}{3 H} \sqrt{ \frac{ \frac{1}{2} \dot{\phi}^2 + V(\phi) }{1 + w_\phi}} \nonumber \\
 	&= \sqrt{ \frac{ M_\mathrm{pl} \frac{ \frac{1}{2} \dot{\phi}^2 + V(\phi) } {3 H^2 M_\mathrm{pl}^2} }{3(1 + w_\phi)}} \frac{V'}{V} - 1
 	= M_\mathrm{pl} \sqrt{ \frac{\Omega_\phi}{3(1 + w_\phi)}} \frac{V'}{V} - 1.
@@ -911,7 +911,7 @@ From this we can find the equation of state which the tracking solution has in t
 \begin{equation}
 	\label{eq:tracking_equation_of_state}
 	w_\phi \approx \frac{w - 2(\Lambda - 1)}{1 + 2(\Lambda - 1)}.
-\end{equation} 
+\end{equation}
 Furthermore it is also necessary that the solution is stable under small perturbations of $w_\phi$, $w_\phi \to w'_\phi = w_\phi + \delta w_\phi$. This requires quite a bit of algebra and we will ????????
 
 \section{ALP Realignment}
@@ -932,7 +932,7 @@ When the condition in \eqref{eq:slow_roll_condition} is saturated, the field beg
 	c \frac{m_a^2}{H^2} \ll 1 \Rightarrow H_\mathrm{osc} \equiv \sqrt{c} m_a.
 \end{equation}
 Here $H_\mathrm{osc}$ denotes the Hubble parameter where the axion field enters the fast-roll epoch and starts to oscillate (hence the name).
-This will be the main epoch for asymmetry production. 
+This will be the main epoch for asymmetry production.
 Then we field oscillates, which can described by the WKB approximation from section \ref{sec:wkb_approximation} as
 \begin{equation}
 	\phi(t) = \phi(t_0) a(t)^{-3/2} \cos(m_a t).
@@ -947,8 +947,8 @@ Since a coupling to standard model particles exits as this is required for baryo
 \begin{equation}
 	\Gamma_a = \frac{\alpha^2}{64\pi^2} \frac{m_a^3}{f_a^2},
 \end{equation}
-where $f_a$ is the axion decay constant. 
-TODO: this is wrong in the code. All couplings use the same decay rate rate namely this one!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+where $f_a$ is the axion decay constant.
+\todo{TODO: this is wrong in the code. All couplings use the same decay rate rate namely this one!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
 As the mass of this model has to be quite large in order to start moving at the required temperatures, the decay rate is also quite large.
 At the same time the axion might dominate the energy density due to is large mass. This means that we have to deal with entropy production by the decay of the axion.
 For this we use a system of equations similar to the reheating equations for the inflaton field. We equations for the axion decay read:
@@ -1000,7 +1000,7 @@ First we do a field redefinition
 After computing the derivative (same for derivatives with respect to $x^\mu$):
 \begin{align}
 	\frac{\partial \varphi}{\partial y} &= \frac{1}{2} (\varphi^2 + 1) \frac{\partial \theta}{\partial y} \nonumber \\
-	\frac{\partial \theta}{\partial y} &= 2 \frac{\frac{\partial \varphi}{\partial y}}{\varphi^2 + 1} 
+	\frac{\partial \theta}{\partial y} &= 2 \frac{\frac{\partial \varphi}{\partial y}}{\varphi^2 + 1}
 \end{align}
 and using the identity
 \begin{equation}
@@ -1009,19 +1009,19 @@ and using the identity
 we find
 \begin{align}
     S &= \int \mathrm{d}^4 x \mathrm{d} y \left[
-    \left(2 \frac{\partial_\mu \varphi}{\varphi^2 + 1} \right)^2 + 
+    \left(2 \frac{\partial_\mu \varphi}{\varphi^2 + 1} \right)^2 +
     \left(2 \frac{\partial_y \varphi}{\varphi^2 + 1} + m \frac{2 \varphi}{\varphi^2 + 1} \right) \right] \nonumber \\
     &= \int \mathrm{d}^4 x \mathrm{d} y  \frac{4}{(\varphi^2 + 1)^2}
     \left[ (\partial_\mu \varphi)^2 + (\partial_y \varphi - m \varphi)^2 \right]
 \end{align}
-We see that if we choose 
+We see that if we choose
 \begin{equation}
 	\partial_y \varphi = m \varphi
 \end{equation}
 then the mass-term in the action above vanishes and we obtain the action for a mass-less mode. Furthermore there is also no kinetic term for the $y$ coordinate anymore, hence the field is localized at $y = 0$.
 We obtain
 \begin{equation}
-	\varphi_{\mathrm{massless}} = e^{my} \phi(x) 
+	\varphi_{\mathrm{massless}} = e^{my} \phi(x)
 \end{equation}
 Inserting this back into the action and solving the $y$ integral explicitly \footnote{We are dropping constant prefactors of the action within calculations.}:
 \begin{align}
@@ -1045,7 +1045,7 @@ The Lagrangian of this field $\theta(x)$ has the form
 \begin{equation}
 	\mathcal{L} = \frac{f^2}{2} Z(\theta) (\partial_\mu \theta)^2 - V(\theta),
 \end{equation}
-where $V(\theta)$ is a potential which we have omitted so for. 
+where $V(\theta)$ is a potential which we have omitted so for.
 To understand the cosmological dynamics of this system, it is more convenient to deal with a canonical kinetic term. Therefore we will defined a canonical field $\phi(x)$. Note that this is a different field than the $\phi$ used before which was just an intermediate auxiliary variable.
 The canonical field is given by
 \begin{equation}
@@ -1055,7 +1055,7 @@ such that the Lagrangian reads
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} (\partial \phi)^2 - V(\theta(\phi)).
 \end{equation}
-Note that now the potential is modified by the conversion from the $\phi$ to the $\theta$ field. To later on understand the dynamics we have to analyze this `deformed' potential. 
+Note that now the potential is modified by the conversion from the $\phi$ to the $\theta$ field. To later on understand the dynamics we have to analyze this `deformed' potential.
 But first we compute $\phi$ explicitly:
 \begin{align}
 	\phi &= f \int_0^\theta \mathrm{d} \theta' \frac{1}{\sqrt{\coth(\pi mR) - \cos(\theta')}} \nonumber \\
@@ -1064,7 +1064,7 @@ But first we compute $\phi$ explicitly:
 	&= \frac{2 f}{\sqrt{\coth(\pi mR) - 1}} F\big(\theta / 2 \big| \frac{1}{\coth(\pi mR) - 1}\big),
 \end{align}
 where $F(x|y)$ is the incomplete Jacobi elliptic integral defined to be the solution to the last integral in this calculation.
-At this point we approximate the $\coth$ to express our equations with an explicit small parameter 
+At this point we approximate the $\coth$ to express our equations with an explicit small parameter
 \begin{equation}
 	\epsilon \equiv e^{-\pi m R},
 \end{equation}
@@ -1079,9 +1079,9 @@ Using this we find that: (2 or sqrt 3 in numerotro???)
 Let us take the inverse of this equation to obtain $\theta(\phi)$, required to calculate the potential:
 \begin{equation}
 	\theta = 2 \operatorname{am}(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2}),
-\end{equation} 
+\end{equation}
 where $\operatorname{am}$ is the Jacobi elliptic amplitude define as the inverse of $F$ in the first argument.
-Furthermore let us defined a helper function 
+Furthermore let us defined a helper function
 \begin{equation}
 	\tan(\theta / 2) = u(\phi),
 \end{equation}
@@ -1089,7 +1089,7 @@ which is given explicitly by
 \begin{equation}
 	u(\theta) = \operatorname{sc}(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2}),
 \end{equation}
-where $\operatorname{sc}$ is the Jacobi elliptic function defined as the tangent of $\operatorname{am}$. 
+where $\operatorname{sc}$ is the Jacobi elliptic function defined as the tangent of $\operatorname{am}$.
 Now we can compute the potential for $\phi$:
 \begin{align}
 	V(\phi) &= V(\theta(\phi)) = \Lambda^4 (1 - \cos (\theta(\phi)))
@@ -1124,11 +1124,11 @@ We also go thour the algebra of computing the first and second derivative of the
 \begin{equation}
 	\frac{\partial^2 u}{\partial \phi^2} = \frac{\varepsilon}{4 f^2} \left[ 2 \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-3} \operatorname{dn}(\phi/2f|1 - \varepsilon^2)^2 - (1 - \varepsilon^2) \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-1} \right] \operatorname{sn}(\phi/2f|1 - \varepsilon^2)
 \end{equation}
-The resulting potential $V(\phi)$ is plotted in figure \ref{fig:clockwork_pot_plot}. As one can see, potentials with hight values of $mR$ i.e. lower $\epsilon$ are deformed stronger as they are very steep for lager field values and flattened towards zero. 
+The resulting potential $V(\phi)$ is plotted in figure \ref{fig:clockwork_pot_plot}. As one can see, potentials with hight values of $mR$ i.e. lower $\epsilon$ are deformed stronger as they are very steep for lager field values and flattened towards zero.
 This will strongly impact the dynamics of the field, as will discussed in the next section.
-TODO: derivation of boundary potentails, derivation of feff
-put defintion of all used jacobi functions back in.
-some citations 
+\todo{TODO: derivation of boundary potentails, derivation of feff
+put defintion of all used jacobi functions back in.}
+some citations
 \begin{figure}[H]
 	\label{fig:clockwork_pot_plot}
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_potential.pdf}
@@ -1166,16 +1166,16 @@ The dynamics in this epoch is described by the slow-roll equation (see eq. \eqre
 \begin{equation}
 	\dot{\phi} \approx - \frac{1}{c H} \frac{\Lambda^4}{f^2} \phi.
 \end{equation}
-Once the Hubble parameter saturates the slow-roll condition 
+Once the Hubble parameter saturates the slow-roll condition
 \begin{equation}
 	H \approx \frac{1}{\sqrt{c}} \frac{\Lambda^2}{f},
 \end{equation}
 the field enters the fast-roll period.
-Here we find that the field reaches a time derivative of 
+Here we find that the field reaches a time derivative of
 \begin{equation}
 	\dot{\phi} \approx - \frac{1}{c} \sqrt{c} \frac{f}{\Lambda^2} \phi \frac{\Lambda^4}{f^2} \approx - \frac{\Lambda^2}{\sqrt{c}}.
 \end{equation}
-As this is the larges time derivative reached over the field-evolution, this is where is source for SBG the largest. 
+As this is the larges time derivative reached over the field-evolution, this is where is source for SBG the largest.
 Hence it is important that this happens at sufficiently high temperatures i.e. that $\Lambda^2/f$ is only slightly lower than the Hubble parameter after inflation $H_\mathrm{inf}$.
 
 Once the field value of $\theta$ falls below $\mathcal{O}(1)$ values, the deformation of the potential kicks in.
@@ -1199,16 +1199,16 @@ holds.
 In this epoch we find from eq. \eqref{eq:tracking_equation_of_state} that the equation of state of the clockwork axion fied is
 \begin{equation}
 	w_\phi = w.
-\end{equation} 
+\end{equation}
 Hence the energy density of the field tracks the dominant energy density i.e. radiation.
-Also this means that the density parameter will be approximately constant as both the energy density of the axion field and the critical density evolve with the same power-law. 
+Also this means that the density parameter will be approximately constant as both the energy density of the axion field and the critical density evolve with the same power-law.
 
 The clockwork axion field will stay on the tracking attractor as long as its potential has the exponential form.
 Once $\theta \lesssim \epsilon$ however, the wavefunction $Z$ has the form
 \begin{equation}
 	Z(\theta) \approx \frac{1}{1 + 2\epsilon^2 - 1 + \theta^2/2} \sim \epsilon^{-2}.
 \end{equation}
-and hence 
+and hence
 \begin{equation}
 	\label{eq:small_field_value_relation}
 	\phi(\theta) = f \epsilon^{-2} \theta.
@@ -1218,7 +1218,7 @@ This yields a harmomic potential which does not support the tracking solution:
 	V(\theta) \approx \Lambda^4 \frac{1}{2} \theta^2 \approx \frac{\epsilon^2 \Lambda^4}{2 f^2} \phi^2.
 \end{equation}
 If at this point the slow-roll condition is fulfilled then the field will be frozen again and starts to oscillate later otherwise it will start to oscillate immediately.
-The mass of the canonical field $\phi$ in this epoch is suppressed by the small parameter $\epsilon$. Therefore this happens at later times and the relic density is not suppressed. 
+The mass of the canonical field $\phi$ in this epoch is suppressed by the small parameter $\epsilon$. Therefore this happens at later times and the relic density is not suppressed.
 Furthermore this factor also appears then in the coupling of the canonical to standard model particles and suppresses the decay rate even more (compared to the suppression by the small mass). This makes the clockwork a stable particle and a valid dark matter candidate.
 
 \begin{figure}[H]
@@ -1228,7 +1228,7 @@ Furthermore this factor also appears then in the coupling of the canonical to st
 \end{figure}
 Let us summaries the findings of this section.
 First the clockwork axion is frozen by Hubble friction. At $\theta = O(1)$ field values, the mass of the field is quite hight and fast-roll begins at $H = \Lambda^2 / f$. In this epoch the temperatures are high enough such that the clockwork axion field sources spontaneous baryogenesis.
-It then enters a regime of the potential that it approximately exponential. 
+It then enters a regime of the potential that it approximately exponential.
 Here it follows a tracking attractor and the relic density is conserved.
 Finally the potential is harmonic again at low field values and tracking stops.
 Here the mass it suppressed and the particle stable.
@@ -1292,18 +1292,18 @@ Finally the evolution of the standard model charges is given by the transport eq
 Here we use the charges and interaction given in sec. \ref{sec:charges_and_rates_in_the_standard_model}.
 
 In order to solve these equation on a computer it is useful to de-dimensionalize them.
-This makes the numerical integration more stable as the variables involved are not too big or small and can more accurately be represented by floating point number avoiding round-off errors. 
+This makes the numerical integration more stable as the variables involved are not too big or small and can more accurately be represented by floating point number avoiding round-off errors.
 We choose $t_\mathrm{RH}$ as the time unit for the background, $1 / m_a$ as the time unit for the axion and $1 / \Gamma_\mathrm{inf}$ for the transport equation.
 Furthermore we use $\rho_{\mathrm{inf}, \mathrm{rad}} / \rho_{\mathrm{inf}, \mathrm{rad}}(t_\mathrm{RH})$ to integrate the background, $a / f_a$ to integrate the axion and the $(\mu_i / T) / (\mu_i^\mathrm{equilibrium} / T)$ to integrate the standard model charges.
 
 \section{Program Structure}
 The program is structured as follows.
 We solve the equations from the previous section one after the other as there are to a good approximation on backreactions to the previous one (e.g. there is no backreaction of the axion to the background cosmology).
-This allows the numerical solvers to take time-steps appropriate to the equation, not being forced to take the smallest required time-steps for all equations. 
+This allows the numerical solvers to take time-steps appropriate to the equation, not being forced to take the smallest required time-steps for all equations.
 For this we utilize the feature of continuous output from ODE solvers. The solver returns a callable object, which behaves as the function which solves the given ODE. The solver has more information than just a time-series of solution, as it also knows about the derivatives from the ODE.
 
 Furthermore is program is written such a way that one can implement new axion models and couplings as classes.
-However the charges simulated and the background cosmology are hard-coded. 
+However the charges simulated and the background cosmology are hard-coded.
 
 \section{Numerical Methods}
 The this system of equations is implemented in the python programming language using the numpy, scipy and matplotlib libraries.
@@ -1312,7 +1312,7 @@ The following solvers from the solve\_ivp function from scipy.integrate are used
 	\begin{center}
 		\begin{tabular}{lll}
 			Equation & Solver & Tolerances \\
-			\hline 
+			\hline
 			 Background & RK45 & $\mathrm{rtol} = 10^{-6}$ \\
 			 Axion & Radau & $\mathrm{rtol} = 10^{-10}$ \\
 			 Transport Eq. & BDF & $\mathrm{rtol} = 10^{-10}$ \\
@@ -1330,7 +1330,7 @@ The same kind of procedure is applied to the relic density for the clockwork axi
 \chapter{Results}
 \label{sec:results}
 In this chapter we finally present our results for the asymmetry computation in turn for the generic ALP realignment model, the clockwork model and the multi-axion model.
-Each section considers different couplings and the possible parameter-space of the model. 
+Each section considers different couplings and the possible parameter-space of the model.
 
 \section{ALP Realignment}
 The generic ALP realignment model has the following parameters:
@@ -1350,7 +1350,7 @@ The generic ALP realignment model has the following parameters:
 We fix the Hubble parameter at the end of inflation to the value of $H_\mathrm{inf} = 2.51 \times 10^{12} \, \mathrm{GeV}$ and the initial misalignment angle to $\theta_i = 1$ for simplicity.
 The inflaton decay rate $\Gamma_\mathrm{inf}$ has to less than the Hubble parameter at the end of inflation $H_\mathrm{inf}$ as the inflaton is only allowed to start to decay after the end of inflation. Otherwise the model is inconsistent. Also the axion mass has to be less than the Hubble parameter at the end of inflation $H_\mathrm{inf}$ because otherwise the axion would start to oscillate before the end of inflation. While this would be possible in principle, we can't simply set the initial condition to the $\dot{\theta} = 0$ and $\theta = \theta_i = 1$ at the end of inflation here. Hence we exclude this case.
 Finally also fix the axion decay constant to $f_a = 10^{13} \, \mathrm{GeV}$ for now.
-The resulting asymmetry is shown in fig. \ref{fig:alp_paramspace}. The correct asymmetry is indicated by a red line. Here we see already that a large part of the parameter space allows for successful baryogenesis for all couplings, including the coupling to the strong sphaleron which is not directly connected to the $B - L$ charge. 
+The resulting asymmetry is shown in fig. \ref{fig:alp_paramspace}. The correct asymmetry is indicated by a red line. Here we see already that a large part of the parameter space allows for successful baryogenesis for all couplings, including the coupling to the strong sphaleron which is not directly connected to the $B - L$ charge.
 In each of the three couplings considered increasing the inflaton decay rate $\Gamma_\mathrm{inf}$ and the axion mass $m_a$ at the same time also increases the resulting baryon asymmetry. This is because high inflaton decay rates lead to higher temperatures and hence higher production rates. One has to increase the axion mass at the same time to ensure that the peak of the axion derivative $\dot{\theta}$ (which sources the asymmetry production) aligns with the high temperature phase as this phase happens earlier as the inflaton decay rate is increased. One can also see that at sufficiently high inflaton decay rates and low axion masses, the asymmetry becomes independent of the inflaton decay rate. This is because in this part of the parameter space, the asymmetry production happens after the decay of the inflaton in the ration dominated era. Here the Hubble parameter is given by the temperature and hence also the time when the axion enters fast-roll. Therefore the asymmetry is independent of the inflaton decay rate.
 The processes of asymmetry production are shown in figs. \ref{fig:alp_explorations_plot_aFF},  \ref{fig:alp_explorations_plot_aJ} and \ref{fig:alp_explorations_plot_aGG}.
 \begin{figure}[H]
@@ -1367,7 +1367,7 @@ Because of the structure of the parameter space higher dilution factors i.e. hig
 		Each curve is colored corresponding to the value of the axion decay rate used on a log-scale. The colorbar showing the corresponding $f_a$ value is displayed on the bottom.}
 	\label{fig:apl_correct_f_a_curves}
 \end{figure}
-At a certain sufficiently low value of the axion decay constant $f_a$, the entropy dilution from the axion decay becomes inefficient i.e. the dilution factors becomes one. 
+At a certain sufficiently low value of the axion decay constant $f_a$, the entropy dilution from the axion decay becomes inefficient i.e. the dilution factors becomes one.
 Therefore at this value, the curve of successful baryogensis is at the lowest possible point in the $m_a, \Gamma_\mathrm{inf}$ plane. From this we obtain lower bounds on the axion mass $m_a$ and the inflaton decay rate $\Gamma_\mathrm{inf}$ for baryogenesis as
 \begin{table}[H]
 	\begin{center}
@@ -1375,7 +1375,7 @@ Therefore at this value, the curve of successful baryogensis is at the lowest po
 			& $a F \tilde{F}$ & $a \partial J$ & $a G \tilde{G}$ \\
 			\hline
 			$m_a \ge$ & & & \\
-			$\Gamma_\mathrm{inf} \ge$ & & & \\ 
+			$\Gamma_\mathrm{inf} \ge$ & & & \\
 		\end{tabular}
 	\end{center}
 \end{table}
@@ -1388,8 +1388,8 @@ The lowest values of the axion mass $m_a$ and the inflaton decay rate $\Gamma_\m
 	\label{fig:alp_mimimal_possible_m_a_and_Gamma_inf_vals}
 \end{figure}
 
-Furthermore we analyze the dependence of the asymmetry on the Hubble value at the end of inflation $H_\mathrm{inf}$ and the initial misalignment angle $\theta_i$. 
-TODO TODO
+\todo{Furthermore we analyze the dependence of the asymmetry on the Hubble value at the end of inflation $H_\mathrm{inf}$ and the initial misalignment angle $\theta_i$.
+TODO TODO}
 
 \begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_exploration_plot0.pdf}
@@ -1409,30 +1409,57 @@ TODO TODO
 \end{figure}
 
 \section{Clockwork Theory Axions}
+The clockwork axion model has the following parameters:
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{ll}
+			Name & Symbol \\
+			\hline
+			Hubble parameter at the end of inflation & $H_\mathrm{inf}$ \\
+			Inflaton decay rate  & $\Gamma_\mathrm{inf}$ \\
+			Axion decay constant & $f$ where $f_\mathrm{eff} = ?????$ \\
+			Size of the extra dimension & $mR$ where $\epsilon = e^{\pi m R}$ \\
+			Axion mass & $m_\phi = \epsilon M$ where $M = \frac{\Lambda^2}{f}$ \\
+			Initial misalignment angle & $\theta_i$ \\
+		\end{tabular}
+	\end{center}
+\end{table}
+As in the generic ALP realignment model, we set Hubble parameter at the end of inflation to the value of $H_\mathrm{inf} = 2.51 \times 10^{12} \, \mathrm{GeV}$ and the initial misalignment angle to $\theta_i = 1$ fixed for simplicity.
+First let us plot the parameter space of the clockwork axion mass $m_\phi$ vs the size of the extra dimension. 
+We exclude the region where the axion would start to oscillate before the end of inflation because of the initial condition issue. 
+Furthermore we exclude the region where the axion decays within the life time of the universe. Because the axion is still relatively light in this region, the decay happens quite late and is hence excluded. 
+In addition to the baryon asymmetry, we are also interested in the dark matter relic density of the axion.
+Hence in this 2D parameter subspace, the correct parameters (successful baryogenesis and the relic density matches the dark matter density) are isolated points.
+These parameter subspaces are shown for the different couplings in fig. \ref{fig:clockwork_parameter_space_aFF}, \ref{fig:clockwork_parameter_space_aJ} and \ref{fig:clockwork_parameter_space_aGG} for different values of the inflaton decay rate $\Gamma_\mathrm{inf} = 10^6 \, \mathrm{GeV}, \,
+ 10^8 \, \mathrm{GeV}, \, 10^{10} \, \mathrm{GeV}$ and the effective decay constant $f_\mathrm{eff} =  10^{12} \, \mathrm{GeV}, \,
+ 10^{13} \, \mathrm{GeV}, \, 10^{14} \, \mathrm{GeV}$.
+\todo{fixed the curve intersection finding code (the dots are wrong in the plot)}
 
-\begin{figure}[h]
+
+
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_mR_1.pdf}
     \caption{Contour plots of the $mR$ vs $m_\phi$ parameter space of the clockwork model for the different values of the inflaton decay rate $\Gamma_\mathrm{inf}$ (in the different rows, value denoted in the y-label on the left-most plot of each row) and the axion decay rate $f_a$ (in the different columns, value denoted in the x-label of the bottom plot if each column). Each contour plot has $mR$ on the y-axis on a linear scale shown on the left most plot of each row and $m_\phi$ in eV on the x-axis on a log-scale shown on the bottom plot of each column. In each plot the baryon asymmetry as the decimal logarithm relative to the observed baryon asymmetry is shown as green-blueish colored contour lines. The axion relic density as the decimal logarithm relative to the observed dark matter density is shown as red-yellowish  colored contour lines. The curves where the observed baryon asymmetry is reached is indicated by a solid black line. The curves where the dark matter density is reached is indicated by a dashed black line. The intersection of both lines is shown as a red dot. Below the plots the colorbars for the baryon asymmetry and the relic density contour lines are shown. In each plot a red colored region indicates the part of the parameter space where the axion would start oscillating before the end of inflation invalidating our model. A orange region shows the part where the clockwork axion would decay within the life-time of the universe. }
     \label{fig:clockwork_parameter_space_aFF}
 \end{figure}
-
-\begin{figure}[h]
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_mR_2.pdf}
     \caption{Same as fig. \ref{fig:clockwork_parameter_space_aFF} but for the $a \partial J$ coupling.}
+     \label{fig:clockwork_parameter_space_aJ}
 \end{figure}
-
-\begin{figure}[h]
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_mR_3.pdf}
     \caption{Same as fig. \ref{fig:clockwork_parameter_space_aFF} but for the $a G \tilde{G}$ coupling.}
+    \label{fig:clockwork_parameter_space_aGG}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_Gamma_inf.pdf}
     \caption{The clockwork axion parameter space contour plots of the baryon asymmetry as the decimal logarithm relative to the observed baryon asymmetry as a function the inflaton decay rate $Gamma_\mathrm{inf}$ in GeV on the y-axis on a log-scale and the axion mass $m_\phi$ in eV on the x-axis on a log-scale.
     Each row has a different coupling namely $a F \tilde{F}$ in the top row, $a \partial J$ in the middle row and $a G \tilde{G}$ in the bottom row. Each column has a different value of the size of the extra dimension $mR$ indicated on the x-label of the bottom plot of each column. Each plot has its own colorbar for the contour lines as the scales are very different for each plot. A red line is used to indicate the curves where the observed baryon asymmetry is reached.}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_exploration_plot.pdf}
 	\caption{A contour plot of the clockwork axion mass $m_\phi$ vs size of the extra dimension $mR$ parameter-space is shown in the middle row. The baryon asymmetry is shown in green-blueish contour lines. The relic density is shown in red-yellowish contour lines. Both are shown are the decimal logarithm relative to the observed value. The red colored area indicates the part of the parameter-space where axion oscillates before the end of inflation and hence invalidates the model. The orange area indicates the that the axion decays within the life-time of the universe. In the top and bottom rows the time evolution of the processes corresponding to example points in the parameter space indicated by arrows is shown. Each of these plots consists of three subplots. On the left the evolution of the canonical clockwork field until the oscillations is shown. On the right the time evolution of the chemical potential over the temperature and the rate of B-L generation and the axion source as in fig. \ref{fig:alp_explorations_plot_aFF} are shown.}
 \end{figure}
@@ -1452,7 +1479,7 @@ TODO TODO
 \bibliography{bthesis_datenbank}
 
 \chapter*{Acknowledgment}
-I thank Doddy Marsh and Laura Covi for the supervison and the possibility to take half a year off for a health break. 
+I thank Doddy Marsh and Laura Covi for the supervison and the possibility to take half a year off for a health break.
 I also thank Charlie, Joe, Melina, Mo*e, Resa, Sara, Yuri for helping me in difficult times.
 
 \end{otherlanguage}
