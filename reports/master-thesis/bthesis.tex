@@ -3,18 +3,7 @@
 %% Template fuer Bachelor- und Masterarbeiten
 %% an der Fakultaet fuer Physik (c) Thomas Pruschke der GA Universit�t
 %% Verbesserungsvorschlaege bitte an studiendekanat@physik.uni-goettingen.de
-%%
-%% Benoetigte Pakete: datenumber
-%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% Bitte vor dem Veraendern diese Datei umbenennen! %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% scrbook - Ersatz f�r LaTeX book Klasse aus dem KOMA Script
-%% Moegliche Optionen: diejenigen der Klasse scrbook ausser titlepage
-
-%% deutsche Arbeit:
 \documentclass[master,       %% Typ der Arbeit: bachelor oder master
                twoside,        %% zweiseitiges Layout
                BCOR10mm,       %% Bindekorrektur 10 mm
@@ -33,69 +22,38 @@
 %\usepackage[latin1]{inputenc}  %%
 %% in aktuellem Linux & MacOS X wird standardmaessig UTF8 kodiert!
 \usepackage[utf8]{inputenc}    %% Wenn latin1 nicht geht ...
-
 \usepackage{amsmath,amssymb} %% zusaetzliche Mathe-Symbole
-
 \usepackage{lmodern} %% type1-taugliche CM-Schrift als Variante zur
-                     %% "normalen" EC-Schrift
-%% Paket fuer bibtex-Datenbanken
 \usepackage[comma,numbers,sort&compress]{natbib}
 \bibliographystyle{plainnat}
-
 \newcommand{\tabheadfont}[1]{\textbf{#1}} %% Tabellenkopf in Fett
 \usepackage{booktabs}                      %% Befehle fuer besseres Tabellenlayout
 \usepackage{longtable}                     %% umbrechbare Tabellen
 \usepackage{array}                         %% zusaetzliche Spaltenoptionen
-
-%% umfangreiche Pakete fuer Symbole wie \micro, \ohm, \degree, \celsius etc.
-%\usepackage{textcomp,gensymb}
-
-%\usepackage{SIunits} %% Korrektes Setzen von Einheiten
-%\usepackage{units}   %% Variante fuer Einheiten
-
-%% Hyperlinks im Dokument; muss als eines der letzten Pakete geladen werden
 \usepackage[pdfstartview=FitH,      % Oeffnen mit fit width
             breaklinks=true,        % Umbrueche in Links, nur bei pdflatex default
             bookmarksopen=true,     % aufgeklappte Bookmarks
             bookmarksnumbered=true  % Kapitelnummerierung in bookmarks
             ]{hyperref}
-
-%% Weiter benoetigte Pakete: datenumber
-%% Falls dieses Paket nicht in der Installation vorhanden ist,
-%% kann es von der Seite mit diesem Template heruntergeladen werden
-%% und in einem LaTeX bekanntem Verzeichnis installiert werden (notfalls
-%% dem Verzeichnis mit der Arbeit).
-
 \usepackage{tikz}
 \usepackage{pgfplots}
 \usepackage{float}
 
 \begin{document}
-%%
-%%                   Ab hier muessen die Anpassungen geschehen
-%%
-%% Hier den eigenen Namen einsetzen
+	
 \ThesisAuthor{Anna-Jana}{Riess}
-%% Hier den Geburtsort einsetzen
- \PlaceOfBirth{Hamburg}
-%% Titel Arbeit. Das erste Argument ist der deutsche, das zweite der
-%% englische Titel.
+\PlaceOfBirth{Hamburg}
 \ThesisTitle{Spontane Axion-Leptogenese mit Generischen Kopplungen in ALP Realignment, Clockwork Axion und Multi Axion Modellen}{Spontaneous Axion-Leptogenesis with Generic Couplings in ALP Realignment, Clockwork Axion and Multi Axion Models}
-%% Erst- und Zweitgutacher/in
-%% Ist der/die Betreuer/in nicht identisch mit dem/r Erstgutachter/in,
-%% muss diese/r als optionales Argument angegeben werden.
 \FirstReferee{Prof.\ Dr.\ Laura Covi}
 \Institute{Institut f\"ur Theoretische Physik}
 \SecondReferee{Prof.\ Dr.\ David J. E. Marsh}
-%% Beginn und Ende des Anfertigungszeitraumes
 \ThesisBegin{1}{2}{2021}
 \ThesisEnd{15}{8}{2022}
-%% DO NOT TOUCH THESE LINES!!!!
 \frontmatter
 \maketitle
 \cleardoublepage
-%% So laesst sich in die andere Sprache umschalten (Englisch bzw. Deutsch)
-\begin{otherlanguage}{english}
+\begin{otherlanguage}{english} % keep this for the hole thesis
+	
 \begin{abstract}
   Here the key results of the thesis may be presented in about
   half a page.
@@ -103,66 +61,39 @@
   \noindent \textbf{Keywords:} Physics, Masters Thesis, Cosmology, The Early Universe, Reheating, Axions, Baryogenesis, Spontaneous Baryogenesis, Leptogenesis, Realignment, Clockwork Theory, String Theory Axions, Non-Linear Dynamics, Thermal Field Theory, Linear Response, Transport Equation, Numerical Simulation
 \end{abstract}
 
-%% Ende des Vorspanns
 \cleardoublepage
-%% Ab hier 1 1/2 facher Zeilenabstand (durch setspace-Paket)
 \onehalfspacing
-%% Erzeugt Inhaltsverzeichnis
 \tableofcontents
 
-%%% Hier kann man seine Bezeichnungsweisen erklaeren. Falls nicht
-%%% benoetigt, bis einschliesslich \end{nomenclature} auskommentieren
-%\begin{nomenclature}
-%%% Fuer die Berechnung der Spaltenbreiten muss \usepackage{calc}
-%%% geladen sein!
-%\section*{Lateinische Buchstaben}
-%\noindent
-%\begin{longtable}[l]{p{0.2\textwidth}p{0.7\textwidth-6\tabcolsep}p{0.1\textwidth}}
-%  \tabheadfont{Variable}&\tabheadfont{Bedeutung}&\tabheadfont{Einheit}\\\midrule\endhead
-%  $A$ & Querschnittsfl"ache & $\unit{m^2}$\\
-%  $c$ & Geschwindigkeit & $\unitfrac{m}{s}$
-%\end{longtable}
-%\section*{Griechische Buchstaben}
-%\begin{longtable}[l]{p{0.2\textwidth}p{0.7\textwidth-6\tabcolsep}p{0.1\textwidth}}
-%  \tabheadfont{Variable}&\tabheadfont{Bedeutung}&\tabheadfont{Einheit}\\\midrule\endhead
-%  $\alpha$  & Winkel & $\unit{\degree}$; --\\
-%  $\varrho$ & Dichte & $\unitfrac{kg}{m^3}$
-%\end{longtable}
-%\section*{Indizes}
-%\begin{longtable}[l]{p{0.2\textwidth}p{0.8\textwidth-4\tabcolsep}}
-%  \tabheadfont{Index}&\tabheadfont{Bedeutung}\\\midrule\endhead
-%  m & Meridian\\
-%  $r$ & Radial
-%\end{longtable}
-%\section*{Abk"urzungen}
-%\begin{longtable}[l]{p{0.2\textwidth}p{0.8\textwidth-4\tabcolsep}}
-%  \tabheadfont{Abk"urzung}&\tabheadfont{Bedeutung}\\\midrule\endhead
-%  2D & zweidimensional\\
-%  3D & dreidimensional\\
-%  max & maximal
-%\end{longtable}
-%\end{nomenclature}
-%% \listoftables und \listoffigures sollten nur bei genuegender Anzahl Tabellen
-%% verwendet werden
-%\listoffigures
-%\listoftables
-
-\mainmatter   %% Anfang Hauptteil
+\mainmatter 
 
 \chapter{Introduction}
 
-MOTIVATION!!!
--> we are here, a
+In this thesis we will investigate a potential solution to the problem of \emph{baryogenesis}, that is
+the question why we find that our universe as we observe it today, is made up of matter and not antimatter.
+This asymmetry is necessary for more complicated structures in universe to exits. From atoms to life to finally humans who wonder about the universe \footnote{and discriminated based on gender, race, religion ..., let each other live in poverty and destroy the planet. But that doesn't sound so cool, right?}
+On a fundamental level the two are almost mirror images of each other. The standard model does only very weakly distinguish between the two.
+Hence physics beyond the standard model is needed to explain the asymmetry.
+The mechanism we consider in this thesis is called \emph{spontaneous baryogenesis}, first proposed by Andreq Cohen and David Kapla in 1987 \cite{COHEN1987251} \cite{COHEN1988913}.
+The basis idea behind this mechanism is that a classical cosmological field evolves and hence was a non-vanishing time-derivative. 
+This time-derivative then biases some reactions in such a way that an asymmetry is produced.
+We will investiage the quantitative outcome of this process for different axion models for the cosmological field.
+Axions are group of proposed particles which extend the standard model. 
+They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are this wide class of particle models which are based on some kind of pseudo-scalar.
+For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation ????? TODO: reference?????
+Sometimes axions only refer to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to thesis kinds of standard model extension always as axions.
+Also we consider different coupling of these axion fields to standard model particles. For this, this thesis is based on the work of the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings}, who developed a formalism using a transport equation in linear response theory to compute the asymmetry for a number of couplings.
+Let us now go over the structure of this thesis.
+In chapter \ref{sec:fundermentals} we go over the basis of cosmology including reheating and baryogensis.
+Then in chapter \ref{sec:spontaneous_baryogenesis} we talk about how spontanous baryogenesis works in general.
+The next two chapter are technical derivations required for our later computations. First the transport equation for charges in chapter \ref{sec:transport_equation} and then the axion field models in chapter \ref{sec:motion_of_the_axion_field} are derived.
+After this we briefly comment on the implementation of the numerical model in chapter \ref{sec:implementation_of_the_numerical_simulations}.
+Finally we present our results for each model in chapter \ref{sec:results}
+and finish by summarizing the thesis and our results and looking at further possible directions of research. 
 
-PROBLEM OVERVIEW
-
-CONTENT SUMMERY OF THESIS
-
-In this thesis we will always use natural units with $c = \hbar = k_B = 0$
-and the following metric convention $(+1, -1, -1, -1)$
-TODO: check metric convention everywhere!!!!!!!!!
 
 \chapter{Fundamentals}
+\label{sec:fundermentals}
 
 \section{Early Universe Cosmology}
 In this section we will introduce the basics of cosmology and the background cosmological model we will use for the computations in this thesis later on.
@@ -331,16 +262,6 @@ The corresponding equation for the radiation energy density reads
 The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay. Here one can see the effect of the $\Gamma_{\mathrm{inf}}$: it creates an effective decay term in the rate equations.
 These equations together with the Friedmann equation, describe the background cosmology for our later computations.
 
-\section{Axions}
-TODO: do we need this paragraph????
-In this section we will review axion-like particles, starting and considering QCD-axions as our example. For this we will follow the review \cite{Di_Luzio_2020_Landscape_of_QCD_Axion_models}.
-The theory of QCD contains a term call the theta term:
-
-
-
-
-
-
 \section{Baryogenesis}
 In this section we will introduce the problem for which this thesis investigates a possible solution.
 The problem of baryogenesis can be expressed as follows: Why does the universe contain so much baryonic-matter? Or more precise: The universe as observed today, is made up of matter with very little antimatter, while in earlier times both were present in high numbers being in chemical equilibrium. As the universe cooled down, most of matter and antimatter annihilated into photons. Therefore it is reasonable to express the amount of matter-antimatter asymmetry by the ratio of the effective baryon number and the number of photons:
@@ -448,10 +369,10 @@ These processes give us the rate of conversion of lepton and baryon numbers.
 
 
 \chapter{Spontaneous Baryogenesis}
-In this chapter we will discuss a possible mechanism which could implement baryogenesis. This mechanism is call spontaneous baryogenesis and is the topic of the rest of this thesis.
-
-\section{Mechanism of Spontaneous Baryogenesis}
+\label{sec:spontaneous_baryogenesis}
 \label{sec:sbg}
+
+In this chapter we will discuss a possible mechanism which could implement baryogenesis. This mechanism is call spontaneous baryogenesis and is the topic of the rest of this thesis.
 
 The mechanism of spontaneous baryogenesis was propose by Andreq Cohen and David Kapla in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
 Their idea was to couple a scalar field $\phi$ to the baryon current $J_B$:
@@ -514,7 +435,8 @@ If we would start with an axion coupling to the weak sphaleron $a F \tilde{F}$, 
 To introduce a coupling to the lepton current from this coupling, one needs to do a field redefinition depending on the axion field. This would also change the fields in the Weinberg operator, introducing a coupling within the Weinberg operator, modifying its rate. While one could compute a rate for the Weinberg operator including the axion dependence and solve for the asymmetry correctly, its more fruitful to use a set of basis independent equations.
 This was done in .ref \cite{Domcke:2020kcp_Generic_Couplings}, where the authors developed a formalism based on linear-response theory which can describe the equilibration of charges by interaction and generation of charges from coupling to an axion field in a basis independent way for generic couplings. We will now recap their derivation.
 
-\section{Derivation of Transport Equation}
+\chapter{The Transport Equation}
+\label{sec:transport_equation}
 The following derivation of the transport equation is taken from  \cite[appendix B]{Domcke:2020kcp_Generic_Couplings}.
 
 We start from the current (continuity) equation for the charges $Q_i$ with current $J_i^\mu$. These charges are changed by interaction $O_\alpha$ by $n_i^\alpha$:
@@ -533,7 +455,7 @@ For this we take $H_s \equiv \sum_i \mu_i Q_i$ as a perturbation to the Hamilton
 Here the $\mu_i$ are the sources, which change slowly compared to the charges $Q_i$.
 Let us first derive the equation for linear perturbation theory in general and then apply is first to the perturbation by chemical potentials $\mu_i$ and then to the perturbation by the classical axions field $a(t)$.
 
-\subsection{Quantum Linear Response Theory}
+\section{Quantum Linear Response Theory}
 We work in the interaction-picture, where the time-evolution of the density matrix $\rho(t)$ of the system is given by
 \begin{equation}
     \rho(t) = U(t) \rho_0 U^{-1}(t).
@@ -830,13 +752,14 @@ The Weinberg operator it the lowest-order operator, which is introduced in an ef
 
 
 
+
+
 \chapter{Motion of the Axion Field}
 \label{sec:motion_of_the_axion_field}
 
 In this chapter we will discuss the models for axion-like fields and their cosmological dynamics.
 An overview of cosmological axion fields can be found in \cite{MarshAxionCosmo}.
 First let us discuss some generalities common to all models.
-
 
 \section{Generalities}
 
@@ -1347,6 +1270,7 @@ The field starts to oscillate and behaves like matter. Hence it is a dark matter
 
 
 \chapter{Implementation of the Numerical Simulations}
+\label{sec:implementation_of_the_numerical_simulations}
 In this section we will briefly look at the program which was written for this thesis project in order to compute the baryon asymmetry.
 
 \section{Used Equations}
@@ -1399,6 +1323,7 @@ We start by solving
 
 
 \chapter{Results}
+\label{sec:results}
 
 \section{ALP Realignment}
 
@@ -1480,7 +1405,7 @@ We start by solving
 
 \chapter*{Acknowledgment}
 I thank Doddy Marsh and Laura Covi for the supervison and the possibility to take half a year off for a health break. 
-I also thank Charlie, Joe, Marian, Melina, Mo*e, Resa, Sara, Yuri for helping me in difficult times.
+I also thank Charlie, Joe, Melina, Mo*e, Resa, Sara, Yuri for helping me in difficult times.
 
 \end{otherlanguage}
 %% Dieser Befehl MUSS am Ende stehen und erzeugt die Erklaerung ueber die
