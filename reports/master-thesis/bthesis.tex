@@ -712,25 +712,26 @@ where the parameters in the reaction rates are given by:
 		\end{tabular}
 	\end{center}
 \end{table}
-Finally we can simplify the charges for the hight temperature regime of $T > 10^{12} \, \mathrm{GeV}$. Here first and second generation leptons and quarks are indistinguishable as their yukawa couplings are small compared to the temperature
+Finally we can simplify the charges for the hight temperature regime of $T > 10^{12} \, \mathrm{GeV}$. Here first and second generation leptons and quarks are indistinguishable as their Yukawa couplings are small compared to the temperature.
+Hence we combine their charges to have the same chemical potential. We end up using the following charges: 
 \begin{table}[H]
 	\begin{center}
 		\begin{tabular}{lll}
-			Symbol & Defintion & dof. $g_i$ \\
+			Symbol & Definition & dof. $g_i$ \\
 			\hline
-			$\tau$ & &1  \\
-			$L_{12}$ & & 4 \\
-			$L_3$ & & 2 \\
-			$q_{12}$ & & 12 \\
-			$t$ & & 3 \\
-			$b$ & & 3 \\
-			$Q_{12}$ & & 12 \\
-			$Q_3$ & & 6 \\
-			$H$ & & 4 \\
+			$\tau$ & right handed tau &1  \\
+			$L_{12}$ & left handed first and second gen. leptons & 4 \\
+			$L_3$ & third gen. lepton& 2 \\
+			$q_{12}$ & right handed first and second gen. quarks & 12 \\
+			$t$ & right handed top quark & 3 \\
+			$b$ & tight handed bottom quark & 3 \\
+			$Q_{12}$ & left handed first and second gen. quarks & 12 \\
+			$Q_3$ & left handed third gen. quark  & 6 \\
+			$H$ & Higgs doublet & 4 \\
 		\end{tabular}
 	\end{center}
 \end{table}
-In this basis the charge vectors for the interaction read
+In this basis the charge vectors for the interaction read:
 \begin{table}[H]
 	\begin{center}
 		\begin{tabular}{ll}
@@ -749,8 +750,39 @@ In this basis the charge vectors for the interaction read
 \section{Lepton Number Violation from Weinberg Operator}
 \label{sec:lepton_number_violation_from_weinberg_operator}
 
-The Weinberg operator it the lowest-order operator, which is introduced in an effective field theory approach to the standard model.
-
+The Weinberg operator it the lowest-order operator, which is introduced in an effective field theory approach to the standard model, which violates lepton number \cite[sec. 5]{Domcke:2020kcp_Generic_Couplings}. 
+It is given as
+\begin{equation}
+	\mathcal{L}_\mathrm{Weinberg} = - \frac{m_v}{2 \nu_\mathrm{EW}^2} [H \cdot C \bar{L}] [L \cdot H]+ \, \mathrm{h.c.},
+\end{equation}
+where $m_v$ is the left handed neutrino mass, $\nu_\mathrm{EW} = 174 \, \mathrm{GeC}$ is the Higgs vacuum expectation value,
+$L$ the left-handed lepton doublet and $H$ the Higgs doublet.
+The notation $C$ means charge conjuction and is given for some spinor $\psi$ as
+\begin{equation}
+	C \psi = i \gamma^2 \gamma^0 (\bar{\psi})^T
+\end{equation}
+and $\bar{\psi}$ is the Dirac adjoint spinor of the spinor $\psi$ given by
+\begin{equation}
+	\bar{\psi} = \psi^\dagger \gamma^0.
+\end{equation}
+The $\gamma^\mu$ are the gamma matrices.
+The operator violates lepton number by $\Delta L = 2$.
+It is parameterized by a mass of a left-handed neutrino as it can be realized by right-handed neutrinos in the seesaw mechanism, where the masses of right-handed neutrinos are related to the left-handed neutrinos and one finds an effective Weinberg operator of the above form.
+Its rate is given by
+\begin{align}
+	\Gamma_\mathrm{W} = \kappa_W\frac{m_\nu^2 T^6}{\nu_\mathrm{EW}^4},
+\end{align}
+where $\kappa_\mathrm{W} = 3 \times 10^{-3}$.
+For this project we assume a neutrino mass of
+\begin{equation}
+	m_\nu = 0.05 \, \mathrm{eV}.
+\end{equation}
+The charge vector for the Weinberg operator for the combined first and second generation leptons and the third generation leptons are given as
+\begin{align}
+	n^{W_{12}}_i &= (0,2,0,0,0,0,0,0,2) \nonumber \\
+	n^{W_{3}}_i &= (0,0,2,0,0,0,0,0,2).
+\end{align}
+The rate for the combined first two generations is the twice the rate of a single Weinberg operator.
 
 
 
