@@ -1466,11 +1466,20 @@ These parameter subspaces are shown for the different couplings in fig. \ref{fig
  10^8 \, \mathrm{GeV}, \, 10^{10} \, \mathrm{GeV}$ and the effective decay constant $f_\mathrm{eff} =  10^{12} \, \mathrm{GeV}, \,
  10^{13} \, \mathrm{GeV}, \, 10^{14} \, \mathrm{GeV}$.
 \todo{fixed the curve intersection finding code (the dots are wrong in the plot)}
-
-
-
+One can see that the asymmetry produced is proportional to
+\begin{equation}
+	Y_B \sim \frac{m_\phi}{e^{- \pi m R}} = \frac{\Lambda^2}{f}.
+\end{equation}
+This is the effective mass of the canonical $\phi$ field and hence determines the time when the field enters the fast-roll epoch. If this happens earlier, then it also happens at higher temperature and a larger asymmetry is produced.
+\todo{explain this weird thing with the two solutions}
+Example processes are shown in fig. \ref{fig:clockwork_parameter_space_exploration}.
 \begin{figure}[H]
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_mR_1.pdf}
+	\includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_exploration_plot.pdf}
+	\caption{A contour plot of the clockwork axion mass $m_\phi$ vs size of the extra dimension $mR$ parameter-space is shown in the middle row. The baryon asymmetry is shown in green-blueish contour lines. The relic density is shown in red-yellowish contour lines. Both are shown are the decimal logarithm relative to the observed value. The red colored area indicates the part of the parameter-space where axion oscillates before the end of inflation and hence invalidates the model. The orange area indicates the that the axion decays within the life-time of the universe. In the top and bottom rows the time evolution of the processes corresponding to example points in the parameter space indicated by arrows is shown. Each of these plots consists of three subplots. On the left the evolution of the canonical clockwork field until the oscillations is shown. On the right the time evolution of the chemical potential over the temperature and the rate of B-L generation and the axion source as in fig. \ref{fig:alp_explorations_plot_aFF} are shown.}
+	\label{fig:clockwork_parameter_space_exploration}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=0.9\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_mR_1.pdf}
     \caption{Contour plots of the $mR$ vs $m_\phi$ parameter space of the clockwork model for the different values of the inflaton decay rate $\Gamma_\mathrm{inf}$ (in the different rows, value denoted in the y-label on the left-most plot of each row) and the axion decay rate $f_a$ (in the different columns, value denoted in the x-label of the bottom plot if each column). Each contour plot has $mR$ on the y-axis on a linear scale shown on the left most plot of each row and $m_\phi$ in eV on the x-axis on a log-scale shown on the bottom plot of each column. In each plot the baryon asymmetry as the decimal logarithm relative to the observed baryon asymmetry is shown as green-blueish colored contour lines. The axion relic density as the decimal logarithm relative to the observed dark matter density is shown as red-yellowish  colored contour lines. The curves where the observed baryon asymmetry is reached is indicated by a solid black line. The curves where the dark matter density is reached is indicated by a dashed black line. The intersection of both lines is shown as a red dot. Below the plots the colorbars for the baryon asymmetry and the relic density contour lines are shown. In each plot a red colored region indicates the part of the parameter space where the axion would start oscillating before the end of inflation invalidating our model. A orange region shows the part where the clockwork axion would decay within the life-time of the universe. }
     \label{fig:clockwork_parameter_space_aFF}
 \end{figure}
@@ -1484,17 +1493,24 @@ These parameter subspaces are shown for the different couplings in fig. \ref{fig
     \caption{Same as fig. \ref{fig:clockwork_parameter_space_aFF} but for the $a G \tilde{G}$ coupling.}
     \label{fig:clockwork_parameter_space_aGG}
 \end{figure}
-
+We also investigate the parameter space of the axion mass $m_\phi$ vs the inflaton decay rate $\Gamma_\mathrm{inf}$
+for different values of the size of the extra dimension $mR$ and couplings.The result is shown in fig. \ref{fig:cw_m_phi_vs_Gamma_inf}.
+One can see that the parameter space has a similar structure that the one found in the generic ALP realignment model.
+We exclude the region, where the axion would move before the end of inflation.
+The artifacts seen in particular in the plot of $mR = 8$ and the $a \partial J_L$ coupling, stem from the extremely low values ($Y / Y^\mathrm{obs} \sim 10^{-12}$) of asymmetry produced, where numerical errors start to matter.
 \begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_m_phi_vs_Gamma_inf.pdf}
     \caption{The clockwork axion parameter space contour plots of the baryon asymmetry as the decimal logarithm relative to the observed baryon asymmetry as a function the inflaton decay rate $Gamma_\mathrm{inf}$ in GeV on the y-axis on a log-scale and the axion mass $m_\phi$ in eV on the x-axis on a log-scale.
     Each row has a different coupling namely $a F \tilde{F}$ in the top row, $a \partial J$ in the middle row and $a G \tilde{G}$ in the bottom row. Each column has a different value of the size of the extra dimension $mR$ indicated on the x-label of the bottom plot of each column. Each plot has its own colorbar for the contour lines as the scales are very different for each plot. A red line is used to indicate the curves where the observed baryon asymmetry is reached.}
+	\label{fig:cw_m_phi_vs_Gamma_inf}
 \end{figure}
+In all these parameter scans, we see that one can generate the baryon asymmetry of the universe and the full dark matter using this model, in a range of about $10^{-4} \, \mathrm{eV}$ to $10^{6} \, \mathrm{eV}$. The size of the extra dimension is sbout $mR = 6$ to $mR = 14$. The range of required inflaton decay constants is about the Hubble parameter at the end of inflation to about $10^{-5}$ of the Hubble parameter at the end of inflation.
+This shows that this model is viable for different couplings and a wide parameter range.
 
-\begin{figure}[H]
-	\includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_exploration_plot.pdf}
-	\caption{A contour plot of the clockwork axion mass $m_\phi$ vs size of the extra dimension $mR$ parameter-space is shown in the middle row. The baryon asymmetry is shown in green-blueish contour lines. The relic density is shown in red-yellowish contour lines. Both are shown are the decimal logarithm relative to the observed value. The red colored area indicates the part of the parameter-space where axion oscillates before the end of inflation and hence invalidates the model. The orange area indicates the that the axion decays within the life-time of the universe. In the top and bottom rows the time evolution of the processes corresponding to example points in the parameter space indicated by arrows is shown. Each of these plots consists of three subplots. On the left the evolution of the canonical clockwork field until the oscillations is shown. On the right the time evolution of the chemical potential over the temperature and the rate of B-L generation and the axion source as in fig. \ref{fig:alp_explorations_plot_aFF} are shown.}
-\end{figure}
+
+
+
+
 
 \section{Multi Axion Systems}
 
