@@ -69,10 +69,11 @@ def get_samples(axsol, tend):
     return tend + ts, ys, tend + ts[-1]
 
 def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols, 
-                               show_steps=True, field_name="\\varphi", show_energy=True, logtime=True):
+                               show_steps=True, field_name="\\varphi", show_energy=True, show_derivative=True, logtime=True):
     color = None if show_steps else "tab:blue"
     fig = plt.figure()
     n = 3 if show_energy else 2
+    n = 2 if show_derivative else 1
 
     plt.subplot(n,1,1)
     fig.subplots_adjust(hspace=0)
@@ -90,22 +91,25 @@ def plot_axion_field_evolution(axion_model, axion_parameter, f_a, axion_sols,
     plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
     plt.xscale("log" if logtime else "linear")
     plt.ylabel(f"${field_name} / f_a$")
-    plt.legend()     
-    
-    plt.subplot(n,1,2)
-    tend = 0
-    for axion_sol in axion_sols:
-        ts, ys, tend = get_samples(axion_sol, tend)
-        N = ys.shape[0] // 2
-        for c, ax in zip(mcolors.TABLEAU_COLORS, ys[N:, :]):
-            plt.plot(ts, ax, color=None if show_steps else c)
-    if tend > 1.0:
-        plt.axvline(1.0, color="black", ls="--")
-    plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
-    plt.xscale("log" if logtime else "linear")
-    plt.ylabel(r"$\dot{" + field_name + r"} / f_a / m_a(T_\mathrm{osc})$")
-    if not show_energy:
+    plt.legend()
+    if not show_derivative:
         plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
+    
+    if show_derivative:
+        plt.subplot(n,1,2)
+        tend = 0
+        for axion_sol in axion_sols:
+            ts, ys, tend = get_samples(axion_sol, tend)
+            N = ys.shape[0] // 2
+            for c, ax in zip(mcolors.TABLEAU_COLORS, ys[N:, :]):
+                plt.plot(ts, ax, color=None if show_steps else c)
+        if tend > 1.0:
+            plt.axvline(1.0, color="black", ls="--")
+        plt.axhline(0.0, color="black", lw=zero_lw, ls=":")
+        plt.xscale("log" if logtime else "linear")
+        plt.ylabel(r"$\dot{" + field_name + r"} / f_a / m_a(T_\mathrm{osc})$")
+        if not show_energy:
+            plt.xlabel(r"$t \cdot m_a(T_\mathrm{osc})$")
     
     if show_energy:
         plt.subplot(n,1,3)
