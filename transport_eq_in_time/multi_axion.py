@@ -2,6 +2,8 @@ import numpy as np, matplotlib.pyplot as plt
 import axion_motion
 from importlib import reload; axion_motion = reload(axion_motion)
 
+# this model assumes that f_1 = f_2 =: f_a
+
 class MultiAxionField(axion_motion.AxionField):
     def rhs(self, t, y, T_and_H_fn, energy_scale, axion_parameter):
         Q, Lambda = axion_parameter
@@ -34,7 +36,7 @@ class MultiAxionField(axion_motion.AxionField):
         thetas, theta_dots = y[:N], y[N:]
         energy_scale = self.find_dynamical_scale(Q, Lambda)
         return f_a**2 * (0.5 * energy_scale**2 * np.sum(theta_dots**2) + self.calc_V(thetas, Q, Lambda))
-    
+
     def calc_mass_state(self, u, Q, Lambda):
         N = len(Lambda)
         return np.vstack([Q @ u[:N, :], Q @ u[N:, :]])
