@@ -1268,37 +1268,41 @@ The field starts to oscillate and behaves like matter. Hence it is a dark matter
 
 
 \section{Multi Axion Systems}
-
+A particularly interesting model would both generate the baryon asymmetry and the dark matter density of the universe while explaining why they are of the same order of magnitude.
+Also it is interesting to implement a model which has axions of lower mass without also reducing the axion-photon coupling.
+We tried to implement such a model using two coupled fields.
+A first attempt is a quartic coupling between them of the form:
 \begin{equation}
-	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \phi_j / f_j \right) \right]
+	\mathcal{L} = \frac{1}{2} (\partial \phi_1)^2 + \frac{1}{2} (\partial \phi_2)^2 - \frac{1}{2} m_1^2 \phi_1^2 - \frac{1}{2} m_2^2 \phi_2^2 - g \phi_1^2 \phi_2^2.
 \end{equation}
-
+Here the effective mass of the fields are given by
+\begin{align}
+	m_1^\mathrm{eff} &= \sqrt{m_1^2 + \frac{g}{2} \phi_2^2} \nonumber \\
+	m_2^\mathrm{eff} &= \sqrt{m_2^2 + \frac{g}{2} \phi_1^2}.
+\end{align}
+Hence even if the bare masses $m_1$ and/or $m_2$ are less than the Hubble scale $H$ at time $t$, the field might already oscillate due to the extra term from the other field. If we assume that the quartic coupling $g$ is of order unity, then the mass in this limit is given by the scale of the other field.
+More concretely if we decompose $\phi_k = f_k \theta_k$ where $\theta_k = \mathcal{O}(1)$ at $t = t_i$, then
+the decay constants give the start of oscillations
+$3 H_\mathrm{osc} = \max(f_1, f_2)$.
+This means that in such a model we can generate a field velocity and source baryogenesis, even at lower particle masses. Lets couple the field $\phi_1$ to the standard model.
+It hence sources baryogenesis. Due to the coupling it also decays into standard model particles at $t_1^\mathrm{decay}$. 
+The other field $\phi_2$ then will not get a contribution to its effective mass from the condensate of the field $\phi_1$ anymore. Hence
 \begin{equation}
-	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \frac{1}{2} \sum_i m_i^2 \phi_i^2 - \sum_{i, j}
-	g_{i, j} \phi_i^2 \phi_j^2
+	m_2^\mathrm{eff} = m_2 \, \mathrm{for} \, t > t_1^\mathrm{decay}.
 \end{equation}
+If at $t_1^\mathrm{decay}$ we find $3 H(t_1^\mathrm{decay}) > m_2$, then the field of $\phi_2$ will be frozen again.
+Hence the relic density of the field $\phi_1$ from realignment once the it starts to oscillate again.
+Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like. 
 
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/multi_axion_canonical_field_evolution.pdf}
-    \caption{}
-\end{figure}
+The problem with this kind of coupling is that it is not (discretely) shift-symmetric and hence can not be a valid coupling for an axion.
+A potential for a system of axion would be given as 
+\begin{equation}
+	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \frac{\phi_j}{f_j} \right) \right]
+\end{equation}
+Sadly this model doesn't posses the properties of the model discussed above. One could take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density. 
 
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/multi_axion_mass_eigenstate_field_evolution.pdf}
-    \caption{}
-\end{figure}
 
-\begin{figure}[h]
-    \includegraphics[width=0.5\linewidth]{../../transport_eq_in_time/plots/multi_mass_eigenstate_configspacen.pdf}
-    \includegraphics[width=0.5\linewidth]{../../transport_eq_in_time/plots/multi_axion_canonical_configspace.pdf}
-    \caption{}
-\end{figure}
 
-\begin{figure}[h]
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/multi_axion_powerspectrum1.pdf}
-    \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/multi_axion_powerspectrum2.pdf}
-    \caption{}
-\end{figure}
 
 
 \chapter{Implementation of the Numerical Simulations}
@@ -1507,12 +1511,6 @@ The artifacts seen in particular in the plot of $mR = 8$ and the $a \partial J_L
 In all these parameter scans, we see that one can generate the baryon asymmetry of the universe and the full dark matter using this model, in a range of about $10^{-4} \, \mathrm{eV}$ to $10^{6} \, \mathrm{eV}$. The size of the extra dimension is sbout $mR = 6$ to $mR = 14$. The range of required inflaton decay constants is about the Hubble parameter at the end of inflation to about $10^{-5}$ of the Hubble parameter at the end of inflation.
 This shows that this model is viable for different couplings and a wide parameter range.
 
-
-
-
-
-
-\section{Multi Axion Systems}
 
 \chapter{Summery and Conclusion}
 

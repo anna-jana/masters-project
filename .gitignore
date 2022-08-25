@@ -1,4 +1,4 @@
-paper
+paper/*
 *.pyc
 __pycache__
 .ipynb_checkpoints
@@ -17,5 +17,6 @@ __pycache__
 *.blg
 *.synctex.gz
 ma-venv/*
-transport_eq_in_time/data
-*.toml
+orga/*
+transport_eq_in_time/data/*
+Manifest.toml
