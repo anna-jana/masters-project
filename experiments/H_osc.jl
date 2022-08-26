@@ -88,13 +88,16 @@ function find_H_osc(M, G, initial_ratio;
     return NaN
 end
 
-H_osc_filename(M, initial_ratio) = "coupled_fields_H_osc_M=$(M)_initial_ratio=$(initial_ratio).dat"
+data_dir = "./H_osc_data"
+H_osc_filename(M, initial_ratio) = joinpath(data_dir, "coupled_fields_H_osc_M=$(M)_initial_ratio=$(initial_ratio).dat")
 
 G_range = (10 .^ (-2:0.2:6))
 initial_ratio_range = [1, 1 + 1e-2, 10, 100]
 M_range = [1e-2, 1e-1, 1, 10, 100]
 
 function compute_H_osc()
+    rm(data_dir; recursive=true, force=true)
+    mkdir(data_dir)
     @time for initial_ratio in initial_ratio_range
         for M in M_range
             H_osc_list = find_H_osc.(M, G_range, initial_ratio)
@@ -104,7 +107,8 @@ function compute_H_osc()
 end
 
 function plot_H_osc(;n=1/6)
-    figure(figsize=(10,5))
+    rc("font", size=12)
+    figure(figsize=(8,4))
     for (i, initial_ratio) in enumerate(initial_ratio_range)
         subplot(2, 2, i)
         title(@sprintf("\$\\phi_1 / \\phi_2\$ = %.2f", initial_ratio))
@@ -123,8 +127,8 @@ function plot_H_osc(;n=1/6)
         yscale("log")
         xlabel("G")
         ylabel(raw"$H_\mathrm{osc}$")
-        if i == 1
-            legend(ncol=2)
+        if i == 4
+            legend(ncol=2, fontsize=8)
         end
     end
     tight_layout()

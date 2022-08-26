@@ -1317,17 +1317,26 @@ Also it is interesting to implement a model which has axions of lower mass witho
 We tried to implement such a model using two coupled fields.
 A first attempt is a quartic coupling between them of the form:
 \begin{equation}
+	\label{eq:multi_axion_quatic}
 	\mathcal{L} = \frac{1}{2} (\partial \phi_1)^2 + \frac{1}{2} (\partial \phi_2)^2 - \frac{1}{2} m_1^2 \phi_1^2 - \frac{1}{2} m_2^2 \phi_2^2 - g \phi_1^2 \phi_2^2.
 \end{equation}
 Here the effective mass of the fields are given by
 \begin{align}
+	\label{eq:multi_axion_H_osc}
 	m_1^\mathrm{eff} &= \sqrt{m_1^2 + \frac{g}{2} \phi_2^2} \nonumber \\
 	m_2^\mathrm{eff} &= \sqrt{m_2^2 + \frac{g}{2} \phi_1^2}.
 \end{align}
-Hence even if the bare masses $m_1$ and/or $m_2$ are less than the Hubble scale $H$ at time $t$, the field might already oscillate due to the extra term from the other field. If we assume that the quartic coupling $g$ is of order unity, then the mass in this limit is given by the scale of the other field.
+Hence even if the bare masses $m_1$ and/or $m_2$ are less than the Hubble scale $H$ at time $t$, the field might already oscillate due to the extra term from the other field. If we assume that the quatic coupling $g$ is of order unity, then the mass in this limit is given by the scale of the other field.
 More concretely if we decompose $\phi_k = f_k \theta_k$ where $\theta_k = \mathcal{O}(1)$ at $t = t_i$, then
 the decay constants give the start of oscillations
-$3 H_\mathrm{osc} = \max(f_1, f_2)$.
+$3 H_\mathrm{osc} = \max(m_1^\mathrm{eff}, m_2^\mathrm{eff}) \approx \max(f_1, f_2)$.
+We tested this numerically. The results are shown in fig. \ref{fig:multi_axion_quatic_H_osc}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{../../experiments/H_osc_plots.pdf}
+	\caption{The numerically computed $H_osc$ for a multi axion system as defined in eq. \eqref{eq:multi_axion_quatic}. Each subplot is for different rations of the initial conditions for the two fields. Each subplot contains three colors of curves corresponding to different redefined dimensionless mass parameters $M = m_2^2 / m_1^2$. The solid curves are the numerical results and the dashed ones are the theory prediction from eq. \eqref{eq:multi_axion_H_osc} (without the approximation). The x-axis is the redefined coupling $G = g \Lambda^2 / m_1^2$ where $\phi_\mathrm{phys} = \Lambda \phi$ and the y-axis the Hubble parameter $H_\mathrm{osc}$ where oscillations start.}
+	\label{fig:multi_axion_quatic_H_osc}
+\end{figure}
+
 This means that in such a model we can generate a field velocity and source baryogenesis, even at lower particle masses. Lets couple the field $\phi_1$ to the standard model.
 It hence sources baryogenesis. Due to the coupling it also decays into standard model particles at $t_1^\mathrm{decay}$.
 The other field $\phi_2$ then will not get a contribution to its effective mass from the condensate of the field $\phi_1$ anymore. Hence
@@ -1336,7 +1345,13 @@ The other field $\phi_2$ then will not get a contribution to its effective mass 
 \end{equation}
 If at $t_1^\mathrm{decay}$ we find $3 H(t_1^\mathrm{decay}) > m_2$, then the field of $\phi_2$ will be frozen again.
 Hence the relic density of the field $\phi_1$ from realignment once the it starts to oscillate again.
-Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
+Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. This is evident from the fact that parts from the parameter space exhibit a positive largest Lyapunov exponents \footnote{The sum of Lyapunov exponents is almost zero in our result. As this is almost a Hamiltonian system (apart from the Hubble friction, which is low in this regime) the sum of Lyapunov exponents should be almost zero.}. This is shown in fig. \ref{fig:multi_axions_lyapunov}. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{../../experiments/lyapunov_plot.pdf}
+	\caption{A plot of the lyapunov spectrum of the multi axion system with a quatic coupling defined in eq. \eqref{eq:multi_axion_quatic}. The parameters are defined like in fig. \ref{fig:multi_axion_quatic_H_osc}. The Lyapunov exponents $\lambda_i$ are shown as a function of $G$ as solid lines. The values of the other parameters are shown in the title. The sum of Lyapunov exponents is shown as a red dashed line (barley visible, almost on the x-axis). The value of the smallest $G$ where the largest Lyapunov exponent is positive is indicated by a dashed vertical line.
+	}
+	\label{fig:multi_axions_lyapunov}
+\end{figure}
 
 The problem with this kind of coupling is that it is not (discretely) shift-symmetric and hence can not be a valid coupling for an axion.
 A potential for a system of axion would be given as
@@ -1344,8 +1359,6 @@ A potential for a system of axion would be given as
 	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \frac{\phi_j}{f_j} \right) \right]
 \end{equation}
 Sadly this model doesn't posses the properties of the model discussed above. One could take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density.
-
-
 
 
 

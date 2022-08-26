@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
-if ".." not in sys.path: sys.path.append("..")
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.integrate as si
-from common import constraints
 
 def rhs(t, y, m_a, m_chi, g, g_a, g_chi):
     H = 1 / (2*t)
@@ -19,7 +16,7 @@ def rhs(t, y, m_a, m_chi, g, g_a, g_chi):
     )
 
 def solve(f_a, chi0, g, g_a, g_chi, span, m_a, m_chi):
-    H_inf = max(constraints.calc_H_inf_max(f_a), constraints.calc_H_inf_max(chi0))
+    H_inf = 6e11 / 1e15 * min(f_a, chi0)
     t0 = 1 / H_inf
     steps = np.geomspace(t0, span * t0, 1000)
     steps[0] = t0

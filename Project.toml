@@ -1,0 +1,6 @@
+[deps]
+DynamicalSystems = "61744808-ddfa-5f27-97ff-6e42cc95d634"
+LsqFit = "2fda8390-95c7-5789-9bda-21331edee243"
+OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"

@@ -124,7 +124,8 @@ function lya_G_dep(; M=1.0, initial_ratio=1 + 1e-2, H0=1e3, nsteps=3000, G_range
     xlabel("G")
     ylabel(raw"Lyapunov spectrum $\lambda_i$")
     legend(ncol=2, framealpha=1)
-    title("M = $M, G = $G, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
+    title("M = $M, \$\\phi_1 / \\phi_2\$ = $initial_ratio, \$H_0\$ = $H0")
+    savefig("lyapunov_plot.pdf")
 end
 
 

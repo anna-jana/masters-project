@@ -20,3 +20,5 @@ ma-venv/*
 orga/*
 transport_eq_in_time/data/*
 Manifest.toml
+experiments/H_osc_data/*
+.nfs*
