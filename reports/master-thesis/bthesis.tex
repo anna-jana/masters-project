@@ -103,7 +103,7 @@ A good reference and the source for this section is \cite{the_early_universe_kol
 \subsection{Dynamics of the Expansion of the Universe}
 \label{sec:dynamics_of_the_examsion_of_the_universe}
 The dynamics of the expanding universe is governed by Einsteins theory of general relativity. The Einstein field-equation connects geometry i.e. the curvature with the content i.e. the energy-momentum tensor $T$ of the universe \footnote{
-\todo{TODO: introduce all quantities????}
+See \cite{carroll_spacetime_and_geometry_2019} for definitions of these quantities.
 }:
 \begin{equation}
 	R_{\mu \nu} - \frac{1}{2} R g_{\mu \nu} = 8 \pi G T_{\mu \nu}.
@@ -113,7 +113,7 @@ We assume the cosmological assumption that the universe is homogeneous and isotr
 	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right].
 \end{equation}
 The quatitiy $a$ is called the scale factor and has to be determined by the Einstein field-equations.
-The parameter $k$ fixes the topology of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission \cite{planck2018}.
+The parameter $k$ fixes the topology of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission data \cite{planck2018}.
 On the overhand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
 \begin{equation}
 	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P),
@@ -128,7 +128,9 @@ A useful compact form of the Friedmann equation for $k = 0$ and $M_\mathrm{pl} =
 	\left( \frac{\dot{a}}{a} \right)^2 = \frac{8 \pi G}{3} \rho - \frac{k}{a^2}
 	}
 \end{equation}
-as well as the acceleration equation (second order e.o.m., from the trace of $T$)
+as well as the acceleration equation (second order e.o.m., from the trace of $T$) \footnote{
+See \cite[sec. 2.1, 3.1]{the_early_universe_kolb_and_turner} for intermediate steps of the derivation from the Einstein field equations.
+}
 \begin{equation}
 	\frac{\ddot{a}}{a} = - \frac{4 \pi G}{3} ( \rho + 3 p ).
 \end{equation}
@@ -239,11 +241,8 @@ and standard model radiation:
 	\rho_\mathrm{inf} &= \frac{1}{2} \dot{\phi}^2 + \frac{1}{2} m_\mathrm{inf}^2 \phi^2 \\
 	\rho &= \rho_\mathrm{inf} + \rho_\mathrm{rad}.
 \end{align}
-\todo{TODO: describe initial condition for reheating}
-\begin{align}
-	\rho_\mathrm{inf}(t_\mathrm{inf}) &= 3 M_\mathrm{pl}^2 H_\mathrm{inf}^2 \nonumber \\
-	\rho_\mathrm{rad}(t_\mathrm{inf}) &= 0
-\end{align}
+
+
 The term $\Gamma_\mathrm{inf}$ is a phenomenological term describing the decay of the inflaton field into standard model particles, as we will see shortly. In this thesis we are interested in the epoch after the inflaton starts oscillating and decays into standard model particles. This epoch is called reheating.
 If we multiply eq. \eqref{eq:inflaton_field_eq} with $\dot{\phi}$ and average over one oscillation, we obtain
 the equation for reheating:
@@ -262,6 +261,14 @@ The corresponding equation for the radiation energy density reads
 \end{equation}
 The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay. Here one can see the effect of the $\Gamma_{\mathrm{inf}}$: it creates an effective decay term in the rate equations.
 These equations together with the Friedmann equation, describe the background cosmology for our later computations.
+Finally we have to fix our initial conditions for these equations.
+At the end of inflation not radiation has been produced yet, hence it is vanishing.
+The inflaton field dominates the energy density of the universe and hence we get its energy density from the Hubble parameter at the end of inflation via the Friedmann equation.
+In formulas:
+\begin{align}
+	\rho_\mathrm{inf}(t_\mathrm{inf}) &= 3 M_\mathrm{pl}^2 H_\mathrm{inf}^2 \nonumber \\
+	\rho_\mathrm{rad}(t_\mathrm{inf}) &= 0.
+\end{align}
 
 \section{Baryogenesis}
 In this section we will introduce the problem for which this thesis investigates a possible solution.
@@ -305,7 +312,7 @@ in equilibrium the number densities only depend on the mass of the particles, wh
 \subsection{Baryogenesis in the Standard Model}
 \label{sec:baryogenesis_in_the_standard_model}
 
-Let us investigate these conditions in the known physics of the standard model (SM). While non-equilibrium and C / CP violation are know parts of the standard model, baryon number violation do not appear in the Feynman rules of SM interaction. In the standard model, the baryon and the lepton numbers are violated by the following non-perturbative term:
+Let us investigate these conditions in the known physics of the standard model (SM). While non-equilibrium and C / CP violation are know parts of the standard model, baryon number violations do not appear in the Feynman rules of SM interaction. In the standard model, the baryon and the lepton numbers are violated by the following non-perturbative term:
 \begin{equation}
 	\label{eq:B_and_L_current_equations}
 	\partial_\mu J^\mu_B = \partial_\mu J^\mu_L = N_f \frac{g_2^2}{32 \pi^2} F^{\mu \nu}_a \tilde{F}_{\mu \nu}^a,
@@ -333,9 +340,15 @@ If the field configurations at $t_i$ and $_f$ are so called pure gauges i.e. con
 \end{equation}
 then the Chern-Simons number is an integer.
 Hence one can not deform such vacuum configurations into each other without leaving the set of vacuum configurations.
-The change between them is hence a quantum tunneling process called an instanton \footnote{\todo{TODO: explain formal defintion of instanton}}. See figure \ref{fig:sphaleron_cartoon} for an illustration.
-Its rate is too low to have any significant effect, although this changes once we consider thermal processes i.e. so called sphalerons \footnote{\todo{TODO: explain sphaleron configurations}}.
-Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vaccua vanishes above the phase transition. Here the transition rate is given by
+The change between them is hence a quantum tunneling process called an instanton \footnote{
+The formal definition of an instanton is that they are solutions of the classical euqations of motion with finite energy in euclidean space-time. They have to go to a vacuum configuration for $t \to \pm \infty$ for the energy to be finite. Hence one can expand the path integral for the transition rate between the vacua around this instanton configuration to obtain an approximate result. This technique is discussed in ref. \cite[chap. 7]{aspects_of_symmmetry}. Still one calls to quantum tunneling process also an instanton.
+}. See figure \ref{fig:sphaleron_cartoon} for an illustration.
+Its rate is too low to have any significant effect, although this changes once we consider thermal processes i.e. so called sphalerons \footnote{
+Similarly a sphaleron is defined to be a static i.e. time-independent solution of the classical equations of motions which maximizes (or is a saddle point) i.e. is not a minimum of the energy.
+The rate of thermal transitions can then be computed using the energy of the sphaleron configuration as it gives the height of the potential barrier between vaccua.
+Still the process of thermal transitions is called a sphaleron. Later one we will also call the kind of expression in the right hand side of eq. \eqref{eq:B_and_L_current_equations} a sphaleron.
+}.
+Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vacua vanishes above the phase transition. Here the transition rate is given by
 \begin{align}
 	\Gamma_{\mathrm{sph}} &= (0.21 \pm 0.01) \left(\frac{N_c g^2 T}{m_D^2} \right) \left(\ln \left(\frac{m_D}{\gamma} \right) + 3.0410 \right) \frac{N_c^2 - 1}{N_c^2} (N_c \sqrt{2 \pi g})^5 T^4 \\
 	\gamma &= \frac{N_c g^2 T}{4 \pi} \left(\ln \left(\frac{m_D}{\gamma}\right) + 3.0410 \right) \nonumber \\
@@ -438,7 +451,9 @@ This was done in .ref \cite{Domcke:2020kcp_Generic_Couplings}, where the authors
 
 \chapter{The Transport Equation}
 \label{sec:transport_equation}
-The following derivation of the transport equation is taken from  \cite[appendix B]{Domcke:2020kcp_Generic_Couplings}.
+A derivation of the transport equation can be found in \cite[appendix B]{Domcke:2020kcp_Generic_Couplings}.
+However I did not understand this derivation fully. I developed this derivation on my own using the well known linear-response theory (here for quantum systems). 
+The starting point and the final result are the same.
 
 We start from the current (continuity) equation for the charges $Q_i$ with current $J_i^\mu$. These charges are changed by interaction $O_\alpha$ by $n_i^\alpha$:
 \begin{equation}
@@ -477,6 +492,8 @@ We now evaluate an arbitrary observable $A_i$ with this density matrix in linear
     &= \langle A_i \rangle_c + i \int_{-\infty}^t \mathrm{d} t' \langle [\sum_j \phi_j(t') A_j(t'), A_i(t)] \rangle_c  \nonumber \\
     &= \langle A_i \rangle_c + i \sum_j \int_{-\infty}^t \mathrm{d} t' \phi_j(t') \langle [A_j(t'), A_i(t)] \rangle_c
 \end{align}
+The final result is the Kudo-formula.
+
 
 \subsection{Perturbation by Small Chemical Potentials}
 Now we can apply this to the chemical potentials.
@@ -713,7 +730,7 @@ where the parameters in the reaction rates are given by:
 	\end{center}
 \end{table}
 Finally we can simplify the charges for the hight temperature regime of $T > 10^{12} \, \mathrm{GeV}$. Here first and second generation leptons and quarks are indistinguishable as their Yukawa couplings are small compared to the temperature.
-Hence we combine their charges to have the same chemical potential. We end up using the following charges: 
+Hence we combine their charges to have the same chemical potential. We end up using the following charges:
 \begin{table}[H]
 	\begin{center}
 		\begin{tabular}{lll}
@@ -750,23 +767,23 @@ In this basis the charge vectors for the interaction read:
 \section{Lepton Number Violation from Weinberg Operator}
 \label{sec:lepton_number_violation_from_weinberg_operator}
 
-The Weinberg operator it the lowest-order operator, which is introduced in an effective field theory approach to the standard model, which violates lepton number \cite[sec. 5]{Domcke:2020kcp_Generic_Couplings}. 
+The Weinberg operator it the lowest-order operator, which is introduced in an effective field theory approach to the standard model, which violates lepton number \cite[sec. 5]{Domcke:2020kcp_Generic_Couplings}.
 It is given as
 \begin{equation}
 	\mathcal{L}_\mathrm{Weinberg} = - \frac{m_v}{2 \nu_\mathrm{EW}^2} [H \cdot C \bar{L}] [L \cdot H]+ \, \mathrm{h.c.},
 \end{equation}
-where $m_v$ is the left handed neutrino mass, $\nu_\mathrm{EW} = 174 \, \mathrm{GeC}$ is the Higgs vacuum expectation value,
+where $m_v$ is the left handed neutrino mass, $\nu_\mathrm{EW} = 174 \, \mathrm{GeV}$ is the Higgs vacuum expectation value,
 $L$ the left-handed lepton doublet and $H$ the Higgs doublet.
-The notation $C$ means charge conjuction and is given for some spinor $\psi$ as
+The notation $C$ means charge conjunction and is given for some spinor $\psi$ as
 \begin{equation}
 	C \psi = i \gamma^2 \gamma^0 (\bar{\psi})^T
 \end{equation}
-and $\bar{\psi}$ is the Dirac adjoint spinor of the spinor $\psi$ given by
+where $\bar{\psi}$ is the Dirac adjoint spinor of the spinor $\psi$ given by
 \begin{equation}
 	\bar{\psi} = \psi^\dagger \gamma^0.
 \end{equation}
 The $\gamma^\mu$ are the gamma matrices.
-The operator violates lepton number by $\Delta L = 2$.
+From these definitions we see that the Weinberg operator violates lepton number by $\Delta L = 2$.
 It is parameterized by a mass of a left-handed neutrino as it can be realized by right-handed neutrinos in the seesaw mechanism, where the masses of right-handed neutrinos are related to the left-handed neutrinos and one finds an effective Weinberg operator of the above form.
 Its rate is given by
 \begin{align}
@@ -777,14 +794,33 @@ For this project we assume a neutrino mass of
 \begin{equation}
 	m_\nu = 0.05 \, \mathrm{eV}.
 \end{equation}
-The charge vector for the Weinberg operator for the combined first and second generation leptons and the third generation leptons are given as
+The charge vector of the Weinberg operator for the combined first and second generation leptons and the third generation leptons are given as
 \begin{align}
 	n^{W_{12}}_i &= (0,2,0,0,0,0,0,0,2) \nonumber \\
 	n^{W_{3}}_i &= (0,0,2,0,0,0,0,0,2).
 \end{align}
 The rate for the combined first two generations is the twice the rate of a single Weinberg operator.
 
-
+\section{Couplings of the Axion}
+Finally we discuss the possible couplings for the axion field $a$. As it is by definition shift-symmetric, the allowed couplings are to a current
+\begin{equation}
+	\mathcal{L}_\mathrm{axion-coupling} = \frac{a}{f_a} \partial_\mu J^\mu_i
+\end{equation}
+and to an anomaly
+\begin{equation}
+	\mathcal{L}_\mathrm{axion-coupling} = \frac{a}{f_a} F_{\mu \nu}^{ab} \tilde{F}_{ab}^{\mu \nu}.
+\end{equation}
+Here $J$ is some current and $F$ the field strength tensor of some Yang-Mills field.
+The first coupling is shift-symmetric as we can perform a partial integration in the action and move the derivative to the axion.
+The second coupling is shift symmetric because it can be rewritten in terms of a coupling of the first kind.
+In particular we consider couplings to the weak sphaleron where the field strength tensor is the electro-weak SU(2) field strength tensor,
+a direct coupling to the $B - L$ current and to the strong-sphaleron where the field strength tensor is the SU(3) field strength tensor of QCD.
+For these couplings the source vectors are:
+\begin{align}
+    (n_S^{WS} )^\alpha &= (1, 0, 0, 0, 0, 0)\nonumber \\
+	(n_S^{B-L})^\alpha &= (0, 0, 0, 0, -2, -2) \nonumber \\
+	(n_S^{SS} )^\alpha &= (0, 1, 0, 0, 0, 0).
+\end{align}
 
 
 \chapter{Motion of the Axion Field}
@@ -792,7 +828,7 @@ The rate for the combined first two generations is the twice the rate of a singl
 
 In this chapter we will discuss the models for axion-like fields and their cosmological dynamics.
 An overview of cosmological axion fields can be found in \cite{MarshAxionCosmo}.
-First let us discuss some generalities common to all models.
+First let us discuss some generalities common to different models.
 
 \section{Generalities}
 
@@ -944,7 +980,7 @@ From this we can find the equation of state which the tracking solution has in t
 	\label{eq:tracking_equation_of_state}
 	w_\phi \approx \frac{w - 2(\Lambda - 1)}{1 + 2(\Lambda - 1)}.
 \end{equation}
-Furthermore it is also necessary that the solution is stable under small perturbations of $w_\phi$, $w_\phi \to w'_\phi = w_\phi + \delta w_\phi$. This requires quite a bit of algebra and we will ????????
+Furthermore it is also necessary that the solution is stable under small perturbations of $w_\phi$, $w_\phi \to w'_\phi = w_\phi + \delta w_\phi$. This requires quite a bit of algebra and we refer to ref. \cite{tracking_solutions_Steinhardt:1999nw}.
 
 \section{ALP Realignment}
 This model is the simplest possible, which is a generic scalar field with mass $m_a$. Its Lagrangian is given as:
@@ -1104,16 +1140,16 @@ such that
 \begin{equation}
 	\coth(\pi m R) \approx 1 + 2 \epsilon^2 + O(\epsilon^4).
 \end{equation}
-Using this we find that: (2 or sqrt 3 in numerotro???)
+Using this we find that: \todo{(2 or sqrt 3 in numerotro???)}
 \begin{equation}
 	\phi = \frac{2 f}{\epsilon} F\big(\theta / 2 \big| - \epsilon^{-2} \big).
 \end{equation}
 Let us take the inverse of this equation to obtain $\theta(\phi)$, required to calculate the potential:
 \begin{equation}
-	\theta = 2 \operatorname{am}(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2}),
+	\theta = 2 \operatorname{am}\left(\frac{\epsilon \phi}{2 f} | - \epsilon^{-2}\right),
 \end{equation}
 where $\operatorname{am}$ is the Jacobi elliptic amplitude define as the inverse of $F$ in the first argument.
-Furthermore let us defined a helper function
+Furthermore let us define a helper function
 \begin{equation}
 	\tan(\theta / 2) = u(\phi),
 \end{equation}
@@ -1130,7 +1166,7 @@ Now we can compute the potential for $\phi$:
 	&= 2 \Lambda^4 \operatorname{sn}^2 ( \frac{\epsilon \phi}{2 f} | - \epsilon^{-2} ) \nonumber \\
 	&= \frac{2 \Lambda^4}{1 + \frac{1}{u^2(\phi)}}.
 \end{align}
-In the last line we have used that $\sin^2(x) = \frac{1}{1 + \frac{1}{\tan^2(x)}}$. The function $\operatorname{sc}$ is the sine of $\operatorname{am}$.
+In the last line we have used that $\sin^2(x) = \frac{1}{1 + \frac{1}{\tan^2(x)}}$. The function $\operatorname{sn}$ is the sine of $\operatorname{am}$.
 We also go thour the algebra of computing the first and second derivative of the potential for $\phi$ but skip intermediate steps:
 \begin{equation}
 	\frac{\partial V}{\partial \phi} = \frac{1}{\sqrt{Z}} \frac{\Lambda^4}{f} \frac{\partial U}{\partial \theta}
@@ -1156,6 +1192,7 @@ We also go thour the algebra of computing the first and second derivative of the
 \begin{equation}
 	\frac{\partial^2 u}{\partial \phi^2} = \frac{\varepsilon}{4 f^2} \left[ 2 \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-3} \operatorname{dn}(\phi/2f|1 - \varepsilon^2)^2 - (1 - \varepsilon^2) \operatorname{cn}(\phi/2f|1 - \varepsilon^2)^{-1} \right] \operatorname{sn}(\phi/2f|1 - \varepsilon^2)
 \end{equation}
+Here we have used $\operatorname{cn}$ which is the cosine of $\operatorname{am}$ and $\operatorname{dn}$ which is $\partial_u \operatorname{am}(u, s)$.
 The resulting potential $V(\phi)$ is plotted in figure \ref{fig:clockwork_pot_plot}. As one can see, potentials with hight values of $mR$ i.e. lower $\epsilon$ are deformed stronger as they are very steep for lager field values and flattened towards zero.
 This will strongly impact the dynamics of the field, as will discussed in the next section.
 \todo{TODO: derivation of boundary potentails, derivation of feff
@@ -1285,21 +1322,21 @@ More concretely if we decompose $\phi_k = f_k \theta_k$ where $\theta_k = \mathc
 the decay constants give the start of oscillations
 $3 H_\mathrm{osc} = \max(f_1, f_2)$.
 This means that in such a model we can generate a field velocity and source baryogenesis, even at lower particle masses. Lets couple the field $\phi_1$ to the standard model.
-It hence sources baryogenesis. Due to the coupling it also decays into standard model particles at $t_1^\mathrm{decay}$. 
+It hence sources baryogenesis. Due to the coupling it also decays into standard model particles at $t_1^\mathrm{decay}$.
 The other field $\phi_2$ then will not get a contribution to its effective mass from the condensate of the field $\phi_1$ anymore. Hence
 \begin{equation}
 	m_2^\mathrm{eff} = m_2 \, \mathrm{for} \, t > t_1^\mathrm{decay}.
 \end{equation}
 If at $t_1^\mathrm{decay}$ we find $3 H(t_1^\mathrm{decay}) > m_2$, then the field of $\phi_2$ will be frozen again.
 Hence the relic density of the field $\phi_1$ from realignment once the it starts to oscillate again.
-Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like. 
+Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
 
 The problem with this kind of coupling is that it is not (discretely) shift-symmetric and hence can not be a valid coupling for an axion.
-A potential for a system of axion would be given as 
+A potential for a system of axion would be given as
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \frac{\phi_j}{f_j} \right) \right]
 \end{equation}
-Sadly this model doesn't posses the properties of the model discussed above. One could take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density. 
+Sadly this model doesn't posses the properties of the model discussed above. One could take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density.
 
 
 
@@ -1461,9 +1498,9 @@ The clockwork axion model has the following parameters:
 	\end{center}
 \end{table}
 As in the generic ALP realignment model, we set Hubble parameter at the end of inflation to the value of $H_\mathrm{inf} = 2.51 \times 10^{12} \, \mathrm{GeV}$ and the initial misalignment angle to $\theta_i = 1$ fixed for simplicity.
-First let us plot the parameter space of the clockwork axion mass $m_\phi$ vs the size of the extra dimension. 
-We exclude the region where the axion would start to oscillate before the end of inflation because of the initial condition issue. 
-Furthermore we exclude the region where the axion decays within the life time of the universe. Because the axion is still relatively light in this region, the decay happens quite late and is hence excluded. 
+First let us plot the parameter space of the clockwork axion mass $m_\phi$ vs the size of the extra dimension.
+We exclude the region where the axion would start to oscillate before the end of inflation because of the initial condition issue.
+Furthermore we exclude the region where the axion decays within the life time of the universe. Because the axion is still relatively light in this region, the decay happens quite late and is hence excluded.
 In addition to the baryon asymmetry, we are also interested in the dark matter relic density of the axion.
 Hence in this 2D parameter subspace, the correct parameters (successful baryogenesis and the relic density matches the dark matter density) are isolated points.
 These parameter subspaces are shown for the different couplings in fig. \ref{fig:clockwork_parameter_space_aFF}, \ref{fig:clockwork_parameter_space_aJ} and \ref{fig:clockwork_parameter_space_aGG} for different values of the inflaton decay rate $\Gamma_\mathrm{inf} = 10^6 \, \mathrm{GeV}, \,
