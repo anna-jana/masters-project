@@ -50,6 +50,11 @@ const alg = TRBDF2()
 const settings = (reltol=1e-6, abstol=1e-6, maxiters=10^15)
 
 ######################## plot trajectories and phasespace projections ###################
+function plot_evolution()
+    plot_evolution(1.0, 1e4, 1.01, 1e3, H_end=1e-2)
+    savefig("example_field_evolution_quatic_coupling.pdf")
+end
+
 function plot_evolution(M, G, initial_ratio, H0; nsteps=1000, H_end=M/3)
     tmax = H_to_t(H_end, H0)
     t0 = H_to_t(H0 / 1.001, H0)

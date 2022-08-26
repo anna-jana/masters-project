@@ -270,9 +270,10 @@ In formulas:
 	\rho_\mathrm{rad}(t_\mathrm{inf}) &= 0.
 \end{align}
 
+
 \section{Baryogenesis}
 In this section we will introduce the problem for which this thesis investigates a possible solution.
-The problem of baryogenesis can be expressed as follows: Why does the universe contain so much baryonic-matter? Or more precise: The universe as observed today, is made up of matter with very little antimatter, while in earlier times both were present in high numbers being in chemical equilibrium. As the universe cooled down, most of matter and antimatter annihilated into photons. Therefore it is reasonable to express the amount of matter-antimatter asymmetry by the ratio of the effective baryon number and the number of photons:
+The problem of baryogenesis can be expressed as follows: Why does the universe contain so much baryonic-matter? Or more precisely: The universe as observed today, is made up of matter with very little antimatter, while in earlier times both were present in high numbers being in chemical equilibrium. As the universe cooled down, most of matter and antimatter annihilated into photons. Therefore it is reasonable to express the amount of matter-antimatter asymmetry by the ratio of the effective baryon number and the number of photons:
 \begin{equation}
 	\eta_B = \frac{n_+ - n_-}{n_\gamma},
 \end{equation}
@@ -300,7 +301,7 @@ In the standard model one finds $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mat
 \subsection{Sakharov Conditions}
 Andrei Sakharov formulated in 1967 three necessary conditions required for baryogenesis \cite{Sakharov_1991}.
 The first is that baryon number has to be violated in the process. We start from the assumption that the initial baryon asymmetry was vanishing as it was diluted by inflation.
-Hence the baryon number as to the violated in a dynamical process.
+Hence the baryon number as to the produced in a dynamical process.
 The second one is less obvious: C and CP symmetries have to be broken.
 This is required as only if
 reactions exists that actually biased toward the creation of baryons not anti-baryons an effective asymmetry can be produced.
@@ -1320,6 +1321,16 @@ A first attempt is a quartic coupling between them of the form:
 	\label{eq:multi_axion_quatic}
 	\mathcal{L} = \frac{1}{2} (\partial \phi_1)^2 + \frac{1}{2} (\partial \phi_2)^2 - \frac{1}{2} m_1^2 \phi_1^2 - \frac{1}{2} m_2^2 \phi_2^2 - g \phi_1^2 \phi_2^2.
 \end{equation}
+An example evolution of the two fields is shown in fig. \ref{fig:multi_axion_quatic_evolution_example}.
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{../../experiments/example_field_evolution_quatic_coupling.pdf}
+	\caption{An example evolution of the multi axion system as defined in eq. \eqref{eq:multi_axion_quatic}.
+	The parameters are dimensionless combinations of the physical ones: $M = m_2^2 / m_1^2$ and $G = g \Lambda^2 / m_1^2$ where $\phi_\mathrm{phys} = \Lambda \phi$. Their values are given in the title. 
+	The top plot shows the time-evolution of the two fields, with the Hubble parameter on the log-scale x-axis. 
+	The bottom plot shows the same evolution in configuration space, which the potential plotted in log-values in the background.
+	}
+	\label{fig:multi_axion_quatic_evolution_example}
+\end{figure}
 Here the effective mass of the fields are given by
 \begin{align}
 	\label{eq:multi_axion_H_osc}
@@ -1333,7 +1344,7 @@ $3 H_\mathrm{osc} = \max(m_1^\mathrm{eff}, m_2^\mathrm{eff}) \approx \max(f_1, f
 We tested this numerically. The results are shown in fig. \ref{fig:multi_axion_quatic_H_osc}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{../../experiments/H_osc_plots.pdf}
-	\caption{The numerically computed $H_osc$ for a multi axion system as defined in eq. \eqref{eq:multi_axion_quatic}. Each subplot is for different rations of the initial conditions for the two fields. Each subplot contains three colors of curves corresponding to different redefined dimensionless mass parameters $M = m_2^2 / m_1^2$. The solid curves are the numerical results and the dashed ones are the theory prediction from eq. \eqref{eq:multi_axion_H_osc} (without the approximation). The x-axis is the redefined coupling $G = g \Lambda^2 / m_1^2$ where $\phi_\mathrm{phys} = \Lambda \phi$ and the y-axis the Hubble parameter $H_\mathrm{osc}$ where oscillations start.}
+	\caption{The numerically computed $H_osc$ for a multi axion system as defined in eq. \eqref{eq:multi_axion_quatic}. Each subplot is for different rations of the initial conditions for the two fields. Each subplot contains three colors of curves corresponding to different redefined dimensionless mass parameters $M$. The solid curves are the numerical results and the dashed ones are the theory prediction from eq. \eqref{eq:multi_axion_H_osc} (without the approximation). The x-axis is the redefined coupling $G$ and the y-axis the Hubble parameter $H_\mathrm{osc}$ where oscillations start.}
 	\label{fig:multi_axion_quatic_H_osc}
 \end{figure}
 
@@ -1345,10 +1356,11 @@ The other field $\phi_2$ then will not get a contribution to its effective mass 
 \end{equation}
 If at $t_1^\mathrm{decay}$ we find $3 H(t_1^\mathrm{decay}) > m_2$, then the field of $\phi_2$ will be frozen again.
 Hence the relic density of the field $\phi_1$ from realignment once the it starts to oscillate again.
-Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. This is evident from the fact that parts from the parameter space exhibit a positive largest Lyapunov exponents \footnote{The sum of Lyapunov exponents is almost zero in our result. As this is almost a Hamiltonian system (apart from the Hubble friction, which is low in this regime) the sum of Lyapunov exponents should be almost zero.}. This is shown in fig. \ref{fig:multi_axions_lyapunov}. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
+
+Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. This is evident from the fact that parts from the parameter space exhibit a positive largest Lyapunov exponents \footnote{The sum of Lyapunov exponents is almost zero in our result. As this is almost a Hamiltonian system (apart from the Hubble friction, which is low in this regime) the sum of Lyapunov exponents should be almost zero.}. This is shown in fig. \ref{fig:multi_axions_lyapunov}. For a definition and explanation of Lyapunov exponents see ref. \cite{nonlinear_dynamics}. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{../../experiments/lyapunov_plot.pdf}
-	\caption{A plot of the lyapunov spectrum of the multi axion system with a quatic coupling defined in eq. \eqref{eq:multi_axion_quatic}. The parameters are defined like in fig. \ref{fig:multi_axion_quatic_H_osc}. The Lyapunov exponents $\lambda_i$ are shown as a function of $G$ as solid lines. The values of the other parameters are shown in the title. The sum of Lyapunov exponents is shown as a red dashed line (barley visible, almost on the x-axis). The value of the smallest $G$ where the largest Lyapunov exponent is positive is indicated by a dashed vertical line.
+	\caption{A plot of the lyapunov spectrum of the multi axion system with a quatic coupling defined in eq. \eqref{eq:multi_axion_quatic}. The parameters are defined like in fig. \ref{fig:multi_axion_quatic_evolution_example}. The Lyapunov exponents $\lambda_i$ are shown as a function of $G$ as solid lines. The values of the other parameters are shown in the title. The sum of Lyapunov exponents is shown as a red dashed line (barley visible, almost on the x-axis). The value of the smallest $G$ where the largest Lyapunov exponent is positive is indicated by a dashed vertical line.
 	}
 	\label{fig:multi_axions_lyapunov}
 \end{figure}
@@ -1359,7 +1371,6 @@ A potential for a system of axion would be given as
 	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \frac{\phi_j}{f_j} \right) \right]
 \end{equation}
 Sadly this model doesn't posses the properties of the model discussed above. One could take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density.
-
 
 
 \chapter{Implementation of the Numerical Simulations}
