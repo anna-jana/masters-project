@@ -357,7 +357,7 @@ Similarly a sphaleron is defined to be a static i.e. time-independent solution o
 The rate of thermal transitions can then be computed using the energy of the sphaleron configuration as it gives the height of the potential barrier between vaccua.
 Still the process of thermal transitions is called a sphaleron. Later one we will also call the kind of expression in the right hand side of eq. \eqref{eq:B_and_L_current_equations} a sphaleron.
 }.
-Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vacua vanishes above the phase transition. Here the transition rate is given by
+Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vacua vanishes above the phase transition. Here the transition rate is given by \cite{sphaleron_rate_symmetric_phase_Moore_2011}
 \begin{align}
 	\Gamma_{\mathrm{sph}} &= (0.21 \pm 0.01) \left(\frac{N_c g^2 T}{m_D^2} \right) \left(\ln \left(\frac{m_D}{\gamma} \right) + 3.0410 \right) \frac{N_c^2 - 1}{N_c^2} (N_c \sqrt{2 \pi g})^5 T^4 \\
 	\gamma &= \frac{N_c g^2 T}{4 \pi} \left(\ln \left(\frac{m_D}{\gamma}\right) + 3.0410 \right) \nonumber \\
@@ -1378,7 +1378,18 @@ A potential for a system of axion would be given as
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \frac{\phi_j}{f_j} \right) \right]
 \end{equation}
-Sadly this model doesn't posses the properties of the model discussed above. One could take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density.
+Sadly this model doesn't posses the properties of the model discussed above.
+This can be seen from the taylor expandsion of the potential:
+\begin{equation}
+	- \frac{\Lambda_{0}^{4} Q_{00}^{2} Q_{01}^{2} + \Lambda_{1}^{4} Q_{10}^{2} Q_{11}^{2} }{4 f_{0}^{2} f_{1}^{2}} \phi_{0}^{2} \phi_{1}^{2}
+	+ \frac{\Lambda_{0}^{4} Q_{00}^{2}
+	+ \Lambda_{1}^{4} Q_{10}^{2} }{2 f_{0}^{2}} \phi_{0}^{2}
+	+ \frac{\Lambda_{0}^{4} Q_{01}^{2}
+	+ \Lambda_{1}^{4} Q_{11}^{2}}{2 f_{1}^{2}} \phi_{1}^{2}
+	+ \frac{\Lambda_{0}^{4} Q_{00} Q_{01} + \Lambda_{1}^{4} Q_{10} Q_{11} }{f_{0} f_{1}} \phi_{0} \phi_{1} 
+\end{equation}
+The quatic term is negtive, hence it is domainted by the other terms and it can't function as a generator for a higher effective mass. 
+Therefore for this model, one could only take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density.
 
 
 \chapter{Implementation of the Numerical Simulations}
