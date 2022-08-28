@@ -57,10 +57,14 @@
 \begin{otherlanguage}{english} % keep this for the hole thesis
 
 \begin{abstract}
-  Here the key results of the thesis may be presented in about
-  half a page.
+  In this thesis we determine the baryon asymmetry of the universe numerically in a model of spontaneous baryogenesis. We consider 
+  two different models, a generic model of an axion-like-particle and a model of a clockwork axion. The clockwork model also generates a dark matter density.
+  Both models have been discussed in the literature but the results have not been computed correctly as was previously pointed out
+  We do this using a previously developed formalism based on a transport equation derived in linear response theory, which we discuss in detail. We apply this formalism to concrete model for the first time.
+  Furthermore we elaborate on multiple coupled fields, without coming up with an interesting one.
+  
   \bigskip\par
-  \noindent \textbf{Keywords:} Physics, Masters Thesis, Cosmology, The Early Universe, Reheating, Axions, Baryogenesis, Spontaneous Baryogenesis, Leptogenesis, Realignment, Clockwork Theory, String Theory Axions, Non-Linear Dynamics, Thermal Field Theory, Linear Response, Transport Equation, Numerical Simulation
+  \noindent \textbf{Keywords:} Cosmology, Reheating, Axions, Baryogenesis, Spontaneous Baryogenesis, Leptogenesis, Realignment, Clockwork Theory, Thermal Field Theory, Linear Response Theory, Transport Equation, Non-Linear Dynamics, Numerical Simulation
 \end{abstract}
 
 \cleardoublepage
@@ -82,7 +86,7 @@ This time-derivative then biases some reactions in such a way that an asymmetry 
 We will investiage the quantitative outcome of this process for different axion models for the cosmological field.
 Axions are group of proposed particles which extend the standard model.
 They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are this wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar whos shift-symmetry is often broken by non-perturbatativ effects like instantons.
-For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation \todo{????? TODO: reference?????}
+For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation \cite{Kim_multi_axions:2004rp}.
 Sometimes axions only refer to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to thesis kinds of standard model extension always as axions.
 Also we consider different coupling of these axion fields to standard model particles. For this, this thesis is based on the work of the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings}, who developed a formalism using a transport equation in linear response theory to compute the asymmetry for a number of couplings.
 Let us now go over the structure of this thesis.
@@ -1372,8 +1376,14 @@ Due to the non-linearity and the higher dimension of the phase-space \footnote{C
 	}
 	\label{fig:multi_axions_lyapunov}
 \end{figure}
+Unfortunately this is very hard to simulate numerically as one needs to propagate the fields to the decay of field $\phi_1$. This takes a long time as the decay rate is very low due to the scaling
+\begin{equation}
+	\Gamma \sim \frac{m_1^3}{f_1^2}.
+\end{equation}
+In this time-frame a lot of oscillations need to the integrated, making this simulation unfeasible.
 
-The problem with this kind of coupling is that it is not (discretely) shift-symmetric and hence can not be a valid coupling for an axion.
+The problem with the quatic coupling is that it is not (discretely) shift-symmetric and hence can not be a valid coupling for an axion.
+Multi axion system have been discussed in the context of inflation in ref. \cite{Kim_multi_axions:2004rp}.
 A potential for a system of axion would be given as
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} \sum_i \left( \partial_\mu \phi_i \right)^2 - \sum_i \Lambda_i^4 \left[ 1 - \cos \left( \sum_j Q_{i,j} \, \frac{\phi_j}{f_j} \right) \right]
@@ -1388,7 +1398,7 @@ This can be seen from the taylor expandsion of the potential:
 	+ \Lambda_{1}^{4} Q_{11}^{2}}{2 f_{1}^{2}} \phi_{1}^{2}
 	+ \frac{\Lambda_{0}^{4} Q_{00} Q_{01} + \Lambda_{1}^{4} Q_{10} Q_{11} }{f_{0} f_{1}} \phi_{0} \phi_{1} 
 \end{equation}
-The quatic term is negtive, hence it is domainted by the other terms and it can't function as a generator for a higher effective mass. 
+The quatic term is negtive, hence it is dominated by the other terms and it can't function as a generator for a higher effective mass. 
 Therefore for this model, one could only take one axion with a large mass which sources baryogenesis and one light field which creates the dark matter density.
 
 
@@ -1599,12 +1609,34 @@ In all these parameter scans, we see that one can generate the baryon asymmetry 
 This shows that this model is viable for different couplings and a wide parameter range.
 
 
-\chapter{Summery and Conclusion}
+\chapter{Conclusion}
+
+\section{Summery}
+In this thesis we have investigated the mechanism of spontaneous baryogenesis.
+We have implemented it using axion models during reheating generating a $B - L$ charge, which is converted to B and L charges by standard model sphalerons.
+We obtained results for two models. First the generic axion like particle model, which generates the necessary velocity by realignment.
+Here the energy scale required is given by the mass. Due to the coupling and high mass, the axion decays into standard model particles.
+This introduces a dilution of the asymmetry, which allows us to find lower bounds to the mass and the inflaton decay constant. 
+The other model is the clockwork axion model.
+Here also the fast-roll epoch generates the necessary velocity. However it is followed by a tracking episode, which conserves the density parameter of the field.
+Also the mass and couplings are suppressed by a small parameter.
+These two things allow this model to also generate the dark matter density.
+We have computed the asymmetry correctly in both models using the transport equation for different couplings. This has not been done in the literature as the original authors of the transport equation formalism only applied it to toy models of the axion with fixed field evolutions.
+Furthermore we also elaborated on the possibility of implementing a model with multiple fields
+but didn't managed to find a model with interesting dynamics which generates both the baryon asymmetry and the dark matter density, which was feasible to simulated and would fit into an axion framework.
+
+\section{Future Developments}
+Our projects could be extended in multiple ways.
+First one could continue to work on the multi field idea. Maybe it would also be interesting to implement inflation with an axion field.
+Second one could consider more complicated coupling i.e. linear combinations of the couplings considered in this thesis.
+Third one could implement the baryogenesis mechanism during the electro-weak phase-transition as opposed to reheating like in the first example in ref. \cite{Domcke:2020kcp_Generic_Couplings}.
+In any case the possibilities of spontaneous baryogenesis have not been extensively treated in the literature and leave multiple possibilities for future research.
 
 
-\appendix
 
-\chapter{Some Appendix ....}
+
+% \appendix
+
 
 \cleardoublepage
 %% Bibliographie. Das Argument muss der Name der BIBTeX-Datenbank stehen.
@@ -1613,7 +1645,7 @@ This shows that this model is viable for different couplings and a wide paramete
 
 \chapter*{Acknowledgment}
 I thank Doddy Marsh and Laura Covi for the supervison and the possibility to take half a year off for a health break.
-I also thank Charlie, Joe, Melina, Mo*e, Resa, Sara, Yuri for helping me in difficult times.
+I also thank Charlie, Joe, Melina, Mo*e, Resa, Sara (in alphabetical order) for helping me in difficult times.
 
 \end{otherlanguage}
 %% Dieser Befehl MUSS am Ende stehen und erzeugt die Erklaerung ueber die
