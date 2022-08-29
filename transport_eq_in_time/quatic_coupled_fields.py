@@ -19,7 +19,7 @@ class QuaticCoupledFields(axion_motion.AxionField):
         )
         return theta_dot1, theta_dot2, theta_dotdot1, theta_dotdot2
 
-    def find_dynamical_scale(self, *params):
+    def find_dynamical_scale(self, m_1, m_2, g, f_1, f_2):
         return max(np.sqrt(m_1**2 + g * f_2**2), np.sqrt(m_2**2 + g * f_1**2))
 
     def find_H_osc(self, *params):
@@ -29,7 +29,7 @@ class QuaticCoupledFields(axion_motion.AxionField):
         raise NotImplementedError
          # return m_2 / self.find_dynamical_scale(self, m_1, m_2, g, f_1, f_2) # the second axion has a relic density
 
-    def calc_source(self, y, conv_factor, Q, Lambda):
+    def calc_source(self, y, conv_factor, m_1, m_2, g, f_1, f_2):
         return y[2] / conv_factor # the first axion is coupled to the standard model
 
     def calc_V(self, thetas, m_1, m_2, g, f_1, f_2):
@@ -40,9 +40,9 @@ class QuaticCoupledFields(axion_motion.AxionField):
             g * f_1**2 * f_2**2 * theta1**2 * theta2**2
         )
 
-    def get_energy(self, y, m_1, m_2, g, f_1, f_2):
+    def get_energy(self, y, _f_a, m_1, m_2, g, f_1, f_2):
         theta1, theta2, theta_dot1, theta_dot2 = y
-        energy_scale = self.find_dynamical_scale(Q, Lambda)
+        energy_scale = self.find_dynamical_scale(m_1, m_2, g, f_1, f_2)
         return (
             0.5 * f_1**2 * theta_dot1**2 +
             0.5 * f_2**2 * theta_dot2**2 +

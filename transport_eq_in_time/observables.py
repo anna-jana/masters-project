@@ -54,7 +54,10 @@ def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_
 
     return f
 
-def compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T, axion_init, axion_parameter, axion_model, debug=False):
+def compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T,
+        axion_init, axion_parameter, axion_model, f_a,
+        nosc_per_step, nsamples_per_osc, rtol_relic, relic_max_steps,
+        conv_factor, Gamma_inf, debug=False):
     if debug: relic_density_start = time.time()
     H_osc = axion_model.find_H_osc(*axion_parameter)
     def H_to_t(H):
@@ -67,6 +70,7 @@ def compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T, axion_in
         t_advance_axion = t_osc - t
         t_advance_inf = t_advance_axion * conv_factor
         if debug: print("advancing to oscillation: {= t_advance}, {= H}, {= H_osc}")
+        scale = rho_R_init
         sol_rh, T_and_H_fn, _ = decay_process.solve(t_advance_inf, rho_R_init, rho_inf_init, scale, Gamma_inf)
         sol_axion = axion_model.solve(axion_init, axion_parameter, t_advance_axion, T_and_H_fn, Gamma_inf)
         rho_R_init = decay_process.find_end_rad_energy(sol_rh, scale)
@@ -282,8 +286,10 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model,
         rho_R_init = decay_process.find_end_rad_energy(sol_rh, scale)
         rho_inf_init = decay_process.find_end_field_energy(sol_rh, rho_inf_init)
         current_T, _ = T_and_H_fn(np.exp(sol_rh.t[-1]))
-        relic_status, Omega_h_sq = compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T, axion_init,
-                                                         axion_parameter, axion_model, debug=debug)
+        relic_status, Omega_h_sq = compute_relic_density(
+                H_start, rho_R_init, rho_inf_init, current_T, axion_init,
+                axion_parameter, axion_model, f_a, nosc_per_step, nsamples_per_osc,
+                rtol_relic, relic_max_steps, conv_factor, Gamma_inf, debug=debug)
         if relic_status != Status.OK: status = relic_status
     else:
         Omega_h_sq = 0.0
