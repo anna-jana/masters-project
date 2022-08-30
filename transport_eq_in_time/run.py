@@ -14,6 +14,7 @@ def run_task(task):
     except Exception as e:
         x = [np.nan]*nres
         logging.error(f"step {n} raised an exception: {e}")
+        raise
     assert len(x) == nres
     end = time.time()
     logging.info(f"{n}th result: {x} (took {end - start} seconds)")
@@ -67,12 +68,12 @@ def run(name, f, argnames, xss, nres):
 def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource_vector):
     source_vector = transport_equation.source_vectors[nsource_vector]
     model = observables.Model.make(H_inf, Gamma_inf,
-            generic_al.realignment_axion_field, (m_a,), source_vector, f_a)
-    asym_config = observables.AsymmetrySolverConfig(calc_init_time=True)
-    status, state, eta_B = observables.compute_asymmetry(model, asym_config)
+            generic_alp.realignment_axion_field, (m_a,), source_vector, f_a)
+    asym_config = observables.AsymmetrySolverConfig(calc_init_time=True, debug=False)
+    status, state, eta_B = observables.compute_asymmetry(model, (1.0, 0.0), asym_config)
     f = observables.compute_dilution_factor_from_axion_decay(model, state, asym_config)
-    rho_end_axion = model.axion_model.get_energy(state.axion, model.f_a, model.axion_parameter)
-    return eta_B, f, status.rho_rad, rho_end_axion, float(status.value)
+    rho_end_axion = model.axion_model.get_energy(state.axion, model.f_a, *model.axion_parameter)
+    return eta_B, f, state.rho_rad, rho_end_axion, float(status.value)
 
 f_a = 4 * 1e15
 H_inf_max = f_a*2*np.pi*1e-5 / 10
@@ -82,7 +83,7 @@ def run_generic_alp(nsource_vector=0, m_a_min=1e6, Gamma_inf_min=1e6):
     Gamma_inf_list = np.geomspace(Gamma_inf_min, H_inf_max, N)
     m_a_list = np.geomspace(m_a_min, H_inf_max, N)
     run("generic_alp", f_generic_alp, ["H_inf", "Gamma_inf", "m_a", "f_a", "nsource_vector"],
-        [[H_inf_max], Gamma_inf_list, m_a_list, [f_a], [nsource_vector]])
+        [[H_inf_max], Gamma_inf_list, m_a_list, [f_a], [nsource_vector]], 5)
 
 ############################ clockwork ##########################
 def f_clockwork(H_inf, Gamma_inf, mR, m_phi, nsource_vector):
@@ -94,7 +95,7 @@ def f_clockwork(H_inf, Gamma_inf, mR, m_phi, nsource_vector):
     ax0 = (clockwork_axion.theta_to_phi_over_f(theta_i, eps), 0.0)
     model = observables.Model.make(H_inf, Gamma_inf, clockwork_axion.clockwork_axion_field,
             (eps, M), source_vector, f)
-    status, state, eta_B = observables.compute_asymmetry(model,
+    status, state, eta_B = observables.compute_asymmetry(model, (clockwork_axion.theta_to_phi_over_f(theta_i), 0.0),
             observables.AsymmetrySolverConfig(calc_init_time=True, isocurvature_check=False))
     if status != observables.Status.OK:
         return eta_B, np.nan, float(status.values)
@@ -108,7 +109,7 @@ def run_cw_mR_vs_mphi(nsource_vector=0):
     m_phi_list = np.geomspace(1e-6, 1e8, N) * 1e-9 # [GeV]
     mR_list = np.linspace(1, 15, N)
     run("clockwork_mR_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi", "nsource_vector"],
-        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [0, 1, 2]])
+        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [0, 1, 2]], 3)
 
 def run_cw_Gammainf_vs_mphi():
     mR_list = [8, 11, 14]
@@ -116,7 +117,7 @@ def run_cw_Gammainf_vs_mphi():
     m_phi_list = np.geomspace(1e-6, 1e6, N) * 1e-9 # [GeV]
     Gamma_inf_list = np.geomspace(1e-5 * H_inf_max, H_inf_max, N)
     run("clockwork_Gammainf_vs_mphi", f_clockwork, ["H_inf", "Gamma_inf", "mR", "m_phi", "nsource_vector"],
-        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [0, 1, 2]])
+        [[H_inf_max], Gamma_inf_list, mR_list, m_phi_list, [0, 1, 2]], 3)
 
 
 ################################## main ###################################
