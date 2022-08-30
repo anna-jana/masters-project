@@ -107,7 +107,7 @@ dilutions_filename = os.path.join(util.datadir, "dilutions_alp.pkl")
 f_a = 1e13
 
 def recompute_all_dilutions():
-    dilutions = [recompute_dilution(util.load_pkl(f"generic_alp{i}.pkl"), f_a) for i in [1,2,3]]
+    dilutions = [recompute_dilution(util.load_data("generic_alp", i), f_a) for i in [1,2,3]]
     util.save_pkl(dilutions, dilutions_filename)
 
 example_trajectories_filename = os.path.join(util.datadir, "example_trajectories_alp.pkl")
@@ -117,8 +117,8 @@ interesting_points_ss = [(6e6, 1e9), (6e7, 4e9), (2e9, 1e10), (5e6, 5e6), (2e9, 
 all_points = [interesting_points_ws, interesting_points_jbl, interesting_points_ss]
 
 def compute_all_example_trajectories():
-    data = util.load_pkl("generic_alp1.pkl")
+    data = util.load_data("generic_alp", 1)
     H_inf = data["H_inf"][0]
-    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, nsource, ps)
+    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, nsource, ps) 
                                  for nsource, ps in enumerate(all_points)]
     util.save_pkl(all_interesting_solutions, example_trajectories_filename)
