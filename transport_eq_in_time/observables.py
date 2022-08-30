@@ -186,7 +186,7 @@ class Solution:
         B_minus_L_red_chem = transport_equation.calc_B_minus_L(red_chem_pots)
         # convergence by change within the last integration interval
         a, b = np.max(B_minus_L_red_chem), np.min(B_minus_L_red_chem)
-        delta = np.abs((a - b) / np.mean(B_minus_L_red_chem))
+        delta = np.abs((a - b) / ((a + b) / 2))
 
         if asym_config.debug:
             print("B-L start .. end:", B_minus_L_red_chem[0], B_minus_L_red_chem[-1])

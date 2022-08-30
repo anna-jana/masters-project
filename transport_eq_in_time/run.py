@@ -14,7 +14,6 @@ def run_task(task):
     except Exception as e:
         x = [np.nan]*nres
         logging.error(f"step {n} raised an exception: {e}")
-        raise
     assert len(x) == nres
     end = time.time()
     logging.info(f"{n}th result: {x} (took {end - start} seconds)")
@@ -75,6 +74,7 @@ def f_generic_alp(H_inf, Gamma_inf, m_a, f_a, nsource_vector):
     rho_end_axion = model.axion_model.get_energy(state.axion, model.f_a, *model.axion_parameter)
     return eta_B, f, state.rho_rad, rho_end_axion, float(status.value)
 
+eta_B_index, f_index, rho_rad_index, rho_axion_index, status_index = range(5)
 f_a = 4 * 1e15
 H_inf_max = f_a*2*np.pi*1e-5 / 10
 
@@ -102,6 +102,8 @@ def f_clockwork(H_inf, Gamma_inf, mR, m_phi, nsource_vector):
     status, Omega_h_sq = observables.compute_relic_density_from_state(
             mode, state, observables.RelicDensitySolverConfig())
     return eta_B, Omega_h_sq, float(status.value)
+
+eta_B_index, Omega_h_sq_index, cw_status_index = range(3)
 
 def run_cw_mR_vs_mphi(nsource_vector=0):
     Gamma_inf_list = np.array([1e-4, 1e-2, 1]) * H_inf_max
