@@ -1,10 +1,10 @@
 import time, importlib, itertools, enum
-from dataclasses import dataclass, field
-from typing import Callable
 import numpy as np, matplotlib.pyplot as plt
 from scipy.optimize import root
 import decay_process, axion_motion, transport_equation
 decay_process, axion_motion, transport_equation = map(importlib.reload, (decay_process, axion_motion, transport_equation))
+
+Status = enum.Enum("Status", "OK ASYM_CONVERGENCE_FAILURE RELIC_DENSITY_CONVERGENCE_FAILURE AXION_OSCILLATES_BEFORE_INFLATION INFLATON_DECAYS_DURING_INFLATION ISOCURVATURE_BOUNDS")
 
 def calc_entropy_density(T, g_star):
     return 2*np.pi**2 / 45 * g_star * T**3
@@ -30,243 +30,34 @@ def abundance_to_relic_density(Y, m):
 def red_chem_pot_to_asymmetry(red_chem_pot_B_minus_L):
     return asym_const * red_chem_pot_B_minus_L
 
-Status = enum.Enum("Status", """
-OK
-ASYM_CONVERGENCE_FAILURE
-RELIC_DENSITY_CONVERGENCE_FAILURE
-AXION_OSCILLATES_BEFORE_INFLATION
-INFLATON_DECAYS_DURING_INFLATION
-ISOCURVATURE_BOUNDS
-""")
-
-@dataclass
-class AsymmetrySolverConfig:
-    calc_init_time: bool = False
-    asym_max_steps: int|None = None
-    axion_decay_time: float = 10.0
-    return_evolution: bool = False
-    nsamples: int = 100
-    debug: bool = False
-    isocurvature_check: bool = False
-    rtol_asym: float = 1e-3
-
-@dataclass
-class RelicDensitySolverConfig:
-    nosc_per_step: int = 5
-    nsamples_per_osc: int = 20
-    rtol_relic: float = 1e-3
-    relic_max_steps: int|None = None
-    debug: bool = False
-
-@dataclass
-class Model:
-    H_inf: float
-    Gamma_inf: float
-    axion_parameter = field()
-    axion_model: axion_motion.AxionField
-    source_vector_axion: np.ndarray[float]
-    f_a: float
-    energy_scale: float
-    conv_factor: float
-    scale: float
-
-    @classmethod
-    def make(cls, H_inf, Gamma_inf, axion_model, axion_parameter, source_vector, f_a):
-        energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
-        conv_factor = Gamma_inf / energy_scale
-        scale = decay_process.find_scale(Gamma_inf)
-        return cls(H_inf, Gamma_inf, axion_model, axion_parameter, source_vector, f_a,
-                energy_scale, conv_factor, scale)
-
-    def axion_to_inf_time(self, t_axion: float) -> float:
-        return t_axion * self.conv_factor
-
-    def inf_to_axion_time(self, t_inf: float) -> float:
-        return t_inf / self.conv_factor
-
-    def check(self, asym_config: AsymmetrySolverConfig):
-        if self.energy_scale > self.H_inf:
-            return Status.AXION_OSCILLATES_BEFORE_INFLATION.value #(invalidates the assumtion that the axion doesn't iterfere with inflation)
-        if self.Gamma_inf > self.H_inf:
-            return Status.INFLATON_DECAYS_DURING_INFLATION.value
-        if asym_config.isocurvature_check and self.H_inf / (2*np.pi) / self.f_a < 1e-5: # eq. 1 in 1412.2043
-            return Status.ISOCURVATURE_BOUNDS.value
-        return Status.OK
-
-@dataclass
-class State:
-    t_inf: float
-    t_axion: float
-    rho_rad: float
-    rho_inf: float
-    red_chem_pots: np.ndarray[float]
-    axion: np.ndarray[float]
-
-    @classmethod
-    def initial(cls, model: Model, axion_init: np.ndarray[float]) -> State:
-        return cls(t_inf=decay_process.t0, t_axion=0.0,
-                rho_rad=0.0, rho_inf=3 * decay_process.M_pl**2 * model.H_inf**2,
-                red_chem_pots=np.zeros(transport_equation.N), axion=axion_init)
-
-    def advance(self, model: Model, Delta_t_axion: float, asym_config: AsymmetrySolverConfig) -> Solution:
-        Delta_t_inf = model.axion_to_inf_time(Delta_t_axion)
-
-        ############################### background cosmology i.e. reheating ##################################
-        sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(Delta_t_inf, self.rho_rad, self.rho_inf, model.scale, model.Gamma_inf)
-
-        ############################### evolution of the axion field ##################################
-        sol_axion = axion_model.solve(self.axion, model.axion_parameter, Delta_t_axion, T_and_H_fn, model.Gamma_inf)
-        axion_source = axion_model.get_source(sol_axion, model.conv_factor, *model.axion_parameter)
-
-        ######################### transport eq. for standard model charges ##############################
-        sol_transp_eq = transport_equation.solve(Delta_t_inf, self.red_chem_pots, T_and_H_and_T_dot_fn,
-                    axion_source, model.source_vector_axion, model.Gamma_inf, model.conv_factor)
-
-        return Solution(model=model, initial_state=self,
-                sol_rh=sol_rh, T_and_H_fn=T_and_H_fn, T_and_H_and_T_dot_fn=T_and_H_and_T_dot_fn,
-                sol_axion=sol_axion, axion_source=axion_source, sol_transp_eq=sol_transp_eq,
-                tmax_axion_time=Delta_t_axion, model.axion_to_inf_time(Delta_t_axion))
-
-@dataclass
-class Solution:
-    model: Model
-    initial_state: State
-    sol_rh = field()
-    T_and_H_fn = field()
-    T_and_H_and_T_dot_fn = field()
-    sol_axion = field()
-    axion_source = field()
-    sol_transp_eq = field()
-    tmax_axion_time: float
-    tmax_inf_time: float
-
-    def get_final_state(self) -> State:
-        return State(t_inf=tmax_inf_time, t_axion=tmax_axion_time,
-                rho_rad=decay_process.find_end_rad_energy(self.sol_rh, self.model.scale),
-                rho_inf=decay_process.find_end_field_energy(self.sol_rh, self.initial_state.rho_inf),
-                red_chem_pots=self.sol_transp_eq(np.log(self.tmax_inf_time)),
-                axion=self.sol_axion(tmax_axion_time),
-        )
-
-
-    def is_asymmetry_converged(self):
-        ####################### check for convergence of the B - L charge ###########################
-        log_ts_inf = np.linspace(np.log(decay_process.t0), np.log(decay_process.t0 + tmax_inf_time), nsamples)
-        red_chem_pots = sol_transp_eq(log_ts_inf) # returned function converts internal unit
-        B_minus_L_red_chem = transport_equation.calc_B_minus_L(red_chem_pots)
-        if debug:
-            print("B-L start .. end:", B_minus_L_red_chem[0], B_minus_L_red_chem[-1])
-
-        # convergence by change within the last integration interval
-        a, b = np.max(B_minus_L_red_chem), np.min(B_minus_L_red_chem)
-        delta = np.abs((a - b) / np.mean(B_minus_L_red_chem))
-        if debug:
-            print("B-L range:", b, a)
-            print("delta =", delta, "rtol_asym =", rtol_asym)
-        if delta < rtol_asym:
-            break
-        if asym_max_steps is not None and step > asym_max_steps:
-            status = Status.ASYM_CONVERGENCE_FAILURE
-            break
-
-#def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model,
-#                        axion_init, source_vector_axion=transport_equation.source_vector_weak_sphaleron,
-#        start_tmax_axion_time=10.0, step_tmax_axion_time=2*2*np.pi,
-#        asym_max_steps=None, relic_max_steps=None,
-#        axion_decay_time=10.0, debug=False,
-#        nosc_per_step=5, nsamples_per_osc=20, nsamples=100,
-#        rtol_asym=1e-3, rtol_relic=1e-3,
-#        calc_init_time=False, isocurvature_check=False, return_evolution=False):
-def compute_asymmetry(model: Model, asym_config: AsymmetrySolverConfig) -> (float, Status)|list[Solution]:
-    ############################### setup for asymmetry computation ########################
-    step = 1
-    sols = []
-    status = model.ckeck(asym_config)
-    if status != Status.OK:
-        return np.nan, status
-
-    ################################## asymmmetry convergence loop ########################
-    while True:
-        if asym_config.debug:
-            print("step =", step)
-
-        sol = state.advance(Delta_t_axion, asym_config)
-        if asym_config.return_evolution:
-            sols.append(sol)
-
-        if sol.is_asymmetry_converged():
-            break
-
-        state = sol.get_final_state()
-        tmax_axion_time = step_tmax_axion_time # continue to integrate with the step time
-        step += 1
-
-    ###################################### finish asymmetry #########################################
-    if return_evolution:
-        return sols
-    else:
-        return sol.get_asymmetry()
-        eta_B = red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots[:, -1]))
-        rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
-        rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
-        return eta_B, f, rho_end_rad, rho_end_axion, Omega_h_sq, float(status.value)
-
-
-
-
-
-
-
-#########################################################################################################################
-    if calc_init_time:
-        T_eq_general = 1e12 # [GeV]
-        Tmax = (
-            0.8 * decay_process.g_star**(-1/4) * rho_inf_init**(1/8)
-            * (Gamma_inf * decay_process.M_pl / (8*np.pi))**(1/4)
-        ) # [GeV]
-        if debug: print(f"{T_max =:e}")
-        if T_and_H_fn(tmax_inf_time)[0] > T_eq_general:
-            H_in_GeV = np.sqrt(np.pi**2 / 30 * decay_process.g_star / (3*decay_process.M_pl**2)) * T_eq_general**2
-            H = H_in_GeV / Gamma_inf
-            t_eq = (1/H - 1/(H_inf / Gamma_inf)) / 2 + decay_process.t0 # [1/Gamma_inf]
-        elif Tmax < T_eq_general:
-            t_eq = np.nan
-        else:
-            goal_fn = lambda log_t: np.log(T_and_H_fn(np.exp(log_t))[0] / T_eq_general)
-            sol = root(goal_fn, np.log(decay_process.t0 + tmax_inf_time  / 2), method="lm")
-            t_eq = np.exp(sol.x[0] if sol.success else np.nan) # [1/Gamma_inf]
-        t_axion = 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
-        t_RH = decay_process.t0 # we want to reach reheating [1/Gamma_inf]
-        tmax_inf_time = max(t_RH, t_eq) # DANGER: max is NOT commutativ if nan is involved, t_eq has to be in the second place!
-        tmax_axion_time = tmax_inf_time / conv_factor
-        if debug: print(f"{t_eq =} {tmax_inf_time =}, {tmax_axion_time =}")
-        sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, scale, Gamma_inf)
-        if debug: print(f"calculcated initial integration time: {tmax_inf_time =} {tmax_axion_time =}")
-    if debug:
-        rh_end = time.time()
-        print("rh:", rh_end - rh_start)
-########################################################################################################################
-
-
-# def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion, axion_parameter, f_a, axion_model, debug):
-def compute_dilution_factor_from_axion_decay(model: Model, state: State, asym_config: AsymmetrySolverConfig) -> float:
+def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion, axion_parameter, f_a, axion_model, debug):
     if not (np.isfinite(rho_end_rad) and np.isfinite(rho_end_axion)):
         return np.nan
+    if debug:
+        start_decay = time.time()
+        print("initial (rad, axion):", rho_end_rad, rho_end_axion)
     # dilution factor from axion decay
     # we don't do converence check for this part right now
+
     Gamma_axion = axion_model.get_decay_constant(f_a, *axion_parameter) # [GeV]
     axion_scale = decay_process.find_scale(Gamma_axion) # GeV
+
     sol_axion_decay, T_and_H_fn_axion, _ = decay_process.solve(axion_decay_time, rho_end_rad,
                                                                rho_end_axion, axion_scale, Gamma_axion)
+
     t = np.exp(sol_axion_decay.t[-1])
     f = decay_process.find_dilution_factor(sol_axion_decay, T_and_H_fn_axion, t)
+
+    if debug:
+        end_decay = time.time()
+        print("axion decay took:", end_decay - start_decay, "seconds")
+
     return f
 
-#def compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T,
-#        axion_init, axion_parameter, axion_model, f_a,
-#        nosc_per_step, nsamples_per_osc, rtol_relic, relic_max_steps,
-#        conv_factor, Gamma_inf, debug=False):
-def compute_relic_density(model: Model, state: State, relic_config: RelicDensitySolverConfig) -> (Status, float):
+def compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T,
+        axion_init, axion_parameter, axion_model, f_a,
+        nosc_per_step, nsamples_per_osc, rtol_relic, relic_max_steps,
+        conv_factor, Gamma_inf, debug=False):
     if debug: relic_density_start = time.time()
     H_osc = axion_model.find_H_osc(*axion_parameter)
     def H_to_t(H):
@@ -338,4 +129,175 @@ def compute_relic_density(model: Model, state: State, relic_config: RelicDensity
     return Status.OK, Omega_h_sq
 
 
+def init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time):
+    energy_scale = axion_model.find_dynamical_scale(*axion_parameter)
+    conv_factor = Gamma_inf / energy_scale
+    rho_R_init = 0.0
+    rho_inf_init = 3 * decay_process.M_pl**2 * H_inf**2
+    scale = decay_process.find_scale(Gamma_inf)
+    tmax_inf_time = tmax_axion_time * conv_factor
+    red_chem_pots_init = np.zeros(transport_equation.N)
+    return energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init
 
+def solve_system(H_inf, rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
+                 tmax_axion_time, conv_factor, Gamma_inf, scale,
+                 axion_parameter, axion_model, source_vector_axion,
+                 calc_init_time, debug):
+    rh_start = time.time()
+    tmax_inf_time = tmax_axion_time * conv_factor
+
+    sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, scale, Gamma_inf)
+    if calc_init_time:
+        T_eq_general = 1e12 # [GeV]
+        Tmax = (
+            0.8 * decay_process.g_star**(-1/4) * rho_inf_init**(1/8)
+            * (Gamma_inf * decay_process.M_pl / (8*np.pi))**(1/4)
+        ) # [GeV]
+        if debug: print(f"{T_max =:e}")
+        if T_and_H_fn(tmax_inf_time)[0] > T_eq_general:
+            H_in_GeV = np.sqrt(np.pi**2 / 30 * decay_process.g_star / (3*decay_process.M_pl**2)) * T_eq_general**2
+            H = H_in_GeV / Gamma_inf
+            t_eq = (1/H - 1/(H_inf / Gamma_inf)) / 2 + decay_process.t0 # [1/Gamma_inf]
+        elif Tmax < T_eq_general:
+            t_eq = np.nan
+        else:
+            goal_fn = lambda log_t: np.log(T_and_H_fn(np.exp(log_t))[0] / T_eq_general)
+            sol = root(goal_fn, np.log(decay_process.t0 + tmax_inf_time  / 2), method="lm")
+            t_eq = np.exp(sol.x[0] if sol.success else np.nan) # [1/Gamma_inf]
+        t_axion = 2*np.pi*10 # integrate 10 axion oscillations [1/m_a]
+        t_RH = decay_process.t0 # we want to reach reheating [1/Gamma_inf]
+        tmax_inf_time = max(t_RH, t_eq) # DANGER: max is NOT commutativ if nan is involved, t_eq has to be in the second place!
+        tmax_axion_time = tmax_inf_time / conv_factor
+        if debug: print(f"{t_eq =} {tmax_inf_time =}, {tmax_axion_time =}")
+        sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn = decay_process.solve(tmax_inf_time, rho_R_init, rho_inf_init, scale, Gamma_inf)
+        if debug: print(f"calculcated initial integration time: {tmax_inf_time =} {tmax_axion_time =}")
+    if debug:
+        rh_end = time.time()
+        print("rh:", rh_end - rh_start)
+
+    ############################### evolution of the axion field ##################################
+    sol_axion = axion_model.solve(axion_init, axion_parameter, tmax_axion_time, T_and_H_fn, Gamma_inf)
+    if debug:
+        ax_end = time.time()
+        print("axion:", ax_end - rh_end)
+    axion_source = axion_model.get_source(sol_axion, conv_factor, *axion_parameter)
+
+    ######################### transport eq. for standard model charges ##############################
+    sol_transp_eq = transport_equation.solve(tmax_inf_time, red_chem_pots_init, T_and_H_and_T_dot_fn,
+                axion_source, source_vector_axion, Gamma_inf, conv_factor)
+    if debug:
+        trans_end = time.time()
+        print("transport eq.:", trans_end - ax_end)
+
+    return sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn, sol_axion, axion_source, sol_transp_eq, tmax_axion_time
+
+
+def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model,
+                        axion_init, source_vector_axion=transport_equation.source_vector_weak_sphaleron,
+        start_tmax_axion_time=10.0, step_tmax_axion_time=2*2*np.pi,
+        asym_max_steps=None, relic_max_steps=None,
+        axion_decay_time=10.0, debug=False,
+        nosc_per_step=5, nsamples_per_osc=20, nsamples=100,
+        rtol_asym=1e-3, rtol_relic=1e-3,
+        calc_init_time=False, isocurvature_check=False, return_evolution=False):
+
+    ############################### setup for asymmetry computation ########################
+    status = Status.OK
+
+    step = 1
+    axion_sols = []
+    red_chem_pot_sols = []
+    background_sols = []
+
+    tmax_axion_time = start_tmax_axion_time # initial time to integrate
+    energy_scale, conv_factor, rho_R_init, rho_inf_init, scale, tmax_inf_time, red_chem_pots_init = \
+        init_system(H_inf, Gamma_inf, axion_parameter, axion_model, tmax_axion_time)
+    if debug:
+        print("conv factor:", conv_factor)
+
+    ############################## check parameter consistency ####################
+    if energy_scale > H_inf:
+        return np.nan, np.nan, np.nan, np.nan, np.nan, Status.AXION_OSCILLATES_BEFORE_INFLATION.value
+        #(invalidates the assumtion that the axion doesn't iterfere with inflation)
+    if Gamma_inf > H_inf:
+        return np.nan, np.nan, np.nan, np.nan, np.nan, Status.INFLATON_DECAYS_DURING_INFLATION.value
+    if isocurvature_check and H_inf/(2*np.pi)/f_a < 1e-5: # eq. 1 in 1412.2043
+        return np.nan, np.nan, np.nan, np.nan, np.nan, Status.ISOCURVATURE_BOUNDS.value
+
+    ################################## asymmmetry convergence loop ########################
+    while True:
+        if debug: print("step =", step)
+
+        ################################ advance system ###################################
+        sol_rh, T_and_H_fn, T_and_H_and_T_dot_fn, sol_axion, axion_source, sol_transp_eq, tmax_axion_time = solve_system(
+                 H_inf, rho_R_init, rho_inf_init, axion_init, red_chem_pots_init,
+                 tmax_axion_time, conv_factor, Gamma_inf, scale, axion_parameter, axion_model, source_vector_axion,
+                 calc_init_time and step == 1, debug)
+        tmax_inf_time = tmax_axion_time * conv_factor
+        if debug or return_evolution:
+            axion_sols.append(sol_axion)
+            red_chem_pot_sols.append(sol_transp_eq)
+            background_sols.append(T_and_H_and_T_dot_fn)
+
+        ####################### check for convergence of the B - L charge ###########################
+        log_ts_inf = np.linspace(np.log(decay_process.t0), np.log(decay_process.t0 + tmax_inf_time), nsamples)
+        red_chem_pots = sol_transp_eq(log_ts_inf) # returned function converts internal unit
+        B_minus_L_red_chem = transport_equation.calc_B_minus_L(red_chem_pots)
+        if debug:
+            print("B-L start .. end:", B_minus_L_red_chem[0], B_minus_L_red_chem[-1])
+
+        # convergence by change within the last integration interval
+        a, b = np.max(B_minus_L_red_chem), np.min(B_minus_L_red_chem)
+        delta = np.abs((a - b) / np.mean(B_minus_L_red_chem))
+        if debug:
+            print("B-L range:", b, a)
+            print("delta =", delta, "rtol_asym =", rtol_asym)
+        if delta < rtol_asym:
+            break
+        if asym_max_steps is not None and step > asym_max_steps:
+            status = Status.ASYM_CONVERGENCE_FAILURE
+            break
+
+        # set initial conditions to our end state and continue
+        rho_R_init = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
+        rho_inf_init = decay_process.find_end_field_energy(sol_rh, rho_inf_init) # [GeV^4]
+        axion_init = sol_axion.y[:, -1] # (1, energy_scale_axion (independent of initial condition and starting time))
+        red_chem_pots_init = red_chem_pots[:, -1] # 1 (unit has been removed)
+        tmax_axion_time = step_tmax_axion_time # continue to integrate with the step time
+        step += 1
+
+    ###################################### finish asymmetry #########################################
+    # use the last value of the reduced chemical potentials
+    eta_B = red_chem_pot_to_asymmetry(transport_equation.calc_B_minus_L(red_chem_pots[:, -1]))
+
+    rho_end_rad = decay_process.find_end_rad_energy(sol_rh, scale) # [GeV^4]
+    rho_end_axion = axion_model.get_energy(sol_axion.y[:, -1], f_a, *axion_parameter) # [GeV^4]
+
+    if axion_model.does_decay:
+        ############################ entropy dilution from axion decay ################################
+        f = compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_end_axion,
+                                                     axion_parameter, f_a, axion_model, debug)
+        Omega_h_sq = 0.0
+    elif axion_model.has_relic_density:
+        ################################## axion relic density ######################################
+        f = 1.0
+        axion_init = sol_axion.y[:, -1]
+        _, H_start = T_and_H_fn(np.exp(sol_rh.t[-1]))
+        rho_R_init = decay_process.find_end_rad_energy(sol_rh, scale)
+        rho_inf_init = decay_process.find_end_field_energy(sol_rh, rho_inf_init)
+        current_T, _ = T_and_H_fn(np.exp(sol_rh.t[-1]))
+        relic_status, Omega_h_sq = compute_relic_density(
+                H_start, rho_R_init, rho_inf_init, current_T, axion_init,
+                axion_parameter, axion_model, f_a, nosc_per_step, nsamples_per_osc,
+                rtol_relic, relic_max_steps, conv_factor, Gamma_inf, debug=debug)
+        if relic_status != Status.OK: status = relic_status
+    else:
+        Omega_h_sq = 0.0
+        f = 1.0
+
+    ###################################### final results ######################################
+    if return_evolution:
+        # TODO: maybe also collect solution from decay and relic densiy
+        return background_sols, axion_sols, red_chem_pot_sols
+    else:
+        return eta_B, f, rho_end_rad, rho_end_axion, Omega_h_sq, float(status.value)
