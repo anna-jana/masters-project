@@ -1,4 +1,4 @@
-import importlib, os, itertools, numpy as np, tqdm
+import importlib, os, itertools, numpy as np, tqdm, tqdm.notebook
 import axion_motion, analysis_tools, observables, transport_equation, decay_process, analysis_tools, util
 axion_motion, analysis_tools, observables, transport_equation, decay_process, analysis_tools, util = \
     map(importlib.reload, (axion_motion, analysis_tools, observables, transport_equation, decay_process, analysis_tools, util))
@@ -29,8 +29,8 @@ realignment_axion_field = RealignmentAxionField()
 def recompute_dilution(data, f_a, notebook=False):
     progress = tqdm.notebook.tqdm if notebook else tqdm.tqdm
     m_a, Gamma_inf = data["m_a"], data["Gamma_inf"]
-    rho_end_rad = data["output"][0, :, :, 0, 0, rho_rad_index]
-    rho_end_axion = data["output"][0, :, :, 0, 0, rho_axion_index]
+    rho_end_rad = data["rho_end_rad"][0, :, :, 0, 0]
+    rho_end_axion = data["rho_end_axion"][0, :, :, 0, 0]
     f_a_used = data["f_a"][0]
     dilution = np.zeros(rho_end_axion.shape)
     for i, j in progress(list(itertools.product(range(len(Gamma_inf)), range(len(m_a))))):
@@ -43,10 +43,12 @@ f_a_list = np.geomspace(1e12, 1e15, 10)
 
 def compute_correct_curves(version):
     correct_alp_curves_filename = os.path.join(util.datadir, f"generic_alp_correct_curves{version}.pkl")
-    data = util.load_pkl(f"generic_alp{version}")
-    eta = data["output"][0, :, :, 0, 0, eta_B_index]
+    data = util.load_data("generic_alp", version)
+    eta = data["eta"][0, :, :, 0, 0]
     m_a = data["m_a"]
     Gamma_inf = data["Gamma_inf"]
+    rho_end_rad = data["rho_end_rad"][0, :, :, 0, 0]
+    rho_end_axion = data["rho_end_axion"][0, :, :, 0, 0]
     f_a_used = data["f_a"][0]
 
     correct_asym_curves = []
@@ -56,24 +58,25 @@ def compute_correct_curves(version):
         levels = analysis_tools.find_level(np.log10(m_a), np.log10(Gamma_inf), np.log10(np.abs(eta_B) / observables.eta_B_observed))
         correct_asym_curves.append([(10**xs, 10**ys) for xs, ys in levels])
 
-    util.save_pkl((f_a_list, correct_asym_curves), correct_alp_curves_filename)
+    with open(correct_alp_curves_filename, "wb") as fhandle:
+        pickle.dump((f_a_list, correct_asym_curves), fhandle)
 
-def compute_example_trajectories(f_a, H_inf, nsource, interesting_points):
+def compute_example_trajectories(f_a, H_inf, nsource, interesting_points, notebook=False):
     interesting_solutions = []
 
-    for m_a, Gamma_inf in tqdm.tqdm(interesting_points):
-        model = observables.Model.make(H_inf, Gamma_inf,
-                generic_alp.realignment_axion_field, (m_a,), transport_equation.source_vectors[nsource_vector], f_a)
-        sols = observables.compute_asymmetry(model, (1.0, 0.0),
-                         observables.AsymmetrySolverConfig(return_evolution=True))
-
+    for m_a, Gamma_inf in (tqdm.notebook.tqdm if notebook else tqdm.tqdm)(interesting_points):
+        background_sols, axion_sols, red_chem_pot_sols = \
+            observables.compute_observables(H_inf, Gamma_inf, (m_a,), f_a, realignment_axion_field,
+                                (1, 0), calc_init_time=True, return_evolution=True,
+                                source_vector_axion=transport_equation.source_vectors[nsource])
         ts = np.array([], dtype="d")
         sources = np.empty_like(ts)
         rates = np.empty_like(ts)
         red_chem_potss = np.empty((transport_equation.N, 0))
         tstart = 0
+        conv_factor = Gamma_inf / m_a
 
-        for sol in sols:
+        for T_and_H_and_T_dot_fn, axion_sol, red_chem_pot_sol in zip(background_sols, axion_sols, red_chem_pot_sols):
             tmax_axion = axion_sol.t[-1]
             tmax_inf = tmax_axion * conv_factor
             tinfs = np.geomspace(decay_process.t0, decay_process.t0 + tmax_inf, 300)
