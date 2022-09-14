@@ -25,7 +25,7 @@ def find_curve_intersection(xs1, ys1, xs2, ys2):
     ys2_interp = make_interp(ys2)
     def goal(I):
         i, j = I # index into curve one and index into curve two
-        # the two curves should intersection i.e. both variables from each curve are equal
+        # the two curves should intersect i.e. both variables from each curve are equal
         try:
             return (xs1_interp(i) - xs2_interp(j), ys1_interp(i) - ys2_interp(j))
         except ValueError:

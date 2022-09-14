@@ -54,10 +54,10 @@ def compute_dilution_factor_from_axion_decay(axion_decay_time, rho_end_rad, rho_
 
     return f
 
-def compute_relic_density(H_start, rho_R_init, rho_inf_init, current_T,
+def compute_relic_density(H_start, H_inf, rho_R_init, rho_inf_init, current_T,
         axion_init, axion_parameter, axion_model, f_a,
         nosc_per_step, nsamples_per_osc, rtol_relic, relic_max_steps,
-        conv_factor, Gamma_inf, debug=False):
+        conv_factor, Gamma_inf, energy_scale, debug=False):
     if debug: relic_density_start = time.time()
     H_osc = axion_model.find_H_osc(*axion_parameter)
     def H_to_t(H):
@@ -287,9 +287,9 @@ def compute_observables(H_inf, Gamma_inf, axion_parameter, f_a, axion_model,
         rho_inf_init = decay_process.find_end_field_energy(sol_rh, rho_inf_init)
         current_T, _ = T_and_H_fn(np.exp(sol_rh.t[-1]))
         relic_status, Omega_h_sq = compute_relic_density(
-                H_start, rho_R_init, rho_inf_init, current_T, axion_init,
+                H_start, H_inf, rho_R_init, rho_inf_init, current_T, axion_init,
                 axion_parameter, axion_model, f_a, nosc_per_step, nsamples_per_osc,
-                rtol_relic, relic_max_steps, conv_factor, Gamma_inf, debug=debug)
+                rtol_relic, relic_max_steps, conv_factor, Gamma_inf, energy_scale, debug=debug)
         if relic_status != Status.OK: status = relic_status
     else:
         Omega_h_sq = 0.0
