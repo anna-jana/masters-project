@@ -14,11 +14,6 @@ class RealignmentAxionField(axion_motion.SingleAxionField):
     def calc_source(self, y, conv_factor, __m_a): return y[1] / conv_factor
     does_decay = True
     has_relic_density = False
-    g_2 = 0.652 # [1] also from wikipedia
-    alpha = g_2**2 / (4 * np.pi) # eq. from paper
-    Gamma_a_const = alpha**2 / (64 * np.pi**3)
-    # from paper a to SU(2) gauge bosons
-    def get_decay_constant(self, f_a, m_a): return self.Gamma_a_const * m_a**3 / f_a**2
     def find_H_osc(self, m_a): return 1 / 3
     def find_mass(self, T, m_a): return 1.0
 
@@ -119,6 +114,6 @@ all_points = [interesting_points_ws, interesting_points_jbl, interesting_points_
 def compute_all_example_trajectories():
     data = util.load_data("generic_alp", 1)
     H_inf = data["H_inf"][0]
-    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, nsource, ps) 
+    all_interesting_solutions = [compute_example_trajectories(f_a, H_inf, nsource, ps)
                                  for nsource, ps in enumerate(all_points)]
     util.save_pkl(all_interesting_solutions, example_trajectories_filename)

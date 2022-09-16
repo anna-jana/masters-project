@@ -30,7 +30,6 @@ class AxionField:
 
     does_decay = NotImplemented
     has_relic_density = NotImplemented
-    def get_decay_constant(self, f_a, *axion_parameter): raise NotImplementedError()
 
 class SingleAxionField(AxionField):
     def calc_pot_deriv(self, theta, T, m_a): raise NotImplementedError()

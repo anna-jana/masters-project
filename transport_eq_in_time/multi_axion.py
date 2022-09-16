@@ -44,9 +44,6 @@ class MultiAxionField(axion_motion.AxionField):
     does_decay = True
     has_relic_density = True
 
-    def get_decay_constant(self): raise NotImplementedError()
-
-
 multi_axion_field = MultiAxionField()
 
 canonical_names = [r"$\theta_1$", r"$\theta_2$", r"$\dot{\theta}_1$", r"$\dot{\theta}_2$"]
