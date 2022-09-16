@@ -440,7 +440,15 @@ Hence the current equation for the baryon current reads
 The mechanism discussed so far would work by coupling the scalar field to the operator $O_2$, leading to a direct coupling of the scalar field to the baryon current. But in this example we couple it to $O_1$.
 This coupling biases the value of $Q_2 - Q_1$ away from the previous vanishing equilibrium value.
 At the same time, the the operator $O_2$ will lead to a relaxation of $Q_1$ toward its vanishing equilibrium value. In doing so it will violate also $B = Q_1 + Q_2$ as it doesn't change $Q_2$. Once this reaction freezes out, $B$ is conserved. Then $O_2$ will lead $Q_2 - Q_1$ to obtain its new vanishing equilibrium value with a non-vanishing $B$.
-\todo{A cartoon of this process is shown in fig. ????? TODO}
+This process is shown in figure \ref{fig:sbg_cartoon}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{figures/sbg_cartoon.pdf}
+	\caption{Cartoon of the spontaneous baryogenesis process as described in the main text. This cartoon is taken from \cite[fig. 1]{Domcke:2020kcp_Generic_Couplings}.
+	The operator $O_X$ corresponds to $O_2$ and $O_V$ to $O_1$.
+	}
+	\label{fig:sbg_cartoon}
+\end{figure}
 
 Why is this process called \emph{spontaneous} baryogenesis?
 This is because the amount and also if baryons or antibaryons are generated depends on the initial value of the scalar field.
@@ -1024,12 +1032,13 @@ An example numerical solution for the field evolution of this model together wit
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_realignment_field_evolution.pdf}
     \caption{Evolution of the axion field for standard misalignment of an ALP with the Lagrangian in eq. \eqref{eq:L_alp}. On the x-axis time is shown in units of the axion mass $m_a$ on a log-scale. On the y-axis the misalignment angle $\theta$ is shown. Different epochs of the evolution are annotated.}
 \end{figure}
-Since a coupling to standard model particles exits as this is required for baryogenesis, the ALP has a decay rate into SM particles. If we couple to the weak $SU(2)$ sphaleron, then the decay rate is given by \cite[eq. 15]{Kusenko_2015_Axion_Leptogenesis}:
+Since a coupling to standard model particles exits as this is required for baryogenesis, the ALP has a decay rate into SM particles. If we couple to a $SU(N)$ sphaleron, then the decay rate is given by \cite[eq. 15]{Kusenko_2015_Axion_Leptogenesis}:
 \begin{equation}
-	\Gamma_a = \frac{\alpha^2}{64\pi^2} \frac{m_a^3}{f_a^2},
+	\Gamma_a = \frac{\alpha_N^2}{64\pi^2} \frac{m_a^3}{f_a^2},
 \end{equation}
 where $f_a$ is the axion decay constant.
-\todo{TODO: this is wrong in the code. All couplings use the same decay rate rate namely this one!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+We use $N = 2$ for coupling to the weak sphaleron and the $B-L$ current and $N = 3$ for coupling to the strong sphaleron with their standard model values.
+
 As the mass of this model has to be quite large in order to start moving at the required temperatures, the decay rate is also quite large.
 At the same time the axion might dominate the energy density due to is large mass. This means that we have to deal with entropy production by the decay of the axion.
 For this we use a system of equations similar to the reheating equations for the inflaton field. We equations for the axion decay read:
@@ -1153,7 +1162,7 @@ such that
 \begin{equation}
 	\coth(\pi m R) \approx 1 + 2 \epsilon^2 + O(\epsilon^4).
 \end{equation}
-Using this we find that: \todo{(2 or sqrt 3 in numerotro???)}
+Using this we find that:
 \begin{equation}
 	\phi = \frac{2 f}{\epsilon} F\big(\theta / 2 \big| - \epsilon^{-2} \big).
 \end{equation}
@@ -1521,9 +1530,6 @@ The lowest values of the axion mass $m_a$ and the inflaton decay rate $\Gamma_\m
 	\label{fig:alp_mimimal_possible_m_a_and_Gamma_inf_vals}
 \end{figure}
 
-\todo{Furthermore we analyze the dependence of the asymmetry on the Hubble value at the end of inflation $H_\mathrm{inf}$ and the initial misalignment angle $\theta_i$.
-TODO TODO}
-
 \begin{figure}[H]
     \includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/alp_exploration_plot0.pdf}
     \caption{The contour plot in the middle row shows the obtained baryon asymmetry for the ALP model for the $a \tilde{F} F$ coupling with the axion mass $m_a$ in GeV on the x-axis on a log-scale and the inflaton decay rate $\Gamma_\mathrm{inf}$ in GeV on the y-axis on a log-scale. The asymmetry is shown as the decimal logarithm relative to the observed asymmetry. A red line indicates where the observed asymmetry is reached. On the top and bottom rows the time evolution for a few example points in the parameter space of the contour plot are shown. The parameter values for of the examples are indicated by arrows into the contour plot. Each time evolution plot consists of a plot of the value of the chemical potential of the B-L charge on a log-scale as a function of time (black line). While on the bottom a plot of the reaction rate for the creation of B-L charges (blue line, log-scale, axis on the left) and of the source from the axion (orange line, linear-scale, axis on the right) is shown.
@@ -1566,13 +1572,11 @@ Hence in this 2D parameter subspace, the correct parameters (successful baryogen
 These parameter subspaces are shown for the different couplings in fig. \ref{fig:clockwork_parameter_space_aFF}, \ref{fig:clockwork_parameter_space_aJ} and \ref{fig:clockwork_parameter_space_aGG} for different values of the inflaton decay rate $\Gamma_\mathrm{inf} = 10^6 \, \mathrm{GeV}, \,
  10^8 \, \mathrm{GeV}, \, 10^{10} \, \mathrm{GeV}$ and the effective decay constant $f_\mathrm{eff} =  10^{12} \, \mathrm{GeV}, \,
  10^{13} \, \mathrm{GeV}, \, 10^{14} \, \mathrm{GeV}$.
-\todo{fixed the curve intersection finding code (the dots are wrong in the plot)}
 One can see that the asymmetry produced is proportional to
 \begin{equation}
 	Y_B \sim \frac{m_\phi}{e^{- \pi m R}} = \frac{\Lambda^2}{f}.
 \end{equation}
 This is the effective mass of the canonical $\phi$ field and hence determines the time when the field enters the fast-roll epoch. If this happens earlier, then it also happens at higher temperature and a larger asymmetry is produced.
-\todo{explain this weird thing with the two solutions}
 Example processes are shown in fig. \ref{fig:clockwork_parameter_space_exploration}.
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{../../transport_eq_in_time/plots/cw_exploration_plot.pdf}
