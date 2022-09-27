@@ -38,6 +38,7 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \usepackage{float}
+\usepackage[compat=1.0.0]{tikz-feynman}
 
 \newcommand{\todo}[1]{{\color{magenta}{#1}}}
 
@@ -278,7 +279,7 @@ The temperature at this time is called the reheating temperature $T_\mathrm{RH}$
 Note that this is not the maximal temperature reached.
 It is given by \cite[eq. 8.34]{the_early_universe_kolb_and_turner}
 \begin{align}
-	T_\mathrm{RH} = 0.55 g_*^{-1/4} (8 \pi M_\mathrm{pl}  \Gamma_\mathrm{inf}).
+	T_\mathrm{RH} = 0.55 g_*^{-1/4} \sqrt{8 \pi M_\mathrm{pl}  \Gamma_\mathrm{inf}}.
 \end{align}
 This temperature gives the energy scale of processes during the reheating epoch.
 
@@ -402,7 +403,7 @@ These processes give us the rate of conversion of lepton and baryon numbers.
 
 In this chapter we will discuss a possible mechanism which can implement baryogenesis. This mechanism is called spontaneous baryogenesis and is the topic of the rest of this thesis.
 
-The mechanism of spontaneous baryogenesis was propose by Andreq Cohen and David Kapla in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
+The mechanism of spontaneous baryogenesis was propose by Andrew Cohen and David Kapla in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
 Their idea was to couple a scalar field $\phi$ to the baryon current $J_B$:
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} (\partial \phi)^2 - V(\phi) - \frac{1}{f} \partial_\mu \phi J_B^\mu.
@@ -807,6 +808,16 @@ where $\bar{\psi}$ is the Dirac adjoint spinor of the spinor $\psi$ given by
 The $\gamma^\mu$ are the gamma matrices.
 From these definitions we see that the Weinberg operator violates lepton number by $\Delta L = 2$.
 It is parameterized by a mass of a left-handed neutrino as it can be realized by right-handed neutrinos in the seesaw mechanism, where the masses of right-handed neutrinos are related to the left-handed neutrinos and one finds an effective Weinberg operator of the above form.
+The leading order s-channel diagram for the Weinberg operator from a right-handed neutrino is shown in fig. \ref{fig:weinberg}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{figures/weinberg_operator_from_rh_neutrino.png}
+	\caption{Leading order s-channel diagram for the Weinberg operator from right-handed neutrinos.}
+	\label{fig:weinberg}
+\end{figure}
+
+
 Its rate is given by
 \begin{align}
 	\Gamma_\mathrm{W} = \kappa_W\frac{m_\nu^2 T^6}{\nu_\mathrm{EW}^4},
