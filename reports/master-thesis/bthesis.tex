@@ -81,17 +81,17 @@ the question why we find that our universe as we observe it today, is made up of
 This asymmetry is necessary for more complicated structures in universe to exits. From atoms to life to finally humans who wonder about the universe \footnote{and discriminated based on gender, race, religion ..., let each other live in poverty and destroy the planet. But that doesn't sound so cool, right?}
 On a fundamental level the two are almost mirror images of each other. The standard model does only very weakly distinguish between the two.
 Hence physics beyond the standard model is needed to explain the asymmetry.
-The mechanism we consider in this thesis is called \emph{spontaneous baryogenesis}, first proposed by Andreq Cohen and David Kapla in 1987 \cite{COHEN1987251} \cite{COHEN1988913}.
+The mechanism we consider in this thesis is called \emph{spontaneous baryogenesis}, first proposed by Andreq Cohen and David Kaplan in 1987 \cite{COHEN1987251} \cite{COHEN1988913}.
 The basis idea behind this mechanism is that a classical cosmological field evolves and hence was a non-vanishing time-derivative.
 This time-derivative then biases some reactions in such a way that an asymmetry is produced.
-We will investiage the quantitative outcome of this process for different axion models for the cosmological field.
+We will investigate the quantitative outcome of this process for different axion models for the cosmological field.
 Axions are group of proposed particles which extend the standard model.
-They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are a wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar whos shift-symmetry is often broken by non-perturbatativ effects like instantons.
-For the model of the axion field we are based on the work for a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation \cite{Kim_multi_axions:2004rp}.
-Sometimes the term axions only refer to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to thesis kinds of standard model extension always as axions.
+They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are a wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar whoes shift-symmetry is often broken by non-perturbatativ effects like instantons.
+For the model of the axion field we base on work on a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation \cite{Kim_multi_axions:2004rp}.
+Sometimes the term axions only refers to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to this kinds of standard model extension always as axions.
 Also we consider different couplings of these axion fields to standard model particles. For this, this thesis is based on the work of the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings}, who developed a formalism using a transport equation in linear response theory to compute the asymmetry for a number of couplings.
 Let us now go over the structure of this thesis.
-In chapter \ref{sec:fundermentals} we go over the basis of cosmology including reheating and baryogenesis.
+In chapter \ref{sec:fundermentals} we go over the basic concepts of cosmology including reheating and baryogenesis.
 Then in chapter \ref{sec:spontaneous_baryogenesis} we talk about how spontanous baryogenesis works in general.
 The next two chapter are technical derivations required for our later computations. First the transport equation for charges in chapter \ref{sec:transport_equation} and then the axion field models in chapter \ref{sec:motion_of_the_axion_field} are derived.
 After this we briefly comment on the implementation of the numerical model in chapter \ref{sec:implementation_of_the_numerical_simulations}.
@@ -107,18 +107,18 @@ A good reference and the source for this section is \cite{the_early_universe_kol
 
 \subsection{Dynamics of the Expansion of the Universe}
 \label{sec:dynamics_of_the_examsion_of_the_universe}
-The dynamics of the expanding universe is governed by Einsteins theory of general relativity. The Einstein field-equation connects geometry i.e. the curvature with the content i.e. the energy-momentum tensor $T$ of the universe \footnote{
+The dynamics of the expanding universe is governed by Einstein's theory of general relativity. The Einstein field-equation connects geometry i.e. the curvature with the content i.e. the energy-momentum tensor $T$ of the universe \footnote{
 See \cite{carroll_spacetime_and_geometry_2019} for definitions of these quantities.
 }:
 \begin{equation}
 	R_{\mu \nu} - \frac{1}{2} R g_{\mu \nu} = 8 \pi G T_{\mu \nu}.
 \end{equation}
-We assume the cosmological assumption i.e. that the universe is homogeneous and isotropic on the large scales we are interested in. In this case the most general form of the metric is the Friedmann-Lametre-Robinson-Walker metric, which reads:
+We assume the cosmological principal i.e. that the universe is homogeneous and isotropic on the large scales we are interested in. In this case the most general form of the metric is the Friedmann-Lametre-Robinson-Walker metric, which reads:
 \begin{equation}
 	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right].
 \end{equation}
 The quatitiy $a$ is called the scale factor and has to be determined by the Einstein field-equations.
-The parameter $k$ fixes the topology of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission data \cite{planck2018}.
+The parameter $k$ fixes the 3d geometry of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission data \cite{planck2018}.
 On the otherhand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
 \begin{equation}
 	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P),
@@ -145,7 +145,7 @@ From these equations one can derive a continuity equation for the energy-momentu
 	\dot{\rho} = - 3 H (\rho + P),
 \end{equation}
 where $H = \frac{\dot{a}}{a}$ is the Hubble-parameter. \\
-\noindent A set of useful solutions for $k = $ can be derived for a power-law dependence of the energy density on the scale-factor $\rho = \rho_0 a^X$ i.e. that the dilution of the energy is described by a power-law. For this we also introduce the so called equation of state (e.o.s.)
+\noindent A set of useful solutions for $k = 0$ can be derived for a power-law dependence of the energy density on the scale-factor $\rho = \rho_0 a^X$ i.e. that the dilution of the energy is described by a power-law. For this we also introduce the so called equation of state (e.o.s.)
 \begin{equation}
 	w = \frac{P}{\rho}.
 \end{equation}
@@ -171,7 +171,7 @@ Finally we mention that energy densities is often stated relative to the critica
 \subsection{Cosmological Equilibrium Thermodynamics}
 We will now cover the thermodynamic description of the particle content of the universe
 in equilibrium.
-In this case the distribution of particles is given by Fermi-Dirac or Bose-Einstein for ferminons or bosons respectively \footnote{
+In this case the distribution of particles is given by Fermi-Dirac or Bose-Einstein for fermions or bosons respectively \footnote{
 
 }:
 \begin{equation}
@@ -267,14 +267,14 @@ The corresponding equation for the radiation energy density reads
 The replacement $4 \to 3$ comes from the different scaling of the energy density from the expansion. The change of sign on the right-hand-side comes from the direction of the decay. Here one can see the effect of the $\Gamma_{\mathrm{inf}}$ term: it creates an effective decay term in the rate equations.
 These equations together with the Friedmann equation, describe the background cosmology for our later computations.
 Finally we have to fix our initial conditions for these equations.
-At the end of inflation, no radiation has been produced yet, hence it is vanishing.
+At the end of inflation, no radiation has been produced yet, hence the density $\rho_\mathrm{rad}$ is vanishing.
 The inflaton field dominates the energy density of the universe and hence we get its energy density from the Hubble parameter at the end of inflation via the Friedmann equation.
 In formulas:
 \begin{align}
 	\rho_\mathrm{inf}(t_\mathrm{inf}) &= 3 M_\mathrm{pl}^2 H_\mathrm{inf}^2 \nonumber \\
 	\rho_\mathrm{rad}(t_\mathrm{inf}) &= 0.
 \end{align}
-After the end of inflation the inflaton field will still dominate the energy density, hence the universe is matter dominated. This ends once the energy density of radiation is the same as the energy density of the inflaton field.
+After the end of inflation the inflaton field will still dominate the energy density, hence the universe is matter dominated. This ends once the energy density of radiation is the same as the energy density of the inflaton field at the end of inflation $\rho_\mathrm{rad}(t_\mathrm{RH}) = \rho_\mathrm{inf}(t_\mathrm{inf})$.
 The temperature at this time is called the reheating temperature $T_\mathrm{RH}$.
 Note that this is not the maximal temperature reached.
 It is given by \cite[eq. 8.34]{the_early_universe_kolb_and_turner}
@@ -294,10 +294,10 @@ with
 \begin{equation}
 	n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3.
 \end{equation}
-The dependence on the expansion in $\eta_b$ cancels out.
+The dependence on the expansion in $\eta_B$ cancels out.
 Only a comparatively small number of baryons survived in the end.
 For lower energies we know that baryon number is a conserved quantity. Hence the creation of the asymmetry needs to happen at high energies.
-Note that during annihilation of baryons and antibaryons the comoving number of photons changes, hence over this epoch the asymmetry $\eta_B$ is not conversed. A better quantifier for the baryon-asymmetry
+Note that during annihilation of baryons and antibaryons the comoving number of photons changes, hence over this epoch the asymmetry $\eta_B$ is not conserved. A better quantifier for the baryon-asymmetry
 is the ratio to the entropy density:
 \begin{equation}
 	\label{eq:baryon_abundance}
@@ -310,7 +310,7 @@ In the standard model one finds $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mat
 \begin{equation}
 	\eta_B^0 = \frac{g_{*,s}^0}{g_{*, s}^{\gg 1 \, \mathrm{Gev}}} \eta_B^{\gg 1 \, \mathrm{Gev}}.
 \end{equation}
-The observed value of the asymmetry is $\eta_B^0 = \eta_B^\mathrm{obs} = 10^{-6}$.
+The observed value of the asymmetry today is $\eta_B^0 = \eta_B^\mathrm{obs} = 10^{-6}$.
 
 \subsection{Sakharov Conditions}
 Andrei Sakharov formulated in 1967 three necessary conditions required for baryogenesis \cite{Sakharov_1991}.
@@ -321,7 +321,7 @@ This is required as only if
 reactions exists that actually are biased toward the creation of baryons not anti-baryons an effective asymmetry can be produced.
 For this to happen the reactions need to distinguish between matter and antimatter i.e. C and CP symmetries have a be broken.
 Finally the process of baryogenesis has to happen out-of-equilibrium. This is because
-in equilibrium the number densities only depend on the mass of the particles, which is the same of particles and their anti-partners by CPT symmetry.
+in equilibrium with vanishing chemical potentials, the number densities only depend on the mass of the particles, which is the same of particles and their anti-partners by CPT symmetry.
 
 
 \subsection{Baryogenesis in the Standard Model}
@@ -336,9 +336,9 @@ where $g_2$ is the SU(2) coupling constant, $N_f$ the number of fermions, $F$ th
 It can be written as the divergence of the Chern-Simons current:
 \begin{equation}
 	\label{eq:chern_simons_current}
-	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} f^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right),
+	K^\mu = \epsilon^{\mu \alpha \beta \gamma} \left( A^a_\alpha F^a_{\beta \gamma} - \frac{g_2}{3} \epsilon^{abc} A^a_\alpha A^b_\beta A^c_\gamma \right),
 \end{equation}
-where $f^{abc}$ are the SU(2) structure constants, $A$ the SU(2) gauge field.
+where $\epsilon^{abc}$ are the SU(2) structure constants, $A$ the SU(2) gauge field.
 This shows that the term on the right hand side of \eqref{eq:B_and_L_current_equations} is a topological quantity as we can define a winding-number type quantity:
 \begin{equation}
 	N_{\mathrm{CS}} := \int \mathrm{d}^3 x \, K^0.
@@ -349,18 +349,18 @@ we can write the change of Chern-Simons number between $t_i$ and $t_f$ as
 	\int \mathrm{d}^4 x \partial_\mu K^\mu = \int \mathrm{d} t \, \partial_t \int \mathrm{d}^3 x \, K^0 =
 	N_{\mathrm{CS}}(t_f) - N_{\mathrm{CS}}(t_i) = \Delta N_{\mathrm{CS}}(t_i, t_f)
 \end{equation}
-If the field configurations at $t_i$ and $_f$ are so called pure gauges i.e. configurations with vanishing energy-density (vaccum configurations) and hence vanishing field strength of the form
+If the field configurations at $t_i$ and $_f$ are so called pure gauges i.e. configurations with vanishing energy-density (vacuum configurations) and hence vanishing field strength of the form
 \begin{equation}
 	A_\mu = U^{-1} A_\mu U + \frac{i}{g_2} U^{-1} \partial_\mu U,
 \end{equation}
 then the Chern-Simons number is an integer.
 Hence one can not deform such vacuum configurations into each other without leaving the set of vacuum configurations.
-The change between them is hence a quantum tunneling process which is called an instanton \footnote{
+The change between two vacuum configurations with different values of the Chern-Simons number $N_\mathrm{CS}$ is hence a quantum tunneling process which is called an instanton \footnote{
 The formal definition of an instanton is that they are solutions of the classical equations of motion with finite energy in euclidean space-time. They have to go to a vacuum configuration for $t \to \pm \infty$ for the energy to be finite. Hence one can expand the path integral for the transition rate between the vacua around this instanton configuration to obtain an approximate result. This technique is discussed in ref. \cite[chap. 7]{aspects_of_symmmetry}. Still one also calls the quantum tunneling process an instanton.
 }. See figure \ref{fig:sphaleron_cartoon} for an illustration.
 Its rate is too low to have any significant effect, although this changes once we consider thermal processes i.e. so called sphalerons \footnote{
 Similarly a sphaleron is defined to be a static i.e. time-independent solution of the classical equations of motions which maximizes (or is a saddle point) i.e. is not a minimum of the energy.
-The rate of thermal transitions can then be computed using the energy of the sphaleron configuration as it gives the height of the potential barrier between vaccua.
+The rate of thermal transitions can then be computed using the energy of the sphaleron configuration as it gives the height of the potential barrier between vacuua.
 Still the process of thermal transitions is called a sphaleron. Later one we will also call the kind of expression in the right hand side of eq. \eqref{eq:B_and_L_current_equations} a sphaleron.
 }.
 Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vacua vanishes above the phase transition. Here the transition rate is given by \cite{sphaleron_rate_symmetric_phase_Moore_2011}
