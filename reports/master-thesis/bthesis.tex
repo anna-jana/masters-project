@@ -24,8 +24,10 @@
 \usepackage[utf8]{inputenc}    %% Wenn latin1 nicht geht ...
 \usepackage{amsmath,amssymb} %% zusaetzliche Mathe-Symbole
 \usepackage{lmodern} %% type1-taugliche CM-Schrift als Variante zur
+%\usepackage[sorting=none]{biblatex}
 \usepackage[comma,numbers,sort&compress]{natbib}
 \bibliographystyle{plainnat}
+% \bibliographystyle{unsrt}
 \newcommand{\tabheadfont}[1]{\textbf{#1}} %% Tabellenkopf in Fett
 \usepackage{booktabs}                      %% Befehle fuer besseres Tabellenlayout
 \usepackage{longtable}                     %% umbrechbare Tabellen
@@ -79,20 +81,20 @@
 In this thesis we will investigate a potential solution to the problem of \emph{baryogenesis}, that is
 the question why we find that our universe as we observe it today, is made up of matter and not antimatter.
 This asymmetry is necessary for more complicated structures in universe to exits. From atoms to life to finally humans who wonder about the universe \footnote{and discriminated based on gender, race, religion ..., let each other live in poverty and destroy the planet. But that doesn't sound so cool, right?}
-On a fundamental level the two are almost mirror images of each other. The standard model does only very weakly distinguish between the two.
+On a fundamental level matter and antimatter are almost mirror images of each other. The standard model does only very weakly distinguish between the two. \todo{cite CKM, mention chern simons current}
 Hence physics beyond the standard model is needed to explain the asymmetry.
-The mechanism we consider in this thesis is called \emph{spontaneous baryogenesis}, first proposed by Andreq Cohen and David Kaplan in 1987 \cite{COHEN1987251} \cite{COHEN1988913}.
-The basis idea behind this mechanism is that a classical cosmological field evolves and hence was a non-vanishing time-derivative.
+The mechanism we consider in this thesis is called \emph{spontaneous baryogenesis}, first proposed by Andrew Cohen and David Kaplan in 1987 \cite{COHEN1987251} \cite{COHEN1988913}.
+The basis idea behind this mechanism is that a classical cosmological field evolves and hence had a non-vanishing time-derivative.
 This time-derivative then biases some reactions in such a way that an asymmetry is produced.
 We will investigate the quantitative outcome of this process for different axion models for the cosmological field.
 Axions are group of proposed particles which extend the standard model.
-They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are a wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar whoes shift-symmetry is often broken by non-perturbatativ effects like instantons.
+They were first proposed to solve the strong-CP problem in QCD \cite{PQ1} \cite{PQ2} \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}. Today axions are a wide class of particle models which are based on some kind of shift-symmetric pseudo-scalar who's shift-symmetry is often broken by non-perturbative effects like instantons.
 For the model of the axion field we base on work on a simple generic ALP model in ref. \cite{Kusenko_2015_Axion_Leptogenesis}, a clockwork axion from ref. \cite{Deformed_potential_Bae_2019} and \cite{general_cont_clockwork_Choi_2018} as well as multi axion potential which have not yet been investigated for baryogenesis model but in the context of inflation \cite{Kim_multi_axions:2004rp}.
 Sometimes the term axions only refers to QCD axions or even only to the original WWPQ axion model. The general class of particles are called axion-like-particles (ALPs). We however refer to this kinds of standard model extension always as axions.
 Also we consider different couplings of these axion fields to standard model particles. For this, this thesis is based on the work of the authors of ref. \cite{Domcke:2020kcp_Generic_Couplings}, who developed a formalism using a transport equation in linear response theory to compute the asymmetry for a number of couplings.
 Let us now go over the structure of this thesis.
 In chapter \ref{sec:fundermentals} we go over the basic concepts of cosmology including reheating and baryogenesis.
-Then in chapter \ref{sec:spontaneous_baryogenesis} we talk about how spontanous baryogenesis works in general.
+Then in chapter \ref{sec:spontaneous_baryogenesis} we talk about how spontaneous baryogenesis works in general.
 The next two chapter are technical derivations required for our later computations. First the transport equation for charges in chapter \ref{sec:transport_equation} and then the axion field models in chapter \ref{sec:motion_of_the_axion_field} are derived.
 After this we briefly comment on the implementation of the numerical model in chapter \ref{sec:implementation_of_the_numerical_simulations}.
 Finally we present our results for each model in chapter \ref{sec:results}
@@ -115,13 +117,13 @@ See \cite{carroll_spacetime_and_geometry_2019} for definitions of these quantiti
 \end{equation}
 We assume the cosmological principal i.e. that the universe is homogeneous and isotropic on the large scales we are interested in. In this case the most general form of the metric is the Friedmann-Lametre-Robinson-Walker metric, which reads:
 \begin{equation}
-	\mathrm{d} s^2 = - \mathrm{d} t^2 + a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right].
+	\mathrm{d} s^2 = \mathrm{d} t^2 - a(t) \left[ \frac{\mathrm{d} r^2}{1 - kr^2} + \mathrm{d} \Omega \right].
 \end{equation}
 The quatitiy $a$ is called the scale factor and has to be determined by the Einstein field-equations.
 The parameter $k$ fixes the 3d geometry of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission data \cite{planck2018}.
 On the otherhand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
 \begin{equation}
-	T_\nu^\mu = \operatorname{diag}(\rho, P, P, P),
+	T^\mu{}_\nu = \operatorname{diag}(\rho, P, P, P),
 \end{equation}
 where $\rho$ is the energy-density and $P$ the pressure.
 Plugging these assumption into the Einstein field-equations yields the Friedmann equation (a first order constraint, from the $T^{00}$ component) \footnote{
@@ -192,7 +194,7 @@ The pressure:
 \begin{equation}
 	p = \frac{g}{(2\pi)^3} \int \mathrm{d}^3 p \frac{p^2}{3E(\mathbf{p})} f(\mathbf{p})
 \end{equation}
-These integrals can be evaluated in the relativistic limit where $m \ll T$:
+These integrals can be evaluated in the relativistic limit where $m \ll T$ and $\mu \ll T$:
 \begin{equation}
 	\rho = \begin{cases}
 		\frac{\pi^2}{30} g T^4 & \text{Bosons} \\
@@ -209,14 +211,16 @@ These integrals can be evaluated in the relativistic limit where $m \ll T$:
 	p = \rho / 3
 \end{equation}
 \begin{equation}
-	s = \frac{2 \pi^2}{45} g_i T^3
+	s = \frac{2 \pi^2}{45} g_{*, s} T^3
 \end{equation}
 
+At finite chemical potential we find at leading order that 
 \begin{equation}
 	n_+ - n_- \approx \frac{g T^3}{6} \left( \frac{\mu}{T} \right)
 \end{equation}
+holds, where $n_+$ is the number density of baryons and $n_-$ the number density of anti-baryons, such that $n_+ - n_-$ is the density of the effective baryon charge.
 
-This result can be generalized to multiple particle species by using effective degrees of freedom $g_*$:
+These results can be generalized to multiple particle species by using effective degrees of freedom $g_*$:
 \begin{align}
 	\rho &= \frac{\pi^2}{30} g_{*, \rho}(T) T^4 \nonumber \\
 	s &= \frac{2 \pi^2}{45} g_i T^3
@@ -230,7 +234,7 @@ and for the entropy:
 	g_{*, s} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^3.
 \end{equation}
 These expressions allow us to model the standard model plasma in the early universe, if
-all interactions are fast enough.
+all interactions are fast enough to maintain equilibrium.
 
 
 \subsection{Inflation and Reheating}
@@ -290,14 +294,15 @@ The problem of baryogenesis can be expressed as follows: Why does the universe c
 \begin{equation}
 	\eta_B = \frac{n_+ - n_-}{n_\gamma},
 \end{equation}
-with
+with the number density of photons $n_\gamma$:
 \begin{equation}
-	n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3.
+	n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3
 \end{equation}
+and $n_+$ and $n_+-$ being the densities of baryons and anti-baryons respectively. 
 The dependence on the expansion in $\eta_B$ cancels out.
 Only a comparatively small number of baryons survived in the end.
 For lower energies we know that baryon number is a conserved quantity. Hence the creation of the asymmetry needs to happen at high energies.
-Note that during annihilation of baryons and antibaryons the comoving number of photons changes, hence over this epoch the asymmetry $\eta_B$ is not conserved. A better quantifier for the baryon-asymmetry
+Note that during annihilation of baryons and antibaryons the co-moving number of photons changes, hence over this epoch the asymmetry $\eta_B$ is not conserved. A better quantifier for the baryon-asymmetry
 is the ratio to the entropy density:
 \begin{equation}
 	\label{eq:baryon_abundance}
@@ -318,8 +323,8 @@ The first one is that baryon number has to be violated in the process. We start 
 Hence the baryon number as to the produced in a dynamical process.
 The second one is less obvious: C and CP symmetries have to be broken.
 This is required as only if
-reactions exists that actually are biased toward the creation of baryons not anti-baryons an effective asymmetry can be produced.
-For this to happen the reactions need to distinguish between matter and antimatter i.e. C and CP symmetries have a be broken.
+reactions exists that actually are biased toward the creation of baryons not anti-baryons an effective asymmetry can be produced. Note that this defines what we mean by baryons and anti-baryons. The one that `wins' is the one we call baryons.
+For this bias to happen the reactions need to distinguish between matter and antimatter i.e. C and CP symmetries have a be broken.
 Finally the process of baryogenesis has to happen out-of-equilibrium. This is because
 in equilibrium with vanishing chemical potentials, the number densities only depend on the mass of the particles, which is the same of particles and their anti-partners by CPT symmetry.
 
@@ -363,7 +368,7 @@ Similarly a sphaleron is defined to be a static i.e. time-independent solution o
 The rate of thermal transitions can then be computed using the energy of the sphaleron configuration as it gives the height of the potential barrier between vacuua.
 Still the process of thermal transitions is called a sphaleron. Later one we will also call the kind of expression in the right hand side of eq. \eqref{eq:B_and_L_current_equations} a sphaleron.
 }.
-Below the electro-weak phase transition the rate is still exponentially suppressed but the energy barrier between vacua vanishes above the phase transition. Here the transition rate is given by \cite{sphaleron_rate_symmetric_phase_Moore_2011}
+Below the electro-weak phase transition the rate is still exponentially suppressed i.e. the rate goes like $\exp(-S)$ where $S$ is the action of the sphaleron condition. Above the electro-weak phase transition the energy barrier between vacua vanishes. Here the transition rate is given by \cite{sphaleron_rate_symmetric_phase_Moore_2011}
 \begin{align}
 	\Gamma_{\mathrm{sph}} &= (0.21 \pm 0.01) \left(\frac{N_c g^2 T}{m_D^2} \right) \left(\ln \left(\frac{m_D}{\gamma} \right) + 3.0410 \right) \frac{N_c^2 - 1}{N_c^2} (N_c \sqrt{2 \pi g})^5 T^4 \\
 	\gamma &= \frac{N_c g^2 T}{4 \pi} \left(\ln \left(\frac{m_D}{\gamma}\right) + 3.0410 \right) \nonumber \\
@@ -403,7 +408,7 @@ These processes give us the rate of conversion of lepton and baryon numbers.
 
 In this chapter we will discuss a possible mechanism which can implement baryogenesis. This mechanism is called spontaneous baryogenesis and is the topic of the rest of this thesis.
 
-The mechanism of spontaneous baryogenesis was propose by Andrew Cohen and David Kapla in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
+The mechanism of spontaneous baryogenesis was propose by Andrew Cohen and David Kaplan in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
 Their idea was to couple a scalar field $\phi$ to the baryon current $J_B$:
 \begin{equation}
 	\mathcal{L} = \frac{1}{2} (\partial \phi)^2 - V(\phi) - \frac{1}{f} \partial_\mu \phi J_B^\mu.
