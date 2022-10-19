@@ -121,7 +121,7 @@ We assume the cosmological principal i.e. that the universe is homogeneous and i
 \end{equation}
 The quatitiy $a$ is called the scale factor and has to be determined by the Einstein field-equations.
 The parameter $k$ fixes the 3d geometry of the universe. In this thesis we use $k = 0$ i.e. a flat universe as suggested by data of e.g. the Planck mission data \cite{planck2018}.
-On the otherhand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
+On the other hand the content of an homogeneous and isotropic universe filled with a perfect fluid, has a diagonal energy-momentum tensor given by:
 \begin{equation}
 	T^\mu{}_\nu = \operatorname{diag}(\rho, P, P, P),
 \end{equation}
@@ -411,6 +411,7 @@ In this chapter we will discuss a possible mechanism which can implement baryoge
 The mechanism of spontaneous baryogenesis was propose by Andrew Cohen and David Kaplan in 1987 in \cite{COHEN1987251} and \cite{COHEN1988913}.
 Their idea was to couple a scalar field $\phi$ to the baryon current $J_B$:
 \begin{equation}
+	\label{eq:simple_sbg}
 	\mathcal{L} = \frac{1}{2} (\partial \phi)^2 - V(\phi) - \frac{1}{f} \partial_\mu \phi J_B^\mu.
 \end{equation}
 If one considers the corresponding path-integral for the thermal theory, the time derivative in this coupling appears as a modification of the baryon chemical potential:
@@ -429,7 +430,7 @@ From eq. \eqref{eq:B_and_L_current_equations} we can see that this creates a dir
 Then, by the means of sphalerons (see section \ref{sec:baryogenesis_in_the_standard_model}), the leptons are converted into baryons.
 
 In ref. \cite{Domcke:2020kcp_Generic_Couplings} the authors pointed out that a direct coupling to the lepton or baryon current is not necessary for successful baryogenesis.
-Instead the creation of some charge X deviating from the equilibrium value, leeds to a non-vanishing baryon number if the reactions which equilibrate the charge X back, are violating baryon number. Hence in the process a net baryon number is created.
+Instead the creation of some charge X deviating from the equilibrium value, leads to a non-vanishing baryon number if the reactions which equilibrate the charge X back, are violating baryon number. Hence in the process a net baryon number is created.
 Let us discuss this using an abstract example in more detail.
 We are considering two charges $Q_1$ and $Q_2$. The baryon number is given by the linear combination
 \begin{equation}
@@ -444,7 +445,7 @@ Hence the current equation for the baryon current reads
 \begin{equation}
 	\partial_\mu J_B^\mu = O_2.
 \end{equation}
-The mechanism discussed so far would work by coupling the scalar field to the operator $O_2$, leading to a direct coupling of the scalar field to the baryon current. But in this example we couple it to $O_1$.
+The mechanism discussed so far (i.e. eq. \eqref{eq:simple_sbg}) would work by coupling the scalar field to the operator $O_2$, leading to a direct coupling of the scalar field to the baryon current. But in this example we couple it to $O_1$.
 This coupling biases the value of $Q_2 - Q_1$ away from the previously vanishing equilibrium value.
 At the same time, the operator $O_2$ will lead to a relaxation of $Q_1$ toward its vanishing equilibrium value. In doing so, it will violate also $B = Q_1 + Q_2$ as it doesn't change $Q_2$. Once this reaction freezes out, $B$ is conserved. Then $O_2$ will lead $Q_2 - Q_1$ to obtain its new vanishing equilibrium value with a non-vanishing $B$.
 This process is shown in figure \ref{fig:sbg_cartoon}.
@@ -513,8 +514,9 @@ We work in the interaction-picture, where the time-evolution of the density matr
 \end{equation}
 The interaction-picture time-evolution operator $U(t)$ is given by
 \begin{equation}
-    U(t) = T \, \exp \left[ - i \int_{-\infty}^t  \mathrm{d} t' H_s(t') \right].
+    U(t) = T \, \exp \left[ - i \int_{-\infty}^t  \mathrm{d} t' H_s(t') \right],
 \end{equation}
+where $T$ is the time-ordering operator.
 We now evaluate an arbitrary observable $A_i$ with this density matrix in linear order of perturbation theory:
 \begin{align}
 	\label{eq:linear_response}
@@ -588,7 +590,7 @@ Here we have used that
 \begin{equation}
 	\int_{-\infty}^{+\infty} \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega^2} G_{\alpha \beta}(\omega, 0) = \frac{1}{2} \int_l \frac{\mathrm{d} \omega}{2\pi i} \frac{1}{\omega} \frac{G_{\alpha \beta}(\omega, 0)}{\omega} = \frac{G_{\alpha \beta}(\omega, 0)}{2 \omega} \Big|_{\omega = 0} \underbrace{\operatorname{Res}_{\omega = 0} \frac{1}{\omega}}_{= 1},
 \end{equation}
-where $l$ is the contour from $+\infty$ to zero and back.
+where $l$ is the contour from $+\infty$ to zero and back, avoiding the branch cut at $\omega = 0$.
 
 \subsection{Source from Classical Axion Field}
 Now we turn to the source from the axion field $a(t)$.
