@@ -100,14 +100,13 @@ After this we briefly comment on the implementation of the numerical model in ch
 Finally we present our results for each model in chapter \ref{sec:results}
 and finish by summarizing the thesis and our results and looking at further possible directions of research.
 
-\chapter{Fundamentals}
+\chapter{Early Universe Cosmology}
 \label{sec:fundermentals}
 
-\section{Early Universe Cosmology}
 In this section we will introduce the basics of cosmology and the background cosmological model we will use for the computations in this thesis later on.
 A good reference and the source for this section is \cite{the_early_universe_kolb_and_turner}.
 
-\subsection{Dynamics of the Expansion of the Universe}
+\section{Dynamics of the Expansion of the Universe}
 \label{sec:dynamics_of_the_examsion_of_the_universe}
 The dynamics of the expanding universe is governed by Einstein's theory of general relativity. The Einstein field-equation connects geometry i.e. the curvature with the content i.e. the energy-momentum tensor $T$ of the universe \footnote{
 See \cite{carroll_spacetime_and_geometry_2019} for definitions of these quantities.
@@ -170,7 +169,7 @@ Finally we mention that energy densities is often stated relative to the critica
 	\Omega_i = \frac{\rho_i}{\rho_c}.
 \end{equation}
 
-\subsection{Cosmological Equilibrium Thermodynamics}
+\section{Cosmological Equilibrium Thermodynamics}
 We will now cover the thermodynamic description of the particle content of the universe
 in equilibrium.
 In this case the distribution of particles is given by Fermi-Dirac or Bose-Einstein for fermions or bosons respectively \footnote{
@@ -231,13 +230,13 @@ with
 \end{equation}
 and for the entropy:
 \begin{equation}
-	g_{*, s} = \sum_{i, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_{i, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^3.
+	g_{*, s} = \sum_{i,\, \text{bosons}} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_{i,\, \text{fermions}} g_i \left( \frac{T_i}{T} \right)^3.
 \end{equation}
 These expressions allow us to model the standard model plasma in the early universe, if
 all interactions are fast enough to maintain equilibrium.
 
 
-\subsection{Inflation and Reheating}
+\section{Inflation and Reheating}
 In order to solve several problems with standard Friedmann cosmology as discussed so far e.g. the flatness problem i.e. the fine-tuning of $k = 0$,
 an epoch of exponential expansion before the usual subsequent evolution of the universe is proposed. The easiest way to implement this, is so called slow-roll inflation. In this model a scalar field called the inflaton field $\phi$ with a mass $m_\mathrm{inf}$ is introduced. The equation of motion for the inflaton field reads \footnote{see section \ref{sec:motion_of_the_axion_field} for the derivation of equation of motion of scalar fields in a expanding universe.}:
 \begin{equation}
@@ -288,8 +287,11 @@ It is given by \cite[eq. 8.34]{the_early_universe_kolb_and_turner}
 This temperature gives the energy scale of processes during the reheating epoch.
 
 
-\section{Baryogenesis}
+\chapter{Baryogenesis}
+
 In this section we will introduce the problem for which this thesis investigates a possible solution.
+
+\section{The Problem Statement}
 The problem of baryogenesis can be expressed as follows: Why does the universe contain so much baryonic-matter? Or more precisely: The universe as observed today, is made up of matter with very little antimatter, while in earlier times both were present in high numbers being in chemical equilibrium. As the universe cooled down, most of matter and antimatter annihilated into photons. Therefore it is reasonable to express the amount of matter-antimatter asymmetry by the ratio of the effective baryon number and the number of photons:
 \begin{equation}
 	\eta_B = \frac{n_+ - n_-}{n_\gamma},
@@ -317,7 +319,7 @@ In the standard model one finds $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mat
 \end{equation}
 The observed value of the asymmetry today is $\eta_B^0 = \eta_B^\mathrm{obs} = 10^{-6}$.
 
-\subsection{Sakharov Conditions}
+\section{Sakharov Conditions}
 Andrei Sakharov formulated in 1967 three necessary conditions required for baryogenesis \cite{Sakharov_1991}.
 The first one is that baryon number has to be violated in the process. We start from the assumption that the initial baryon asymmetry was vanishing as it was diluted by inflation.
 Hence the baryon number as to the produced in a dynamical process.
@@ -329,7 +331,7 @@ Finally the process of baryogenesis has to happen out-of-equilibrium. This is be
 in equilibrium with vanishing chemical potentials, the number densities only depend on the mass of the particles, which is the same of particles and their anti-partners by CPT symmetry.
 
 
-\subsection{Baryogenesis in the Standard Model}
+\section{Baryogenesis in the Standard Model}
 \label{sec:baryogenesis_in_the_standard_model}
 
 Let us investigate these conditions in the known physics of the standard model (SM). While non-equilibrium and C / CP violation are know parts of the standard model, baryon number violations do not appear in the Feynman rules of SM interactions. In the standard model, the baryon and the lepton numbers are violated by the following non-perturbative term:
@@ -402,7 +404,7 @@ These processes give us the rate of conversion of lepton and baryon numbers.
 \end{figure}
 
 
-\chapter{Spontaneous Baryogenesis}
+\section{Spontaneous Baryogenesis}
 \label{sec:spontaneous_baryogenesis}
 \label{sec:sbg}
 
