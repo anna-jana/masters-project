@@ -164,7 +164,12 @@ One finds the following relations:
 \end{align}
 While matter is just diluted in numbers by the expansion, radiation is also redshifted.
 Vacuum energy is essentially defined by this equation of state.
-Finally we mention that energy densities is often stated relative to the critical-density $\rho_c = \frac{3 H^2}{8 \pi G}$ as
+Finally we mention that energy densities is often stated relative to the critical-density $\rho_c$
+\begin{equation}
+	\label{eq:critical_density}
+	\rho_c = \frac{3 H^2}{8 \pi G}
+\end{equation}
+as
 \begin{equation}
 	\Omega_i = \frac{\rho_i}{\rho_c}.
 \end{equation}
@@ -201,6 +206,7 @@ These integrals can be evaluated in the relativistic limit where $m \ll T$ and $
 	\end{cases}
 \end{equation}
 \begin{equation}
+	\label{eq:number_density}
 	n = \begin{cases}
 		\frac{\zeta(3)}{\pi^2} g T^3 & \text{Bosons} \\
 		\frac{3}{4} \frac{\zeta(3)}{\pi^2} g T^3 & \text{Fermions}
@@ -296,10 +302,7 @@ The problem of baryogenesis can be expressed as follows: Why does the universe c
 \begin{equation}
 	\eta_B = \frac{n_+ - n_-}{n_\gamma},
 \end{equation}
-with the number density of photons $n_\gamma$:
-\begin{equation}
-	n_\gamma = 2 \frac{\zeta(3)}{\pi^2} T^3
-\end{equation}
+with the number density of photons $n_\gamma$ given by eq. \eqref{eq:number_density} with $g = 2$
 and $n_+$ and $n_+-$ being the densities of baryons and anti-baryons respectively. 
 The dependence on the expansion in $\eta_B$ cancels out.
 Only a comparatively small number of baryons survived in the end.
@@ -317,7 +320,25 @@ In the standard model one finds $g_{*,s}^0 = 43/11$ and $g_{*, s}^{\gg 1 \, \mat
 \begin{equation}
 	\eta_B^0 = \frac{g_{*,s}^0}{g_{*, s}^{\gg 1 \, \mathrm{Gev}}} \eta_B^{\gg 1 \, \mathrm{Gev}}.
 \end{equation}
-The observed value of the asymmetry today is $\eta_B^0 = \eta_B^\mathrm{obs} = 10^{-6}$.
+
+We compute the observed value of the asymmetry today from parameters estimated by the Planck collaboration \cite{planck2018}. For this we use the TT,TE,EE+lowE+lensing result.
+The estimated cosmological parameters are:
+\begin{align}
+	&T_0 = (2.7255 \pm 0.0006) \, \mathrm{K} \nonumber \\
+	&\Omega_b h^2 = 0.02233 \pm 0.00015 \nonumber \\
+	&H_0 = (67.37 \pm 0.54) \, \frac{\mathrm{km}}{\mathrm{s} \,  \mathrm{Mpc}}.
+\end{align}
+From this we can compute the photon density $n_\gamma$ using eq. \eqref{eq:number_density} with $g = 2$ and $T = T_0$.
+We can also find the baryon number density $n_+$ by inverting the following relation:
+\begin{equation}
+	\Omega_b h^2 = \frac{n_+ m_p h^2}{\rho_c},
+\end{equation}
+where $m_p$ is the proton mass and $\rho_c$ can be computed from eq. \eqref{eq:critical_density} using $H = H_0$.
+This gives us the observed value of the asymmetry today as
+\begin{equation}
+	\eta_B^\mathrm{obs} = (6.0 \pm 0.1) \cdot 10^{-10}.
+\end{equation}
+The error was computed using gaussian error propagation ignoring correlations. 
 
 \section{Sakharov Conditions}
 Andrei Sakharov formulated in 1967 three necessary conditions required for baryogenesis \cite{Sakharov_1991}.

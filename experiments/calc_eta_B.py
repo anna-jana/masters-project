@@ -4,11 +4,11 @@ import numpy as np
 from scipy.special import zeta
 
 T0 = 2.7255 * u.K
-T0_err =
+T0_err = 0.0006 * u.K
 Omega_b_h_sq = 0.02233
-Omega_b_h_sq_err =
+Omega_b_h_sq_err = 0.00015
 H0 = 67.37 * u.km / (u.s * u.Mpc)
-H0_err =
+H0_err = 0.54 * u.km / (u.s * u.Mpc)
 
 h = 0.674
 
@@ -25,4 +25,6 @@ n_B_err = (
     (Omega_b_h_sq / h**2 / c.m_p * 3 * 2 * H0 / (8*np.pi*c.G) * H0_err)**2)**0.5
 n_gamma_err = zeta(3) / np.pi**2 * 2 * 3 * T0**2 * (c.k_B / c.hbar / c.c)**3 * T0_err
 eta_B_err = ((n_B_err / n_gamma)**2 + (n_gamma_err * n_B / n_gamma**2)**2)**0.5
+eta_B_err = eta_B_err.to("1").value
 
+print("eta_B =", eta_B, "+/-", eta_B_err)
