@@ -5,9 +5,9 @@ from scipy.integrate import solve_ivp
 from scipy.optimize import root_scalar
 from scipy.special import ellipj, ellipk, ellipkinc, ellipkm1
 from scipy.constants import hbar, electron_volt
-import axion_motion, generic_alp, util, transport_equation, decay_process, observables
-axion_motion, generic_alp, util, transport_equation, decay_process, observables = \
-    map(importlib.reload, (axion_motion, generic_alp, util, transport_equation, decay_process, observables))
+import axion_motion, generic_alp, util, transport_equation, decay_process, observables, axion_decay_rate
+axion_motion, generic_alp, util, transport_equation, decay_process, observables, axion_decay_rate = \
+    map(importlib.reload, (axion_motion, generic_alp, util, transport_equation, decay_process, observables, axion_decay_rate))
 
 ############################## helper functions #########################
 def sc(x, y):
@@ -113,10 +113,10 @@ def compute_max_mR(m_phi, H_inf, theta_i):
     return sol.root
 
 ####################### check if the axion might decay (then it cant be dark matter) ###################
-def calc_decay_time(mR, m_phi, f_eff):
+def calc_decay_time(mR, m_phi, f_eff, source_vector):
     eps = calc_eps(mR)
     f = calc_f(f_eff, eps)
-    decay_rate = generic_alp.realignment_axion_field.alpha**2 / (64*np.pi**3) * eps**2 * m_phi**3 / f**2
+    decay_rate = axion_decay_rate.get_axion_decay_rate(source_vector, f_eff, m_phi)
     return 1 / decay_rate
 
 def to_seconds(natural_time_in_GeV):
@@ -124,18 +124,18 @@ def to_seconds(natural_time_in_GeV):
 
 log_min_decay_time = 26 # [seconds]
 
-def compute_min_mR(m_phi, f_eff):
+def compute_min_mR(m_phi, f_eff, source_vector):
     try:
-        sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff))) - log_min_decay_time, bracket=(0, 15))
+        sol = root_scalar(lambda mR: np.log10(to_seconds(calc_decay_time(mR, m_phi, f_eff, source_vector))) - log_min_decay_time, bracket=(0, 15))
     except ValueError:
         return np.nan
     if sol.converged:
         return sol.root
     else:
         return np.nan
-    
+
 default_f_eff = 1e12 # arbitary value since only Omega depends on f_eff and it is ~ f^2
-    
+
 ################################ detection ##############################
 #e_sq = (constants.g_1 * constants.g_2)**2 / (constants.g_1**2 + constants.g_2**2)
 
@@ -149,26 +149,26 @@ def calc_axion_photon_coupling(mR, f_eff):
 def compute_example_trajectory(H_inf, Gamma_inf, nsource, f, m_phi, mR):
     m_phi /= 1e9
     eps = calc_eps(mR)
-    M = m_phi / eps 
+    M = m_phi / eps
     phi0_over_f = theta_to_phi_over_f(1.0, eps)
     conv_factor = Gamma_inf / clockwork_axion_field.find_dynamical_scale(eps, M)
-    
+
     H_osc = clockwork_axion_field.find_H_osc(eps, M)
     t_osc = 2 * (1 / H_osc + 1 / (H_inf / M))
     tmax_ax = t_osc + 1/eps*100
     tmax_inf = tmax_ax * conv_factor
 
     phi0_over_f = theta_to_phi_over_f(1.0, eps)
-    _, T_and_H_fn, _ = decay_process.solve(tmax_inf, 0.0, 3*H_inf**2*decay_process.M_pl**2, 
+    _, T_and_H_fn, _ = decay_process.solve(tmax_inf, 0.0, 3*H_inf**2*decay_process.M_pl**2,
                                            decay_process.find_scale(Gamma_inf), Gamma_inf)
     sol = clockwork_axion_field.solve((phi0_over_f, 0.0), (eps, M), tmax_ax, T_and_H_fn, Gamma_inf)
     relic_ts = np.geomspace(sol.t[1], sol.t[-1], 400)
     phi_over_f = sol.sol(relic_ts)[0,:]
-        
+
     background_sols, axion_sols, red_chem_pot_sols = observables.compute_observables(
-                        H_inf, Gamma_inf, (eps, M), f, clockwork_axion_field, 
-                        (phi0_over_f, 0), source_vector_axion=transport_equation.source_vectors[nsource], 
-                        calc_init_time=True, return_evolution=True, isocurvature_check=False)  
+                        H_inf, Gamma_inf, (eps, M), f, clockwork_axion_field,
+                        (phi0_over_f, 0), source_vector_axion=transport_equation.source_vectors[nsource],
+                        calc_init_time=True, return_evolution=True, isocurvature_check=False)
     collected = []
     tstart = 0
     for red_chem_pot_sol, axion_sol, T_and_H_and_T_dot_fn in zip(red_chem_pot_sols, axion_sols, background_sols):
@@ -184,7 +184,7 @@ def compute_example_trajectory(H_inf, Gamma_inf, nsource, f, m_phi, mR):
         theta_dots = axion_sol.sol(taxs)[1, :]
         gammas = [transport_equation.calc_rate_vector(T) for T in Ts]
         source =  (
-            - theta_dots * clockwork_axion_field.find_dynamical_scale(eps, M) / Ts * 
+            - theta_dots * clockwork_axion_field.find_dynamical_scale(eps, M) / Ts *
             [gamma @ transport_equation.source_vectors[nsource] for gamma in gammas]
         )
         rate = - np.array([gamma @ transport_equation.charge_vector @ transport_equation.charge_vector_B_minus_L
@@ -194,7 +194,7 @@ def compute_example_trajectory(H_inf, Gamma_inf, nsource, f, m_phi, mR):
     source = np.concatenate([x[1] for x in collected])
     rate = np.concatenate([x[2] for x in collected])
     ts = np.concatenate([x[3] for x in collected])
-            
+
     return B_minus_L, source, rate, ts, phi_over_f, relic_ts
 
 interesting_points = [(1e-3, 13), (1e3, 10), (1e1, 2), (1e-2, 8)]

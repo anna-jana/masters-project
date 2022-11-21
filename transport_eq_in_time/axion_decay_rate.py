@@ -1,3 +1,4 @@
+import numpy as np
 import transport_equation
 
 def get_axion_decay_rate(source_vector, f_a, m_a):
