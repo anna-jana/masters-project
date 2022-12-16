@@ -402,7 +402,7 @@ where $N_c$ is the number of ``colors'' ($N_c = 2$ for the weak SU(2) theory) an
 
 As the sphaleron process conserves $B - L$, it can't create both non-vanishing $B$ and $L$ numbers. But as long as we create
 a non-vanishing lepton number, they convert this lepton number also to a non-vanishing baryon number.
-Since the transition between different vacuum states corresponds to a change in baryon and lepton number, eq. \eqref{eq:rates} gives the rate of conversion between them.
+Since the transition between different vacuum states corresponds to a change in baryon and lepton number, eq. \eqref{eq:rate} gives the rate of conversion between them.
 This is the idea behind baryogenesis via leptogensis.
 A mechanism for violation of only the lepton number is discussed in section \ref{sec:lepton_number_violation_from_weinberg_operator}.
 The equilibrium value of the baryon number given a $B - L$ number is \cite[sec 2.5]{Leptogenesis_review_doi:10.1146/annurev.nucl.55.090704.151558}
@@ -1452,10 +1452,13 @@ The other field $\phi_2$ then will not get a contribution to its effective mass 
 If at $t_1^\mathrm{decay}$ we find $3 H(t_1^\mathrm{decay}) > m_2$, then the field of $\phi_2$ will be frozen again.
 Hence, the relic density of the field $\phi_1$ from realignment once the it starts to oscillate again.
 
-Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. This is evident from the fact that parts from the parameter space exhibit a positive largest Lyapunov exponent \footnote{The sum of Lyapunov exponents is almost zero in our result. As this is almost a Hamiltonian system (apart from the Hubble friction, which is low in this regime) the sum of Lyapunov exponents should be almost zero.}. This is shown in fig. \ref{fig:multi_axions_lyapunov}. For a definition and explanation of Lyapunov exponents see ref. \cite{nonlinear_dynamics}. The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
+Due to the non-linearity and the higher dimension of the phase-space \footnote{Chaotic behavior is only possible in dynamical systems of at least dimension $3$. Technically even one scalar field fulfills this requirement as the explicit time-dependence or equivalently the Friedmann equation gives a third dimension additionally to $\phi$ and $\dot{\phi}$, but this coordinate only changes slowly compared to the other ones and hence no chaotic behavior can be expected in the case of one scalar field. This only changes once we introduce multiple fields.}, we find that the dynamics of the two fields is non-trivial and exhibits chaotic behavior. This is evident from the fact that parts from the parameter space exhibit a positive largest Lyapunov exponent \footnote{The sum of Lyapunov exponents is almost zero in our result. As this is almost a Hamiltonian system (apart from the Hubble friction, which is low in this regime) the sum of Lyapunov exponents should be almost zero.}. This is shown in fig. \ref{fig:multi_axions_lyapunov}. For a definition and explanation of Lyapunov exponents see ref. \cite{nonlinear_dynamics}. A simplified explanation is that 
+they describe the growth of infinitesimal perturbations. A positive Lyapunov exponent means exponential growth and sensitivity on initial conditions.
+The scaling of the energy density is also not clear. However it seems that in parts of the parameter space the scaling is radiation like and in parts matter like.
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{../../experiments/lyapunov_plot.pdf}
 	\caption{A plot of the lyapunov spectrum of the multi axion system with a quatic coupling defined in eq. \eqref{eq:multi_axion_quatic}. The parameters are defined like in fig. \ref{fig:multi_axion_quatic_evolution_example}. The Lyapunov exponents $\lambda_i$ are shown as a function of $G$ as solid lines. The values of the other parameters are shown in the title. The sum of Lyapunov exponents is shown as a red dashed line (barley visible, almost on the x-axis). The value of the smallest $G$ where the largest Lyapunov exponent is positive is indicated by a dashed vertical line.
+	The Lyapunov exponents were computed using the DynamicalSystems.jl julia library. 
 	}
 	\label{fig:multi_axions_lyapunov}
 \end{figure}
@@ -1488,6 +1491,7 @@ Therefore, for this model, one could only take one axion with a large mass which
 \chapter{Implementation of the Numerical Simulations}
 \label{sec:implementation_of_the_numerical_simulations}
 In this section we will briefly look at the program which was written for this thesis project in order to compute the baryon asymmetry.
+The code will be made available at \url{https://github.com/anna-jana/masters-project} once this thesis is graded.
 
 \section{Used Equations}
 Let us start by summarizing the dynamical equation used.
